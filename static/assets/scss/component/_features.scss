@@ -1,0 +1,55 @@
+/*----------------------------------------
+    06. features CSS
+----------------------------------------*/
+@use "../abstract" as *;
+
+.features-single {
+	padding: 44px 0;
+	@media #{$md,$sm,$xs} {
+		padding: 0 0 45px;
+	}
+	.irc-item-heading {
+		font-size: 18px;
+		color: var(--clr-common-heading);
+		font-weight: 600;
+		margin-bottom: 0;
+	}
+	.irc-item-content {
+		p {
+			margin-bottom: 0;
+		}
+	}
+	.irc-item {
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		gap: 20px;
+		@media #{$lg} {
+			align-items: flex-start;
+		}
+	}
+}
+
+.features-wrapper {
+	@media #{$md,$sm,$xs} {
+		padding-top: 45px;
+	}
+}
+.features-area1 {
+	background: var(--clr-bg-footer);
+}
+
+.features-area4 {
+	.features-single {
+		border: 1px solid var(--clr-common-border);
+		border-radius: 5px;
+		padding: 49px 0;
+		.irc-item {
+			display: flex;
+			flex-direction: column;
+			text-align: center;
+			gap: 30px;
+			align-items: center;
+		}
+	}
+}

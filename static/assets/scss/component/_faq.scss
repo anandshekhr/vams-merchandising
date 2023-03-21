@@ -1,0 +1,77 @@
+/*----------------------------------------
+    15. faq CSS
+----------------------------------------*/
+@use "../abstract" as *;
+
+.choose-right .accordion-button:focus {
+	z-index: 3;
+	border: none;
+	outline: 0;
+	box-shadow: none;
+}
+
+.choose-right .accordion-item {
+	border: 1px solid var(--clr-common-border);
+	margin-bottom: 20px;
+	border-radius: 5px;
+}
+.choose-right .accordion-collapse {
+	border: 0;
+}
+
+.choose-right .accordion-button {
+	padding: 25px;
+	font-size: 16px;
+	color: #242629;
+	font-weight: 600;
+	padding-right: 35px;
+	border: 0;
+}
+
+.choose-right .accordion-button:not(.collapsed) {
+	color: var(--clr-common-heading);
+	background-color: #fff;
+	box-shadow: none;
+	border: 0;
+}
+
+.choose-right .accordion-body {
+	padding: 0px 25px 20px 25px;
+	margin-top: -10px;
+}
+
+.choose-right .accordion-body p {
+	line-height: 30px;
+	margin-bottom: 0;
+}
+
+.choose-right .accordion-button:not(.collapsed)::after {
+	background: none;
+	transform: rotate(180deg);
+	content: "";
+	position: absolute;
+	right: 25px;
+	top: 25px;
+	font-family: "Font Awesome 5 Pro";
+}
+@media (max-width: 767px) {
+	.choose-right .accordion-button:not(.collapsed)::after {
+		right: 20px;
+	}
+}
+
+.choose-right .accordion-button::after {
+	background: none;
+	color: var(--clr-common-heading);
+	content: "";
+	position: absolute;
+	right: 20px;
+	top: 25px;
+	font-family: "Font Awesome 5 Pro";
+	font-weight: 400;
+}
+@media (max-width: 767px) {
+	.choose-right .accordion-button::after {
+		right: 15px;
+	}
+}

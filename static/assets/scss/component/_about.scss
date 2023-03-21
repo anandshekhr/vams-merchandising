@@ -1,0 +1,129 @@
+/*----------------------------------------
+    11. about CSS
+----------------------------------------*/
+@use "../abstract" as *;
+
+.heading-title {
+	font-size: 60px;
+	font-weight: 600;
+	line-height: 1.166;
+	max-width: 1030px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 0;
+	@media #{$xxl} {
+		font-size: 56px;
+		max-width: 990px;
+	}
+	@media #{$xl} {
+		font-size: 52px;
+		max-width: 920px;
+	}
+	@media #{$lg} {
+		font-size: 48px;
+		max-width: 840px;
+	}
+	@media #{$md} {
+		font-size: 40px;
+	}
+	@media #{$sm} {
+		font-size: 30px;
+	}
+	@media #{$xs} {
+		font-size: 30px;
+		max-width: 520px;
+	}
+}
+.about-heading-content {
+	text-align: center;
+}
+.about-heading {
+	padding: 110px 0;
+}
+
+// about-area style
+.about-thumb {
+	padding-bottom: 37px;
+	max-width: 570px;
+	padding-right: 30px;
+	.about-thumb-main {
+		width: 100%;
+	}
+}
+.about-thumb .est-time-img {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+.about-content .section-main-title {
+	font-size: 36px;
+	max-width: 450px;
+	@media #{$xs} {
+		font-size: 32px;
+	}
+	@media #{$xxs} {
+		font-size: 28px;
+	}
+}
+.about-btn {
+	line-height: 1;
+	.fill-btn {
+		padding: 0 38px;
+	}
+}
+.align-pb-35 {
+	padding-bottom: 35px;
+	@media #{$md,$sm,$xs} {
+		padding-bottom: 0;
+	}
+}
+
+// speciality area style
+.speciality-content {
+	max-width: 470px;
+	@media #{$md,$sm,$xs} {
+		margin-bottom: 50px;
+	}
+	.section-main-title {
+		font-size: 36px;
+		max-width: 400px;
+		@media #{$xs} {
+			font-size: 32px;
+		}
+		@media #{$xxs} {
+			font-size: 28px;
+		}
+	}
+}
+.speciality-point-single {
+	.irc-item-heading {
+		font-size: 20px;
+		font-weight: 500;
+		color: var(--clr-common-heading);
+		margin-bottom: 12px;
+	}
+	.irc-item {
+		display: flex;
+		gap: 40px;
+		align-items: start;
+	}
+	.irc-item-icon {
+		padding-top: 5px;
+	}
+	.irc-item-content {
+		p {
+			margin-bottom: 0;
+		}
+	}
+}
+.speciality-points {
+	display: flex;
+	flex-direction: column;
+	gap: 35px;
+}
+.speciality-thumb {
+	max-width: 570px;
+	img {
+		width: 100%;
+	}
+}

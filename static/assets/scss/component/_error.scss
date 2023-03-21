@@ -1,0 +1,68 @@
+/*----------------------------------------
+    12. error CSS
+----------------------------------------*/
+@use "../abstract" as *;
+
+.error-number {
+	font-size: 220px;
+	font-weight: 700;
+	color: var(--clr-common-heading);
+	line-height: 160px;
+	margin-bottom: 25px;
+	@media #{$lg,$md} {
+		font-size: 180px;
+		line-height: 130px;
+	}
+	@media #{$sm} {
+		font-size: 160px;
+		line-height: 120px;
+	}
+	@media #{$xs} {
+		font-size: 140px;
+		line-height: 100px;
+	}
+	@media (max-width: 450px) {
+		font-size: 120px;
+		line-height: 90px;
+	}
+}
+.error-content {
+	text-align: center;
+	p {
+		max-width: 590px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 40px;
+		@media #{$xs} {
+			max-width: 490px;
+		}
+	}
+}
+.error-text {
+	font-size: 48px;
+	font-weight: 600;
+	margin-bottom: 25px;
+	@media #{$lg,$md} {
+		font-size: 44px;
+	}
+	@media #{$sm} {
+		font-size: 40px;
+	}
+	@media #{$xs} {
+		font-size: 36px;
+	}
+	@media (max-width: 450px) {
+		font-size: 34px;
+	}
+	br {
+		@media (min-width: 450px) {
+			display: none;
+		}
+	}
+}
+.error-btn {
+	line-height: 1;
+}
+.error-area {
+	padding: 189px 0;
+}

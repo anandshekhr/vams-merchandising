@@ -1,0 +1,96 @@
+/*----------------------------------------
+    13. contact CSS
+----------------------------------------*/
+@use "../abstract" as *;
+
+// contact form style
+.contact-main-wrapper {
+	.section-main-title {
+		font-size: 36px;
+		@media #{$xs} {
+			font-size: 32px;
+		}
+		@media #{$xxs} {
+			font-size: 28px;
+		}
+	}
+}
+.single-form-input {
+	margin-bottom: 20px;
+	input {
+		height: 60px;
+		border: 1px solid var(--clr-common-border);
+		border-radius: 4px;
+		padding: 0 20px;
+		width: 100%;
+		outline: 0;
+	}
+	textarea {
+		height: 170px;
+		width: 100%;
+		border: 1px solid var(--clr-common-border);
+		border-radius: 4px;
+		resize: none;
+		padding: 15px 20px;
+		outline: 0;
+	}
+}
+.contact-btn {
+	line-height: 1;
+	.fill-btn {
+		padding: 0 45px;
+	}
+}
+
+// sidebar-widget style
+.sidebar-widget {
+	border: 1px solid var(--clr-common-border);
+	border-radius: 5px;
+	padding: 25px 30px;
+}
+.sidebar-widget-title {
+	font-size: 20px;
+	font-weight: 600;
+	margin-bottom: 30px;
+}
+.contact-list-item {
+	.irc-item {
+		display: flex;
+		gap: 20px;
+	}
+	.irc-item-heading {
+		font-size: 18px;
+		font-weight: 600;
+		color: var(--clr-common-heading);
+		margin-bottom: 10px;
+	}
+	.irc-item-content {
+		> span {
+			display: block;
+			a {
+				&:hover {
+					color: var(--clr-common-heading);
+				}
+				span {
+					font-weight: 600;
+					color: var(--clr-common-heading);
+					white-space: nowrap;
+				}
+			}
+		}
+	}
+}
+.sidebar-widget-content {
+	.contact-list {
+		display: flex;
+		flex-direction: column;
+		gap: 25px;
+	}
+}
+
+// contact map style
+.contact-map-wrapper iframe {
+	height: 420px;
+	width: 100%;
+	border-radius: 10px;
+}

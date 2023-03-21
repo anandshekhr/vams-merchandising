@@ -1,0 +1,136 @@
+/*----------------------------------------
+    08. testimonial CSS
+----------------------------------------*/
+@use "../abstract" as *;
+
+.testimonial-wrapper {
+	max-width: 920px;
+	text-align: center;
+	margin: 0 auto;
+	position: relative;
+	@media #{$lg} {
+		max-width: 710px;
+	}
+}
+.testimonial-author {
+	.author-name {
+		font-size: 30px;
+		font-weight: 500;
+		margin-bottom: 2px;
+	}
+	.author-desc {
+		font-size: 15px;
+	}
+	margin-bottom: 25px;
+}
+.author-text {
+	p {
+		font-size: 28px;
+		line-height: 1.35;
+		font-style: italic;
+		margin-bottom: 40px;
+		@media #{$lg,$md,$sm,$xs} {
+			font-size: 22px;
+		}
+		@media #{$xxs} {
+			font-size: 20px;
+		}
+	}
+}
+
+.author-thumb {
+	width: 160px;
+	height: 160px;
+	border-radius: 50%;
+	margin: 0 auto;
+	position: relative;
+	@media #{$lg,$md,$sm,$xs} {
+		width: 100px;
+		height: 100px;
+	}
+	&:after {
+		position: absolute;
+		content: "\f10d";
+		font-family: "Font Awesome 5 Pro";
+		width: 42px;
+		height: 42px;
+		background: var(--clr-common-heading);
+		text-align: center;
+		line-height: 42px;
+		border-radius: 50%;
+		right: 5px;
+		top: 0;
+		font-weight: 700;
+		color: var(--clr-common-white);
+		@media #{$lg,$md,$sm,$xs} {
+			width: 30px;
+			height: 30px;
+			line-height: 30px;
+			font-size: 14px;
+		}
+	}
+	img {
+		border-radius: 50%;
+		width: 100%;
+	}
+}
+
+.testimonial-pagination {
+	.swiper-pagination-bullet {
+		width: 12px;
+		height: 12px;
+		background: #e6e8ec;
+		opacity: 1;
+	}
+	display: flex;
+	justify-content: center;
+	gap: 15px;
+	margin-top: 50px;
+	.swiper-pagination-bullet.swiper-pagination-bullet-active {
+		background: var(--clr-common-heading);
+	}
+}
+.testimonial-button-prev {
+	width: 50px;
+	height: 50px;
+	border: 1px solid #dddfe3;
+	text-align: center;
+	line-height: 48px;
+	border-radius: 50%;
+	font-size: 16px;
+	color: #aeaeae;
+	transition: 0.3s;
+	position: absolute;
+	top: 125px;
+	left: -140px;
+	@media #{$md,$sm,$xs} {
+		display: none;
+	}
+	&:hover {
+		color: var(--clr-common-white);
+		background: var(--clr-common-heading);
+		border-color: var(--clr-common-heading);
+	}
+}
+.testimonial-button-next {
+	width: 50px;
+	height: 50px;
+	border: 1px solid #dddfe3;
+	text-align: center;
+	line-height: 48px;
+	border-radius: 50%;
+	font-size: 16px;
+	color: #aeaeae;
+	transition: 0.3s;
+	position: absolute;
+	top: 125px;
+	right: -140px;
+	@media #{$md,$sm,$xs} {
+		display: none;
+	}
+	&:hover {
+		color: var(--clr-common-white);
+		background: var(--clr-common-heading);
+		border-color: var(--clr-common-heading);
+	}
+}

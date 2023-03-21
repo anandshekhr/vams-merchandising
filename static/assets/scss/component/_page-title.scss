@@ -1,0 +1,47 @@
+/*----------------------------------------
+    10. page-title CSS
+----------------------------------------*/
+@use "../abstract" as *;
+
+.page-title-area {
+	height: 400px;
+	display: flex;
+	align-items: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.page-title {
+	font-size: 36px;
+	font-weight: 600;
+	line-height: 1.277;
+	@media #{$xs} {
+		font-size: 32px;
+	}
+}
+.breadcrumb-menu {
+	li {
+		span {
+			font-size: 16px;
+			font-weight: 500;
+			color: var(--clr-common-heading);
+		}
+		position: relative;
+		&:not(:last-child) {
+			&:after {
+				display: inline-block;
+				color: var(--clr-common-heading);
+				content: "\f105";
+				position: absolute;
+				right: -16px;
+				top: 0px;
+				font-family: "Font Awesome 5 Pro";
+			}
+		}
+	}
+	ul {
+		display: flex;
+		justify-content: center;
+		gap: 25px;
+	}
+}
