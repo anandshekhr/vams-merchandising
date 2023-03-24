@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib import auth
 from .serializers import UpdateUserSerializer
-from rest_framework import generics,status,permissions
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -10,7 +10,7 @@ from products.serializer import userSerializer
 from cart.models import Order
 from rest_framework.decorators import api_view, permission_classes
 from .models import *
-from datetime import datetime,timezone
+from datetime import datetime, timezone
 from django.http import JsonResponse
 from django.utils.timezone import utc
 from .utils import OTPManager
@@ -40,43 +40,34 @@ def register(request):
                     print('Email is already taken! try another one')
                     return redirect('register')
                 else:
-                    user = User.objects.create_user(username=username, email=email, password=password1)
+                    user = User.objects.create_user(
+                        username=username, email=email, password=password1)
                     user.save()
-                    return redirect('login')   
+                    return redirect('login')
         else:
             print('Password did not matched!..')
             return redirect('register')
     else:
-        return render(request, 'user/register-one.html')        
+        return render(request, 'register.html')
 
 
 def login(request):
     if request.method == 'POST':
         username = request.POST.get('mobileno')
-        print("USERTNAME: ",username)
+        print("USERTNAME: ", username)
         password = request.POST.get('password')
-
-    #     user = auth.authenticate(mobileno=username, password=password)
-
-    #     if user is not None:
-    #         auth.login(request,user)
-    #         print('Login Successfull!')
-    #         return redirect('index')
-    #     else:
-    #         print('invalid credentials')
-    #         return redirect('login') 
-    # else:
-    return render(request, 'user/login-one.html')           
+    return render(request, 'login.html')
 
 
 def logout(request):
     # if request.method == 'POST':
     auth.logout(request)
-        # print('logged out from websites..')
+    # print('logged out from websites..')
     return redirect('index')
 
+
 class UpdateProfileView(generics.UpdateAPIView):
-    
+
     queryset = User.objects.all()
     permission_classes = (IsAuthenticated,)
     serializer_class = UpdateUserSerializer
@@ -84,41 +75,43 @@ class UpdateProfileView(generics.UpdateAPIView):
     def get_object(self):
         return self.request.user
 
+
 class UserProfileView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = userSerializer
 
-    def get(self,request,format = None):
+    def get(self, request, format=None):
         user = User.objects.get(pk=self.request.user.id)
-        serializer=userSerializer(user)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        serializer = userSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def profileUser(request):
     if request.user:
-        userdetails = User.objects.get(pk = request.user.id)
+        userdetails = User.objects.get(pk=request.user.id)
         context = {
-            'user':userdetails
+            'user': userdetails
         }
-    return render(request,"profile.html",context)
+    return render(request, "profile.html", context)
+
 
 def userOrderDetail(request):
     if request.user:
-        orders = Order.objects.filter(user = request.user.id,ordered = True)
+        orders = Order.objects.filter(user=request.user.id, ordered=True)
         context = {
-            'orders':orders
+            'orders': orders
         }
-    return render(request,"user-order-detail.html",context)
+    return render(request, "user-order-detail.html", context)
 
 
-def userOrderDetailExpanded(request,pk):
+def userOrderDetailExpanded(request, pk):
     if request.user:
-        order_detail = Order.objects.get(user = request.user.id,pk=pk)
+        order_detail = Order.objects.get(user=request.user.id, pk=pk)
         print(order_detail)
     context = {
-        'orders':order_detail
+        'orders': order_detail
     }
-    return render(request,"order_history.html",context)
+    return render(request, "order_history.html", context)
 
 
 @api_view(['POST'])
@@ -165,11 +158,12 @@ def verify_otp(request):
         otp = request.data.get('otp')
         print('otp is - ', otp)
         if not web:
-            return OTPManager.verify_otp(otp, country_code, phone_number,web)
+            return OTPManager.verify_otp(otp, country_code, phone_number, web)
         else:
-            user_r = OTPManager.verify_otp(otp, country_code, phone_number, web)
-            auth.login(request,user_r)
-            return Response({"status":"OK"},status=status.HTTP_200_OK)
+            user_r = OTPManager.verify_otp(
+                otp, country_code, phone_number, web)
+            auth.login(request, user_r)
+            return Response({"status": "OK"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print(e)
@@ -191,6 +185,7 @@ def profileDashboard(request):
         }
         return render(request, "user/dashboard.html", context)
 
+
 def user_address(request):
     if request.method == "POST":
         first_name = request.POST.get('first-name')
@@ -209,14 +204,16 @@ def user_address(request):
             set_default = False
         s_address = UserAddresses(user=request.user, name=first_name+" "+last_name, address=area, state=state, city=city,
                                   pincode=pincode, addPhoneNumber=phone, set_default=set_default, email=email, country=country, address_type=address_type)
-        s_address.save() 
+        s_address.save()
     address = UserAddresses.objects.filter(user=request.user.id)
-    context = {'address':address}
-    return render(request,"user/address.html",context)
-    
+    context = {'address': address}
+    return render(request, "user/address.html", context)
+
+
 def user_orders(request):
     if request.user:
-        orders = Order.objects.filter(user = request.user.id)  # fetching all post objects from database
+        # fetching all post objects from database
+        orders = Order.objects.filter(user=request.user.id)
         # orders = Order.objects.all()
         print(orders)
         if len(orders) > 5:
@@ -224,12 +221,13 @@ def user_orders(request):
             # getting the desired page number from url
             page_number = request.GET.get('page')
             try:
-                page_obj = p.get_page(page_number)  # returns the desired page object
+                # returns the desired page object
+                page_obj = p.get_page(page_number)
             except PageNotAnInteger:
                 page_obj = p.page(1)
             except EmptyPage:
                 page_obj = p.page(p.num_pages)
-                
+
             except Exception as e:
                 return HttpResponse(e)
             context = {'page_orders': page_obj}
@@ -238,7 +236,7 @@ def user_orders(request):
             context = {'page_orders': orders}
 
     return render(request, "user/orders.html", context)
-    
+
 
 def user_payment(request):
     if request.method == "POST":
@@ -251,27 +249,30 @@ def user_payment(request):
         else:
             default = False
 
-        save_model = Cards(user=request.user,card_number=card_number,card_holder_name=card_holder_name,\
-            exp_month=exp_month,exp_year=exp_year,set_as_default=default)
+        save_model = Cards(user=request.user, card_number=card_number, card_holder_name=card_holder_name,
+                           exp_month=exp_month, exp_year=exp_year, set_as_default=default)
         save_model.save()
-    saved_cards = Cards.objects.filter(user=request.user)  
-    return render(request, "user/payment.html",{'cards':saved_cards})
+    saved_cards = Cards.objects.filter(user=request.user)
+    return render(request, "user/payment.html", {'cards': saved_cards})
+
 
 def user_coupon(request):
     return render(request, "user/coupon.html")
 
+
 def user_notification(request):
     return render(request, "user/notification.html")
 
-def delete_user_address(request,pk):
-    address = get_object_or_404(UserAddresses,user=request.user.id,pk=pk)
+
+def delete_user_address(request, pk):
+    address = get_object_or_404(UserAddresses, user=request.user.id, pk=pk)
     address.delete()
     return redirect("profile-address")
 
 
-def set_primary_address(request,pk):
+def set_primary_address(request, pk):
     print("calling set function")
-    address = UserAddresses.objects.get(user = request.user.id,pk = pk)
+    address = UserAddresses.objects.get(user=request.user.id, pk=pk)
     if address.set_default == False:
         address.set_default == True
         address.save()

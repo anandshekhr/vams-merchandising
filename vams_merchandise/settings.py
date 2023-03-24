@@ -45,26 +45,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    
-    #home app 
+
+    # home app
     'Home.apps.HomeConfig',
-    
-    #account App
+
+    # account App
     'user.apps.AccountConfig',
 
-    #products APP
+    # products APP
     'products.apps.ProductsConfig',
 
-    #store App
+    # store App
     'stores.apps.StoresConfig',
 
-    #cart app
+    # cart app
     'cart.apps.CartConfig',
 
-    #blogs app
+    # blogs app
     'blogs.apps.BlogsConfig',
 
-    #Third-party App
+    # Third-party App
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
@@ -100,8 +100,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'user.customBaseVariable.addVariableBaseTemplate',
-
+                'Home.customBaseVariable.addVariableBaseTemplate',
             ],
             'libraries': {
                 'range': 'products.templatetags.range',
@@ -123,7 +122,7 @@ if DEBUG:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "vams-merchandise",
             "USER": "postgres",
-            "PASSWORD": "Shekhar123#",
+            "PASSWORD": "shekhar123#",
             "HOST": "127.0.0.1",
             "PORT": "5432",
         }
@@ -216,7 +215,7 @@ ACCOUNT_ADAPTER = 'user.adapters.CustomUserAccountAdapter'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-#INSTAMOJO API DETAILS
+# INSTAMOJO API DETAILS
 API_KEY = env('INSTAMOJO_API_KEY')
 AUTH_TOKEN = env('INSTAMOJO_AUTH_TOKEN')
 API_SALT = env('INSTAMOJO_API_SALT')

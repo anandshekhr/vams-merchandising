@@ -13,10 +13,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from .settings import *
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include, re_path
+from django.conf import settings
+from django.conf.urls.static import static
+from dj_rest_auth.views import PasswordResetConfirmView
+from django.conf.urls import handler404, handler500
+
+
+admin.site.site_header = env.str('ADMIN_SITE_HEADER')
+admin.site.index_title = env.str('ADMIN_INDEX_TITLE')
+admin.site.site_title = env.str('ADMIN_SITE_TITLE')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('Home.urls')),
-]
+    path('', include('Home.urls')),
+    path('api/v1/', include('cart.urls')),
+    path('api/v1/', include('stores.urls')),
+    path('api/v1/', include('products.urls')),
+    path('api/v1/', include('user.urls')),
+    path("api/v1/accounts/", include("dj_rest_auth.urls")),
+    path("api/v1/accounts/registration/",
+         include("dj_rest_auth.registration.urls")),
+    path(
+        'rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/',
+        PasswordResetConfirmView.as_view(), name='password_reset_confirm'
+    ),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler500 = 'Home.views.err_500'
