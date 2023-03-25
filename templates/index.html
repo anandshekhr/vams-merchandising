@@ -151,31 +151,35 @@
       <div class="banner-area banner-area1 pos-rel">
          <div class="swiper-container slider__active">
             <div class="swiper-wrapper">
-               <div class="swiper-slide">
-                  <div class="single-banner single-banner-1 banner-800 d-flex align-items-center pos-rel">
-                     <div class="banner-bg banner-bg1 banner-bg1-1" data-background="{% static 'assets/img/banner/banner-1-1.jpg' %}">
-                     </div>
-                     <div class="container pos-rel">
-                        <div class="row align-items-center">
-                           <div class="col-lg-8 col-md-8">
-                              <div class="banner-content banner-content1 banner-content1-1 pt-0">
-                                 <div class="banner-meta-text" data-animation="fadeInUp" data-delay=".3s">
-                                    <span>New Arrival</span>
+               {% for banner in Banners %}
+                  {% if 'homepage' in banner.position and 'newarrival' in banner.position %}
+                     <div class="swiper-slide">
+                        <div class="single-banner single-banner-1 banner-800 d-flex align-items-center pos-rel">
+                           <div class="banner-bg banner-bg1 banner-bg1-1 height=1080px width=1980px" data-background="/media/{{banner.banner_images}}">
+                           </div>
+                           <div class="container pos-rel">
+                              <div class="row align-items-center">
+                                 <div class="col-lg-8 col-md-8">
+                                    <div class="banner-content banner-content1 banner-content1-1 pt-0">
+                                       <div class="banner-meta-text" data-animation="fadeInUp" data-delay=".3s">
+                                          <span>{{banner.banner_name}}</span>
+                                       </div>
+                                       <h1 class="banner-title" data-animation="fadeInUp" data-delay=".5s">
+                                          {{banner.banner_desc.html|safe}}</h1>
+                                       <div class="banner-btn" data-animation="fadeInUp" data-delay=".7s">
+                                          <a href="shop.html" class="fill-btn">Shop Now</a>
+                                       </div>
+                                    </div>
                                  </div>
-                                 <h1 class="banner-title" data-animation="fadeInUp" data-delay=".5s">
-                                    Hot Fashion Collection</h1>
-                                 <div class="banner-btn" data-animation="fadeInUp" data-delay=".7s">
-                                    <a href="shop.html" class="fill-btn">Shop Now</a>
+                                 <div class="col-lg-4 col-md-4">
                                  </div>
                               </div>
                            </div>
-                           <div class="col-lg-4 col-md-4">
-                           </div>
                         </div>
                      </div>
-                  </div>
-               </div>
-               <div class="swiper-slide">
+                  {% endif %}
+               {% endfor %}
+               {% comment %} <div class="swiper-slide">
                   <div class="single-banner single-banner-1 banner-800 d-flex align-items-center pos-rel">
                      <div class="banner-bg banner-bg1 banner-bg1-1" data-background="{% static 'assets/img/banner/banner-1-2.jpg' %}">
                      </div>
@@ -222,7 +226,7 @@
                         </div>
                      </div>
                   </div>
-               </div>
+               </div> {% endcomment %}
             </div>
             <!-- If we need navigation buttons -->
             <div class="slider-nav d-none">
@@ -239,66 +243,83 @@
       <div class="category-banner-area pt-30">
          <div class="container">
             <div class="row">
-               <div class="col-xl-4 col-lg-6 col-md-6">
-                  <div class="category-banner-single mb-30 pos-rel">
-                     <div class="category-banner-img">
-                        <img src="{% static 'assets/img/category_banner/category-banner1.jpg' %}" alt="banner-img">
-                     </div>
-                     <div class="category-banner-inner">
-                        <div class="category-banner-content">
-                           <a href="shop.html" class="product-category">Man</a>
-                           <p class="category-short-desc">Fashion Collection - 2022</p>
-                           <a href="shop.html" class="border-btn">Shop Now</a>
+               {% for banner in Banners %}
+                  {% if banner.banner_status == 'Activate' and 'homepage' in banner.position and 'men' in banner.position %}
+                     <div class="col-xl-4 col-lg-6 col-md-6">
+                        <div class="category-banner-single mb-30 pos-rel">
+                           <div class="category-banner-img">
+                              <img src="/media/{{banner.banner_images}}" alt="banner-img" height="600px" width="510px">
+                           </div>
+                           <div class="category-banner-inner">
+                              <div class="category-banner-content">
+                                 <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                 <p class="category-short-desc">{{banner.banner_desc.html|safe}}</p>
+                                 <a href="shop.html" class="border-btn">Shop Now</a>
+                              </div>
+                           </div>
                         </div>
                      </div>
-                  </div>
-               </div>
-               <div class="col-xl-4 col-lg-6 col-md-6 order-xl-3">
-                  <div class="category-banner-single mb-30 pos-rel">
-                     <div class="category-banner-img">
-                        <img src="{% static 'assets/img/category_banner/category-banner4.jpg' %}" alt="banner-img">
-                     </div>
-                     <div class="category-banner-inner">
-                        <div class="category-banner-content">
-                           <a href="shop.html" class="product-category">Women</a>
-                           <p class="category-short-desc">Winter Collection - 2022</p>
-                           <a href="shop.html" class="border-btn">Shop Now</a>
+                  {% endif %}
+               {% endfor %}
+               {% for banner in Banners %}
+                  {% if banner.banner_status == 'Activate' and 'homepage' in banner.position and 'women' in banner.position %}
+                     <div class="col-xl-4 col-lg-6 col-md-6 order-xl-3">
+                        <div class="category-banner-single mb-30 pos-rel">
+                           <div class="category-banner-img">
+                              <img src="/media/{{banner.banner_images}}" alt="banner-img"  height="600px" width="510px">
+                           </div>
+                           <div class="category-banner-inner">
+                              <div class="category-banner-content">
+                                 <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                 <p class="category-short-desc">{{banner.banner_desc.html|safe}}</p>
+                                 <a href="shop.html" class="border-btn">Shop Now</a>
+                              </div>
+                           </div>
                         </div>
                      </div>
-                  </div>
-               </div>
+                  {% endif %}
+               {% endfor %}
                <div class="col-xl-4 order-xl-2">
                   <div class="row">
+                     {% for banner in Banners %}
+                     {% if banner.banner_status == 'Activate' and 'homepage' in banner.position and 'kids' in banner.position %}
                      <div class="col-xl-12 col-lg-6 col-md-6">
                         <div class="category-banner-single mb-30 pos-rel">
                            <div class="category-banner-img">
-                              <img src="{% static 'assets/img/category_banner/category-banner2.jpg' %}" alt="banner-img">
+                              <img src="/media/{{banner.banner_images}}" alt="banner-img"  height="290px" width="510px">
                            </div>
                            <div class="category-banner-inner align-items-end">
                               <div class="category-banner-content">
-                                 <a href="shop.html" class="product-category">Kids Collection</a>
-                                 <p class="category-short-desc">Trending - 2022</p>
+                                 <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                 <p class="category-short-desc">{{banner.banner_desc.html|safe}}</p>
                                  <a href="shop.html" class="border-btn">Shop Now</a>
                               </div>
                            </div>
                         </div>
                      </div>
+                     {% endif %}
+                     {% endfor %}
+                     {% for banner in Banners %}
+                     {% if banner.banner_status == 'Activate' and 'homepage' in banner.position and 'cosmetics' in banner.position %}
                      <div class="col-xl-12 col-lg-6 col-md-6">
                         <div class="category-banner-single mb-30 pos-rel">
                            <div class="category-banner-img">
-                              <img src="{% static 'assets/img/category_banner/category-banner3.jpg' %}" alt="banner-img">
+                              <img src="/media/{{banner.banner_images}}" alt="banner-img"  height="290px" width="510px">
                            </div>
-                           <div class="category-banner-inner justify-content-end">
+                           <div class="category-banner-inner align-items-end">
                               <div class="category-banner-content">
-                                 <a href="shop.html" class="product-category">Cosmetics</a>
-                                 <p class="category-short-desc">Fashion Collection - 2022</p>
+                                 <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                 <p class="category-short-desc">{{banner.banner_desc.html|safe}}</p>
                                  <a href="shop.html" class="border-btn">Shop Now</a>
                               </div>
                            </div>
                         </div>
                      </div>
+                     {% endif %}
+                     {% endfor %}
                   </div>
                </div>
+               
             </div>
          </div>
       </div>
@@ -2272,81 +2293,25 @@
             <div class="row">
                <div class="col-xl-12">
                   <div class="product-category-wrapper">
-                     <div class="product-category-single pos-rel">
-                        <div class="product-category-img">
-                           <a href="shop.html"><img src="{% static 'assets/img/product_category/product-cat-1.jpg' %}"
-                                 alt="product-img"></a>
-                        </div>
-                        <div class="product-category-inner">
-                           <div class="product-category-content">
-                              <a href="shop.html" class="product-category">Shirt & Jeans</a>
-                              <div class="product-meta-item">
-                                 <div class="product-available">45</div>
-                                 <div class="product-meta-type">products</div>
+                     {% for banner in Banners %}
+                        {% if banner.banner_status == 'Activate' and 'homepage' in banner.position and 'browse-more' in banner.position and 'bottom' in banner.position %}
+                           <div class="product-category-single pos-rel">
+                              <div class="product-category-img">
+                                 <a href="shop.html"><img src="/media/{{banner.banner_images}}"
+                                       alt="product-img"></a>
+                              </div>
+                              <div class="product-category-inner">
+                                 <div class="product-category-content">
+                                    <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                    <div class="product-meta-item">
+                                       <div class="product-available">{{banner.products_available}}</div>
+                                       <div class="product-meta-type">products</div>
+                                    </div>
+                                 </div>
                               </div>
                            </div>
-                        </div>
-                     </div>
-                     <div class="product-category-single pos-rel">
-                        <div class="product-category-img">
-                           <a href="shop.html"><img src="{% static 'assets/img/product_category/product-cat-2.jpg' %}"
-                                 alt="product-img"></a>
-                        </div>
-                        <div class="product-category-inner">
-                           <div class="product-category-content">
-                              <a href="shop.html" class="product-category">Cosmetics</a>
-                              <div class="product-meta-item">
-                                 <div class="product-available">26</div>
-                                 <div class="product-meta-type">products</div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="product-category-single pos-rel">
-                        <div class="product-category-img">
-                           <a href="shop.html"><img src="{% static 'assets/img/product_category/product-cat-3.jpg' %}"
-                                 alt="product-img"></a>
-                        </div>
-                        <div class="product-category-inner">
-                           <div class="product-category-content">
-                              <a href="shop.html" class="product-category">Coat & Jacket</a>
-                              <div class="product-meta-item">
-                                 <div class="product-available">36</div>
-                                 <div class="product-meta-type">products</div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="product-category-single pos-rel">
-                        <div class="product-category-img">
-                           <a href="shop.html"><img src="{% static 'assets/img/product_category/product-cat-4.jpg' %}"
-                                 alt="product-img"></a>
-                        </div>
-                        <div class="product-category-inner">
-                           <div class="product-category-content">
-                              <a href="shop.html" class="product-category">Shoes</a>
-                              <div class="product-meta-item">
-                                 <div class="product-available">38</div>
-                                 <div class="product-meta-type">products</div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="product-category-single pos-rel">
-                        <div class="product-category-img">
-                           <a href="shop.html"><img src="{% static 'assets/img/product_category/product-cat-5.jpg' %}"
-                                 alt="product-img"></a>
-                        </div>
-                        <div class="product-category-inner">
-                           <div class="product-category-content">
-                              <a href="shop.html" class="product-category">Underwear</a>
-                              <div class="product-meta-item">
-                                 <div class="product-available">32</div>
-                                 <div class="product-meta-type">products</div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
+                        {% endif %}
+                     {% endfor %}
                   </div>
                </div>
             </div>

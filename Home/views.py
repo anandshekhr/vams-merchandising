@@ -1,10 +1,14 @@
 from django.shortcuts import render
+from products.models import *
 
 # Create your views here.
 
 
 def home(request):
-    return render(request, 'index.html')
+    banners = Banners.objects.all()
+    products = Products.objects.all()
+    context = {'Banners': banners, 'Products': products}
+    return render(request, 'index.html', context)
 
 
 def err_500(request):
