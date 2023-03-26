@@ -7,7 +7,9 @@ from products.models import *
 def home(request):
     banners = Banners.objects.all()
     products = Products.objects.all()
-    context = {'Banners': banners, 'Products': products}
+    product_images = ProductImages.objects.all()
+    context = {'Banners': banners, 'Products': products,
+               'pr_images': product_images}
     return render(request, 'index.html', context)
 
 

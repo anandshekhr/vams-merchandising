@@ -13,8 +13,8 @@ load_dotenv()
 
 user = get_user_model()
 
-CATEGORIES = (('Deal of the day', 'Deal of the day'), ('Best Products', 'Best Products'), ('Trend Products', 'Trend Products'), ('Featured Products', 'Featured Products'), ('Biscuits & Snacks', 'Biscuits & Snacks'), ('Bread & Bakery', 'Bread & Bakery'), ('Breakfast & Dairy', 'Breakfast & Dairy'), ('Frozen Foods', 'Frozen Foods'), ('Fruits & Vegetables',
-                                                                                                                                                                                                                                                                                                                                             'Fruits & Vegetables'), ('Grocery & Staples', 'Grocery & Staples'), ('Household Needs', 'Household Needs'), ('Meats & Seafood', 'Meats & Seafood'), ('Eggs Substitutes', 'Eggs Substitutes'), ('Honey Vegetables', 'Honey Vegetables'), ('Marmalades Staples', 'Marmalades Staples'), ('Sour Cream and Dips', 'Sour Cream and Dips'), ('Yogurt Seafood', 'Yogurt Seafood'),)
+CATEGORIES = (('Deal of the day', 'Deal of the day'), ('best-seller', 'Best Seller'), ('Trend Products', 'Trend Products'), ('Featured Products', 'Featured Products'), ('Biscuits & Snacks', 'Biscuits & Snacks'), ('Bread & Bakery', 'Bread & Bakery'), ('Breakfast & Dairy', 'Breakfast & Dairy'), ('Frozen Foods', 'Frozen Foods'), ('Fruits & Vegetables',
+                                                                                                                                                                                                                                                                                                                                         'Fruits & Vegetables'), ('Grocery & Staples', 'Grocery & Staples'), ('Household Needs', 'Household Needs'), ('Meats & Seafood', 'Meats & Seafood'), ('Eggs Substitutes', 'Eggs Substitutes'), ('Honey Vegetables', 'Honey Vegetables'), ('Marmalades Staples', 'Marmalades Staples'), ('Sour Cream and Dips', 'Sour Cream and Dips'), ('Yogurt Seafood', 'Yogurt Seafood'),)
 TAGS = (('Vegetarian', 'Vegetarian'), ('Non-Vegetarian',
                                        'Non-Vegetarian'), ('Organic', 'Organic'),)
 
@@ -62,6 +62,7 @@ class Products(models.Model):
     stock = models.IntegerField(
         _("available stock (in Nos.)"), default=0)
     display_home = models.BooleanField(_("Display at home"), default=False)
+    new_arrival = models.BooleanField(_("New"), default=False)
     average_rating = models.DecimalField(
         max_digits=2, decimal_places=1, null=True, blank=True)
     status = models.BooleanField(_("Product Status"), default=True)
@@ -95,9 +96,37 @@ class Products(models.Model):
     def left(self):
         return self.stock - self.sold
 
+    def pr_images(self):
+        images = []
+        for img in self.more_images.all():
+            print(img)
+            images.append(img)
+        return images
+
     class Meta:
         db_table = "Products"
         verbose_name_plural = 'Products'
+
+
+class ProductImages(models.Model):
+    product = models.ForeignKey(
+        "products", related_name="prodImages", on_delete=models.CASCADE, null=False, blank=False, default="")
+
+    images = models.ImageField(_("Product_Image"), upload_to="product/media/photos/%Y/%m/%d",
+                               height_field=None, width_field=None, max_length=None)
+
+    image_thumbnail = models.ImageField(
+        _("Product Image Thumbnail"), upload_to="product/media/photos/%Y/%m/%d/thumbnails", height_field=None, width_field=None, max_length=None, blank=True, null=True)
+
+    image_thumbnail_color = models.CharField(
+        _("Product Thumbnail Color"), max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return "Image URL: {}".format(self.images)
+
+    class Meta:
+        db_table = "ProductImages"
+        verbose_name_plural = 'ProductImages'
 
 
 class ProductReviewAndRatings(models.Model):
@@ -123,20 +152,6 @@ class ProductReviewAndRatings(models.Model):
     class Meta:
         db_table = "ProductReviewAndRatings"
         verbose_name_plural = 'ProductReviewAndRatings'
-
-
-class ProductImages(models.Model):
-    product = models.ForeignKey(
-        "products", related_name="prodImages", on_delete=models.CASCADE, null=False, blank=False, default="")
-    images = models.ImageField(_("Product_Image"), upload_to="product/media/photos/%Y/%m/%d",
-                               height_field=None, width_field=None, max_length=None)
-
-    def __str__(self):
-        return "Image URL: {}".format(self.images)
-
-    class Meta:
-        db_table = "ProductImages"
-        verbose_name_plural = 'ProductImages'
 
 
 class Categories(models.Model):  # ----Catagory Details----#
