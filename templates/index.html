@@ -362,7 +362,7 @@
                               {% if 'best-seller' in product.category %}
                                  <div class="single-product">
                                     <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                       <a href="{% url 'productdetail' pk=product.id category_name='best-seller' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
                                        <div class="product-action">
                                           <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                           <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
@@ -402,7 +402,7 @@
                               {% if 'hot-collection' in product.category %}
                                  <div class="single-product">
                                     <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                       <a href="{% url 'productdetail' pk=product.id category_name='hot-collection' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
                                        <div class="product-action">
                                           <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                           <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
@@ -442,7 +442,7 @@
                               {% if 'trending' in product.category %}
                                  <div class="single-product">
                                     <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                       <a href="{% url 'productdetail' pk=product.id category_name='trending' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
                                        <div class="product-action">
                                           <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                           <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
@@ -482,7 +482,7 @@
                               {% if 'new-arrival' in product.category %}
                                  <div class="single-product">
                                     <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                       <a href="{% url 'productdetail' pk=product.id category_name='new-arrival' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
                                        <div class="product-action">
                                           <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                           <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
