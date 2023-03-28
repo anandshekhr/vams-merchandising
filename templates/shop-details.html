@@ -5,7 +5,7 @@
 <!-- Add your site or application content here -->
    <main>
 
-
+{% comment %} 
       <!-- side toggle start -->
       <div class="fix">
          <div class="side-info">
@@ -147,10 +147,10 @@
             </div>
          </div>
       </div>
-      <!-- side toggle end -->
+      <!-- side toggle end --> {% endcomment %}
 
       <!-- page title area start  -->
-      <section class="page-title-area" data-background="assets/img/bg/page-title-bg.jpg">
+      <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
          <div class="container">
             <div class="row">
                <div class="col-lg-12">
@@ -159,8 +159,8 @@
                      <div class="breadcrumb-menu">
                         <nav aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs">
                            <ul class="trail-items">
-                              <li class="trail-item trail-begin"><a href="index.html"><span>Home</span></a></li>
-                              <li class="trail-item trail-end"><span>Felted Shirt for Man</span></li>
+                              <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span>Home</span></a></li>
+                              <li class="trail-item trail-end"><span>{{product.name}}</span></li>
                            </ul>
                         </nav>
                      </div>
@@ -181,13 +181,13 @@
                         <div class="tab-content" id="productDetailsTab">
                            <div class="tab-pane fade active show" id="pro-1" role="tabpanel"
                               aria-labelledby="pro-1-tab">
-                              <img class="active" src="assets/img/shirt/3/1.jpg" alt="...">
+                              <img class="active" src="/media/{{image1.images}}" alt="...">
                            </div>
                            <div class="tab-pane fade" id="pro-2" role="tabpanel" aria-labelledby="pro-2-tab">
-                              <img class="active" src="assets/img/shirt/3/5.jpg" alt="...">
+                              <img class="active" src="/media/{{image2.images}}" alt="...">
                            </div>
                            <div class="tab-pane fade" id="pro-3" role="tabpanel" aria-labelledby="pro-3-tab">
-                              <img class="active" src="assets/img/shirt/3/9.jpg" alt="...">
+                              <img class="active" src="/media/{{image3.images}}" alt="...">
                            </div>
                         </div>
                      </div>
@@ -197,19 +197,19 @@
                               <button class="nav-link active" id="pro-1-tab" data-bs-toggle="tab"
                                  data-bs-target="#pro-1" type="button" role="tab" aria-controls="pro-1"
                                  aria-selected="false">
-                                 <img src="assets/img/shirt/3/1.jpg" alt="...">
+                                 <img src="/media/{{image1.images}}" alt="...">
                               </button>
                            </li>
                            <li class="nav-item" role="presentation">
                               <button class="nav-link" id="pro-2-tab" data-bs-toggle="tab" data-bs-target="#pro-2"
                                  type="button" role="tab" aria-controls="pro-2" aria-selected="true">
-                                 <img src="assets/img/shirt/3/5.jpg" alt="...">
+                                 <img src="/media/{{image2.images}}" alt="...">
                               </button>
                            </li>
                            <li class="nav-item" role="presentation">
                               <button class="nav-link" id="pro-3-tab" data-bs-toggle="tab" data-bs-target="#pro-3"
                                  type="button" role="tab" aria-controls="pro-3" aria-selected="false">
-                                 <img src="assets/img/shirt/3/9.jpg" alt="...">
+                                 <img src="/media/{{image3.images}}" alt="...">
                               </button>
                            </li>
                         </ul>
@@ -219,14 +219,10 @@
                </div>
                <div class="col-lg-6">
                   <div class="product-side-info mb-30">
-                     <h4 class="product-name mb-10">Felted Shirt for Man</h4>
-                     <span class="product-price">$24.00</span>
+                     <h4 class="product-name mb-10">{{product.name}}</h4>
+                     <span class="product-price">${{product.list_price|floatformat:2}}</span>
 
-                     <p class="mb-30">Matent maecenas nec massa viverra aci ute litora aliquam habitant proin commodo
-                        bibendum rutru
-                        habitant est magnis
-                        quisque aliquet congue vesti bulum suscipi erose tellus odio elite purus feugiat prim libero
-                        senes nisie gravia</p>
+                     <p class="mb-30">{{product.desc.html|safe}}</p>
                      <div class="available-sizes">
                         <span>Available Sizes : </span>
                         <div class="product-available-sizes">
@@ -256,7 +252,7 @@
                   </div>
                </div>
             </div>
-
+            <!--reviews-->
             <div class="product_info-faq-area pb-0">
                <div class="">
                   <nav class="product-details-nav">
