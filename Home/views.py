@@ -15,3 +15,6 @@ def home(request):
 
 def err_500(request):
     return render(request, '500.html')
+
+def aboutUs(request):
+    return render(request,'about.html')

@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     path('',views.home,name="home"),
+    path('about',views.aboutUs,name="about-us"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

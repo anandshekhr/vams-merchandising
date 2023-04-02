@@ -3701,7 +3701,7 @@ div.tagcloud a:hover {
     10. page-title CSS
 ----------------------------------------*/
 .page-title-area {
-  height: 400px;
+  height: 200px;
   display: flex;
   align-items: center;
   background-size: cover;

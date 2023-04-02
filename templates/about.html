@@ -4,7 +4,7 @@
 {% block body %}
  <!-- Add your site or application content here -->
    <main>
-      <!-- side toggle start -->
+      {% comment %} <!-- side toggle start -->
       <div class="fix">
          <div class="side-info">
             <div class="side-info-content">
@@ -61,7 +61,7 @@
                      <div class="product-name"><a href="shop-details.html">Felted Shirt for Man</a></div>
                      <div class="product-pricing">
                         <span class="item-number">1 &times;</span>
-                        <span class="price-now">$24.00</span>
+                        <span class="price-now">₹24.00</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -74,7 +74,7 @@
                      <div class="product-name"><a href="shop-details.html">Denim Jeans Pant</a></div>
                      <div class="product-pricing">
                         <span class="item-number">1 &times;</span>
-                        <span class="price-now">$12.00</span>
+                        <span class="price-now">₹12.00</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -87,7 +87,7 @@
                      <div class="product-name"><a href="shop-details.html">Denim Official Jacket</a></div>
                      <div class="product-pricing">
                         <span class="item-number">1 &times;</span>
-                        <span class="price-now">$42.00</span>
+                        <span class="price-now">₹42.00</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -96,7 +96,7 @@
             </div>
             <div class="product-price-total">
                <span>Subtotal :</span>
-               <span class="subtotal-price">$78.00</span>
+               <span class="subtotal-price">₹78.00</span>
             </div>
             <div class="sidebar-action-btn">
                <a href="cart.html" class="fill-btn">View cart</a>
@@ -116,7 +116,7 @@
                   <div class="product-desc">
                      <div class="product-name"><a href="shop-details.html">Women's Faux-Trim Shirt</a></div>
                      <div class="product-pricing">
-                        <span class="price-now">$20.00</span>
+                        <span class="price-now">₹20.00</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -128,7 +128,7 @@
                   <div class="product-desc">
                      <div class="product-name"><a href="shop-details.html">Skinny Jeans Pant</a></div>
                      <div class="product-pricing">
-                        <span class="price-now">$24.00</span>
+                        <span class="price-now">₹24.00</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -137,7 +137,7 @@
             </div>
             <div class="product-price-total">
                <span>Subtotal :</span>
-               <span class="subtotal-price">$44.00</span>
+               <span class="subtotal-price">₹44.00</span>
             </div>
             <div class="sidebar-action-btn">
                <a href="cart.html" class="fill-btn">View cart</a>
@@ -145,7 +145,7 @@
             </div>
          </div>
       </div>
-      <!-- side toggle end -->
+      <!-- side toggle end --> {% endcomment %}
 
       <!-- page title area start  -->
       <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
@@ -157,7 +157,7 @@
                      <div class="breadcrumb-menu">
                         <nav aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs">
                            <ul class="trail-items">
-                              <li class="trail-item trail-begin"><a href="index.html"><span>Home</span></a></li>
+                              <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span>Home</span></a></li>
                               <li class="trail-item trail-end"><span>About</span></li>
                            </ul>
                         </nav>
@@ -270,7 +270,7 @@
                         </div>
                         <div class="irc-item-content">
                            <div class="irc-item-heading">Free Shipping</div>
-                           <p>On All Order Over $599</p>
+                           <p>On All Order Over ₹599</p>
                         </div>
                      </div>
                   </div>

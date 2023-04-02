@@ -43,7 +43,7 @@
             <div class="row align-items-center">
                <div class="col-xl-6 col-lg-6 col-md-6">
                   <div class="header-top-link">
-                     <a href="{% url 'about-vams' %}" class="text-btn">About Us</a>
+                     <a href="{% url 'about-us' %}" class="text-btn">About Us</a>
                      <a href="{% url 'login-user' %}" class="text-btn">My account</a>
                   </div>
                </div>
@@ -75,8 +75,8 @@
                   <div class="header-main-content-wrapper">
                      <div class="header-main-left header-main-left-header1">
                         <div class="header-logo header1-logo">
-                           <a href="index.html" class="logo-bl"><img src="{% static 'assets/img/logo/logo-bl-p.png' %}"
-                                 alt="logo-img"></a>
+                           <a href="index.html" class="px-3 logo-bl"><img src="{% static 'assets/img/logo/My project-1.png' %}"
+                                 alt="logo-img" height="60px"></a>
                         </div>
                         <div class="main-menu main-menu2 d-none d-lg-block">
                            <nav id="mobile-menu">
@@ -108,7 +108,7 @@
                                  </li>
                                  <li class="menu-item-has-children"><a href="#">Pages</a>
                                     <ul class="sub-menu">
-                                       <li><a href="about.html">About</a></li>
+                                       <li><a href="{% url 'about-us' %}">About</a></li>
                                        <li><a href="register.html">Register</a></li>
                                        <li><a href="login.html">Login</a></li>
                                        <li><a href="faq.html">FAQ</a></li>
@@ -132,7 +132,7 @@
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-shopping-bag"></i>
                                  <span class="action-item-number">{{cart.items|length}}</span></a>
-                              <a href="#" class="cart-items-price">${{cart.get_total|floatformat:2}}</a>
+                              <a href="#" class="cart-items-price">₹{{cart.get_total|floatformat:2}}</a>
                            </div>
                            <div class="action-item action-item-wishlist">
                               <a href="javascript:void(0)" class="view-wishlist-button">
@@ -321,7 +321,7 @@
                      <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">{{cart_items.item.name}}</a></div>
                      <div class="product-pricing">
                         <span class="item-number">{{cart_item.quantity}} &times;</span>
-                        <span class="price-now">${{cart_item.amount_after_applying_discount|floatformat:2}}</span>
+                        <span class="price-now">₹{{cart_item.amount_after_applying_discount|floatformat:2}}</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -330,7 +330,7 @@
             </div>
             <div class="product-price-total">
                <span>Subtotal :</span>
-               <span class="subtotal-price">${{cart_items.get_total|floatformat:2}}</span>
+               <span class="subtotal-price">₹{{cart_items.get_total|floatformat:2}}</span>
             </div>
             <div class="sidebar-action-btn">
                <a href="cart.html" class="fill-btn">View cart</a>
@@ -350,7 +350,7 @@
                   <div class="product-desc">
                      <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Women's Faux-Trim Shirt</a></div>
                      <div class="product-pricing">
-                        <span class="price-now">$20.00</span>
+                        <span class="price-now">₹20.00</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -362,7 +362,7 @@
                   <div class="product-desc">
                      <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Skinny Jeans Pant</a></div>
                      <div class="product-pricing">
-                        <span class="price-now">$24.00</span>
+                        <span class="price-now">₹24.00</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -371,7 +371,7 @@
             </div>
             <div class="product-price-total">
                <span>Subtotal :</span>
-               <span class="subtotal-price">$44.00</span>
+               <span class="subtotal-price">₹44.00</span>
             </div>
             <div class="sidebar-action-btn">
                <a href="cart.html" class="fill-btn">View cart</a>
@@ -395,7 +395,7 @@
                         <h4>Information</h4>
                      </div>
                      <ul>
-                        <li><a href="{% url 'about-vams' %}">About Company</a></li>
+                        <li><a href="{% url 'about-us' %}">About Company</a></li>
                         <li><a href="#">Payment Type</a></li>
                         <li><a href="#">Awards Winning</a></li>
                         <li><a href="#">World Media Partner</a></li>
