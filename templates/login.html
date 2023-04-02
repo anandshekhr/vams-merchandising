@@ -4,7 +4,19 @@
 {% block body %}
 <!-- Add your site or application content here -->
 <main>
-   <!-- side toggle start -->
+   {% if messages %}
+      {% for message in messages %}
+         <div class="alert alert-{{ message.tags }} auto-dismiss">
+               {{ message }}
+         </div>
+      {% endfor %}
+      <script>
+         setTimeout(function() {
+               $('.auto-dismiss').fadeOut('slow');
+         }, 3000);
+      </script> 
+   {% endif %}
+   {% comment %} <!-- side toggle start -->
    <div class="fix">
       <div class="side-info">
          <div class="side-info-content">
@@ -145,7 +157,7 @@
          </div>
       </div>
    </div>
-   <!-- side toggle end -->
+   <!-- side toggle end --> {% endcomment %}
 
    <!-- page title area start  -->
    <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
@@ -157,7 +169,7 @@
                   <div class="breadcrumb-menu">
                      <nav aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs">
                         <ul class="trail-items">
-                           <li class="trail-item trail-begin"><a href="index.html"><span>Home</span></a></li>
+                           <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span>Home</span></a></li>
                            <li class="trail-item trail-end"><span>Login</span></li>
                         </ul>
                      </nav>
@@ -175,21 +187,23 @@
          <div class="row justify-content-center">
             <div class="col-lg-8">
                <div class="signup-form-wrapper">
-                  <div class="signup-wrapper">
-                     <input type="text" placeholder="Email or Username">
-                  </div>
-                  <div class="signup-wrapper">
-                     <input type="text" placeholder="Password">
-                  </div>
-                  <div class="signup-action">
-                     <div class="course-sidebar-list">
-                        <input class="signup-checkbo" type="checkbox" id="sing-in">
-                        <label class="sign-check" for="sing-in"><span>Remember me</span></label>
+                  <form method="post" action="{% url 'login-user' %}">{% csrf_token %}
+                     <div class="signup-wrapper">
+                        <input type="text" name="phone_number" id="phone_number" placeholder="Enter Your Phone Number">
                      </div>
-                  </div>
-                  <div class="sing-buttom mb-20">
-                     <button class="sing-btn">Login now</button>
-                  </div>
+                     <div class="signup-wrapper">
+                        <input type="text" name="password" id="password" placeholder="Password">
+                     </div>
+                     <div class="signup-action">
+                        <div class="course-sidebar-list">
+                           <input class="signup-checkbo" type="checkbox" id="sing-in">
+                           <label class="sign-check" for="sing-in"><span>Remember me</span></label>
+                        </div>
+                     </div>
+                     <div class="sing-buttom mb-20">
+                        <button class="sing-btn">Login now</button>
+                     </div>
+                  </form>
                   <div class="registered wrapper">
                      <div class="not-register">
                         <span>Not registered?</span><span><a href="{% url 'register-user' %}">Sign up</a></span>

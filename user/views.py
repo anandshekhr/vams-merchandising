@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib import auth
+from django.contrib import auth,messages
 from .serializers import UpdateUserSerializer
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
@@ -26,38 +26,52 @@ User = get_user_model()
 
 def register(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password1 = request.POST['password']
-        password2 = request.POST['password2']
-
-        if password1 == password2:
-            if User.objects.filter(username=username).exists():
-                print('Username exists! try another username...')
-                return redirect('register')
+        phone_number = request.POST.get('phone_number')
+        email = request.POST.get('email')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password1')
+        confirm_password = request.POST.get('password2')
+        sign_up = request.POST.get('sing-up')
+        
+        if password == confirm_password:
+            if User.objects.filter(mobileno=phone_number).exists():
+                messages.info(request,"mobile number already exist")
+                return redirect('register-user')
+            elif sign_up is None:
+                messages.info(request,"Please accept Terms & Conditions")
+                return redirect('register-user')
             else:
                 if User.objects.filter(email=email).exists():
-                    print('Email is already taken! try another one')
-                    return redirect('register')
+                    messages.info(request,"Email already exists")
+                    return redirect('register-user')
                 else:
                     user = User.objects.create_user(
-                        username=username, email=email, password=password1)
+                        first_name=first_name,last_name=last_name,mobile=phone_number, email=email, password=password)
                     user.save()
-                    return redirect('login')
+                    messages.success(request,"Account Registered, Please Login Again!")
+                    return redirect('login-user')
         else:
-            print('Password did not matched!..')
-            return redirect('register')
+            messages.info(request,"Password didn;t matched!")
+            return redirect('register-user')
     else:
         return render(request, 'register.html')
 
 
 def login(request):
     if request.method == 'POST':
-        username = request.POST.get('mobileno')
-        print("USERTNAME: ", username)
+        mobileno = request.POST.get('phone_number')
         password = request.POST.get('password')
-    return render(request, 'login.html')
 
+        user = auth.authenticate(mobileno=mobileno, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return redirect('home')
+        else:
+            return redirect('login-user')
+    else:
+        return render(request, 'login.html') 
 
 def logout(request):
     # if request.method == 'POST':

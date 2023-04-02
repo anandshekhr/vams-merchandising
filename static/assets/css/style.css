@@ -6421,3 +6421,24 @@ html .ui-button.ui-state-disabled:active {
 }
 
 /*# sourceMappingURL=style.css.map */
+.messages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+.has-error .form-field {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+}
