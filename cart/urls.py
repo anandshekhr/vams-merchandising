@@ -14,6 +14,7 @@ urlpatterns = [
     path("removesingleitemfromcart/<int:pk>",removeSingleItemFromCart,name="removesingleitemfromcart"),
     path("payment/checkout/<float:amount>",orderPaymentRequest,name="paymentcheckout"),
     path("paymentstatusupdate",paymentStatusAndOrderStatusUpdate,name="paymentstatusupdate"),
+    path("cart/delete/item/<int:pk>",deleteItemFromCart,name="delete-from-cart"),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

@@ -81,14 +81,14 @@
                         <div class="main-menu main-menu2 d-none d-lg-block">
                            <nav id="mobile-menu">
                               <ul>
-                                 <li class="menu-item-has-children"><a href="index.html">Home</a>
-                                    <ul class="sub-menu">
+                                 <li><a href="{% url 'home' %}">Home</a>
+                                    {% comment %} <ul class="sub-menu">
                                        <li><a href="index.html">Home Style 01</a></li>
                                        <li><a href="index-2.html">Home Style 02</a></li>
                                        <li><a href="index-3.html">Home Style 03</a></li>
-                                    </ul>
+                                    </ul> {% endcomment %}
                                  </li>
-                                 <li class="menu-item-has-children"><a href="shop.html">Shop</a>
+                                 {% comment %} <li class="menu-item-has-children"><a href="shop.html">Shop</a>
                                     <ul class="sub-menu">
                                        <li class="menu-item-has-children"><a href="shop.html">Shop</a>
                                           <ul class="sub-menu">
@@ -120,8 +120,8 @@
                                        <li><a href="blog.html">Blog</a></li>
                                        <li><a href="blog-details.html">Blog Details</a></li>
                                     </ul>
-                                 </li>
-                                 <li><a href="contact.html">Contact</a></li>
+                                 </li> {% endcomment %}
+                                 {% comment %} <li><a href="contact.html">Contact</a></li> {% endcomment %}
                               </ul>
                            </nav>
                         </div>
@@ -131,30 +131,28 @@
                            <div class="action-item action-item-cart">
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-shopping-bag"></i>
-                                 <span class="action-item-number">{{cart.items|length}}</span></a>
+                                 <span class="action-item-number">{{cart.get_quantity}}</span></a>
                               <a href="#" class="cart-items-price">₹{{cart.get_total|floatformat:2}}</a>
                            </div>
                            <div class="action-item action-item-wishlist">
                               <a href="javascript:void(0)" class="view-wishlist-button">
                                  <i class="fal fa-heart"></i>
-                                 <span class="action-item-number">2</span></a>
+                                 <span class="action-item-number">{{wishlist.get_quantity}}</span></a>
                            </div>
                            <div class="user-btn">
                               {% if request.user.is_authenticated %}
                               <a href="{% url 'login-user' %}">
                                  <div class="user-icon">
                                     <i class="flaticon-avatar"></i>
-
                                  </div>
                                  <span><span>Sign in</span>Account</span>
                               </a>
                               {% else %}
-                              <a href="">
+                              <a href="{% url 'logout' %}">
                                  <div class="user-icon">
                                     <i class="flaticon-avatar"></i>
-
                                  </div>
-                                 <span><span>Sign in</span>Account</span>
+                                 <span><span>Sign out</span>Account</span>
                               </a>
                               {% endif %}
                            </div>
@@ -285,12 +283,12 @@
                         <div class="action-item action-item-cart">
                            <a href="javascript:void(0)" class="view-cart-button">
                               <i class="fal fa-shopping-bag"></i>
-                              <span class="action-item-number">3</span></a>
+                              <span class="action-item-number">5</span></a>
                         </div>
                         <div class="action-item action-item-wishlist">
                            <a href="javascript:void(0)" class="view-wishlist-button">
                               <i class="fal fa-heart"></i>
-                              <span class="action-item-number">2</span></a>
+                              <span class="action-item-number">5</span></a>
                         </div>
                      </div>
                   </div>
@@ -312,16 +310,16 @@
             <button class="close-sidebar">Close<i class="fal fa-times"></i></button>
             <h4 class="sidebar-action-title">Shopping Cart</h4>
             <div class="sidebar-action-list">
-               {% for cart_items in cart.items.items %}
+               {% for cart_items in cart.items.all %}
                <div class="sidebar-list-item">
                   <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="/media/{{cart_items.item.image}}" alt="img"></a>
+                     <a href="{% url 'productdetail' pk=cart_items.item.id %}" class=""><img src="/media/{{cart_items.item.image}}" alt="img"></a>
                   </div>
                   <div class="product-desc">
-                     <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">{{cart_items.item.name}}</a></div>
+                     <div class="product-name"><a href="{% url 'productdetail' pk=cart_items.item.id %}">{{cart_items.item.name}}</a></div>
                      <div class="product-pricing">
-                        <span class="item-number">{{cart_item.quantity}} &times;</span>
-                        <span class="price-now">₹{{cart_item.amount_after_applying_discount|floatformat:2}}</span>
+                        <span class="item-number">{{cart_items.quantity}} &times;</span>
+                        <span class="price-now">₹{{cart_items.get_final_price|floatformat:2}}</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
@@ -330,10 +328,10 @@
             </div>
             <div class="product-price-total">
                <span>Subtotal :</span>
-               <span class="subtotal-price">₹{{cart_items.get_total|floatformat:2}}</span>
+               <span class="subtotal-price">₹{{cart.get_total|floatformat:2}}</span>
             </div>
             <div class="sidebar-action-btn">
-               <a href="cart.html" class="fill-btn">View cart</a>
+               <a href="{% url 'cartview' %}" class="fill-btn">View cart</a>
                <a href="checkout.html" class="border-btn">Checkout</a>
             </div>
          </div>
@@ -343,39 +341,28 @@
             <button class="close-sidebar">Close<i class="fal fa-times"></i></button>
             <h4 class="sidebar-action-title">Wishlist</h4>
             <div class="sidebar-action-list">
+               {% for item in wishlist.items.all %}
                <div class="sidebar-list-item">
                   <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="{% static 'assets/img/shirt/1/1.jpg' %}" alt="img"></a>
+                     <a href="{% url 'productdetail' pk=item.item.id %}" class=""><img src="/media/{{item.item.image}}" alt="img"></a>
                   </div>
                   <div class="product-desc">
-                     <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Women's Faux-Trim Shirt</a></div>
+                     <div class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></div>
                      <div class="product-pricing">
-                        <span class="price-now">₹20.00</span>
+                        <span class="price-now">₹{{item.item.list_price|floatformat:2}}</span>
                      </div>
                      <button class="remove-item"><i class="fal fa-times"></i></button>
                   </div>
                </div>
-               <div class="sidebar-list-item">
-                  <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="{% static 'assets/img/pant/1/1.jpg' %}" alt="img"></a>
-                  </div>
-                  <div class="product-desc">
-                     <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Skinny Jeans Pant</a></div>
-                     <div class="product-pricing">
-                        <span class="price-now">₹24.00</span>
-                     </div>
-                     <button class="remove-item"><i class="fal fa-times"></i></button>
-                  </div>
-               </div>
-
+               {% endfor %}
             </div>
             <div class="product-price-total">
                <span>Subtotal :</span>
-               <span class="subtotal-price">₹44.00</span>
+               <span class="subtotal-price">₹{{wishlist.get_total|floatformat:2}}</span>
             </div>
             <div class="sidebar-action-btn">
-               <a href="cart.html" class="fill-btn">View cart</a>
-               <a href="cart.html" class="border-btn">Checkout</a>
+               <a href="{% url 'wishlist-view' %}" class="fill-btn">View Wishlist</a>
+               {% comment %} <a href="cart.html" class="border-btn">Checkout</a> {% endcomment %}
             </div>
          </div>
       </div> 
@@ -511,7 +498,7 @@
          <div class="container">
             <div class="copyright1-inner">
                <div class="copyright-text copyright1-text">
-                  Copyright by <a href="https://themeforest.net/user/bdevs/portfolio">BDevs</a>. All Rights Reserved
+                  Copyright by <a href="https://themeforest.net/user/bdevs/portfolio">VAMS-Mechatronica</a>. All Rights Reserved
                </div>
                <div class="copyright-link">
                   <a href="#" class="text-btn">Privacy Policy</a>

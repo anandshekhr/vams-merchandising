@@ -8,13 +8,13 @@ from django.contrib.postgres.fields import ArrayField
 from django_quill.fields import QuillField
 from django.db.models import Avg, Sum
 import os
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 user = get_user_model()
 
 CATEGORIES = (('new-arrival', 'New Arrival'), ('best-seller', 'Best Seller'), ('trending', 'Trend Products'),
-              ('Featured Products', 'Featured Products'), ('kids-collection', 'Kids Collection'),)
+              ('Featured Products', 'Featured Products'), ('kids-collection', 'Kids Collection'),('hot-collection','Hot Collection'))
 TAGS = (('cotton', 'Cotton'), ('synthetic',
                                'Synthetic'), ('woolen', 'Woolen'), ('polyster', 'Polyster'),)
 

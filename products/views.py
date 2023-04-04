@@ -18,6 +18,8 @@ from django.db.models import Max, Min, Count, Avg
 from django.template.loader import render_to_string
 from blogs.models import *
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
+
 
 User = get_user_model()
 
@@ -60,6 +62,13 @@ def homePage(request):
 # not using for now
 
 
+def showAllProducts(request):
+    products = get_object_or_404(Products)
+    paginator = Paginator(products,10)
+    context = {'products':products}
+    return render(request,"shop-all-items.html",context)
+
+
 def filter_by_category(request, category_id):
     category = Categories.objects.get(id=category_id)
     products = Products.objects.filter(
@@ -84,17 +93,17 @@ def seeAllProductsInCategory(request, name):
     category, created = Categories.objects.get_or_create(category_name=name)
     product = Products.objects.filter(
         category__contains=[category.category_name])
-    print("Product", product)
     context = {'products': product}
     return render(request, "shop-list-4.html", context)
 
 
-def productDetailsPageView(request, pk, category_name):
+def productDetailsPageView(request, pk):
     counter = 0
     a = 0
 
     # filter product for images, reviews and ratings
     product = Products.objects.get(pk=pk)
+    # if ProductImages.
     image1 = ProductImages.objects.filter(product=product)[0]
     image2 = ProductImages.objects.filter(product=product)[1]
     image3 = ProductImages.objects.filter(product=product)[2]
@@ -107,22 +116,22 @@ def productDetailsPageView(request, pk, category_name):
                         if rating['ratings__avg'] is not None else 0)
 
     # filter related products
-    category = Categories.objects.get(category_name=category_name)
-    related_products = Products.objects.filter(
-        category__contains=[category.category_name]).exclude(pk=pk)
-    related_product_ratings = ProductReviewAndRatings.objects.filter(
-        product__in=related_products).aggregate(Avg('ratings'))
+    # category = Categories.objects.get(category_name=category_name)
+    # related_products = Products.objects.filter(
+    #     category__contains=[category.category_name]).exclude(pk=pk)
+    # related_product_ratings = ProductReviewAndRatings.objects.filter(
+    #     product__in=related_products).aggregate(Avg('ratings'))
 
     context = {
         'product': product,
-        'image1': image1,
-        'image2': image2,
-        'image3': image3,
+        'image1': image1 or '',
+        'image2': image2 or '',
+        'image3': image3 or '',
         'rating': int(rating['ratings__avg'] or 0),
         'ratingr': [*range(int(rating['ratings__avg'] if rating['ratings__avg'] is not None else 0))],
         'nonratingr': [*range(nonrating)],
-        'related_products': related_products,
-        'rp_ratings': related_product_ratings or 0,
+        # 'related_products': related_products,
+        # 'rp_ratings': related_product_ratings or 0,
         'review': reviews,
     }
 

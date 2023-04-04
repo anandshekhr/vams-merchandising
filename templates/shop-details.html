@@ -223,14 +223,21 @@
                      <span class="product-price">₹{{product.list_price|floatformat:2}}</span>
 
                      <p class="mb-30">{{product.desc.html|safe}}</p>
-                     <div class="available-sizes">
+                     <div class="available-sizes btn-group-toggle" role="group" name="choose-size">
                         <span>Available Sizes : </span>
-                        <div class="product-available-sizes">
-                           <span>SM</span>
-                           <span>L</span>
-                           <span>Xl</span>
-                           <span>XXl</span>
-                        </div>
+                        <input type="radio" class="btn-check" name="choose-size" id="small" value="S">
+                        <label for="small" class="product-available-sizes btn btn-outline-dark ms-3">S</label>
+                        <input type="radio" class="btn-check" name="choose-size" id="medium" value="M">
+                        <label for="medium" class="product-available-sizes btn btn-outline-dark ms-3">M</label>
+                        <input type="radio" class="btn-check" name="choose-size" id="large" value="L">
+                        <label for="large" class="product-available-sizes btn btn-outline-dark ms-3">L</label>
+                        <input type="radio" class="btn-check" name="choose-size" id="x-Large" value="XL">
+                        <label for="x-Large" class="product-available-sizes btn btn-outline-dark ms-3">XL</label>
+                        <input type="radio" class="btn-check" name="choose-size" id="xx-Large" value="XXL">
+                        <label for="xx-Large" class="product-available-sizes btn btn-outline-dark ms-3">XXL</label>
+                        <input type="radio" class="btn-check" name="choose-size" id="xxx-Large" value="XXXL">
+                        <label for="xxx-Large" class="product-available-sizes btn btn-outline-dark ms-3">XXXL</label>
+                        
                      </div>
                      <div class="product-quantity-cart mb-25">
                         <div class="product-quantity-form">
@@ -240,15 +247,15 @@
                               <button class="cart-plus"><i class="far fa-plus"></i></button>
                            </form>
                         </div>
-                        <a href="cart.html" class="fill-btn">Add to Cart</a>
+                        <a href="{% url 'addtocart' product.id %}" class="fill-btn">Add to Cart</a>
                      </div>
-                     <a href="wishlist.html" class="border-btn">Add to Wishlist</a>
-                     <div class="product__details__tag tagcloud mt-25 mb-10"><span>Tags : </span>
-                        <a href="#" rel="tag">Shirt</a>
-                        <a href="#" rel="tag">Cotton</a>
-                        <a href="#" rel="tag">Smart</a>
-                        <a href="#" rel="tag">Fashion</a>
-                     </div>
+                     <a href="{% url 'add-to-wishlist' product.id %}" class="border-btn">Add to Wishlist</a>
+                     {% comment %} <div class="product__details__tag tagcloud mt-25 mb-10"><span>Tags : </span>
+                        <a rel="tag">Shirt</a>
+                        <a rel="tag">Cotton</a>
+                        <a rel="tag">Smart</a>
+                        <a rel="tag">Fashion</a>
+                     </div> {% endcomment %}
                   </div>
                </div>
             </div>

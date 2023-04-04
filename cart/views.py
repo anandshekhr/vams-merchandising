@@ -24,10 +24,7 @@ User = get_user_model()
 @login_required
 def addToCart(request, pk):
 
-    if request.user:
-        user_details = UserAddresses.objects.get(user=request.user.id)
-    item = get_object_or_404(StoreProductsDetails, products=pk,
-                             store__storeServicablePinCodes__contains=[user_details.pincode])
+    item = get_object_or_404(Products, id=pk)
     order_item, created = Cart.objects.get_or_create(
         item=item,
         user=request.user,
@@ -37,22 +34,25 @@ def addToCart(request, pk):
     if order_qs.exists():
         order = order_qs[0]
         # check if the order item is in the order
-        if order.items.filter(item__products__product_id=item.products.product_id).exists() and item.available_stock > 0:
+        if order.items.filter(item__id=item.id).exists() and item.stock > 0:
             order_item.quantity += 1
-            item.available_stock = item.available_stock - 1
+            item.stock = item.stock - 1
             item.save()
             order_item.save()
             messages.info(request, "This item quantity was updated.")
             return redirect("cartview")
-        elif item.available_stock > 0:
+        
+        elif item.stock > 0:
             order.items.add(order_item)
-            item.available_stock = item.available_stock - 1
+            item.stock = item.stock - 1
             item.save()
             messages.info(request, "This item was added to your cart.")
             return redirect("cartview")
+        
         else:
             messages.info(request, "Item Out of Stock")
             return redirect("/")
+    
     else:
         ordered_date = timezone.now()
         order = Order.objects.create(
@@ -62,15 +62,34 @@ def addToCart(request, pk):
         return redirect("cartview")
 
 
+def deleteItemFromCart(request, pk):
+    """Delete Items from Wishlist
+
+    Args:
+        request (_type_): _description_
+        pk (int): product ID
+
+    Returns:
+        _type_: _description_
+    """
+
+    #delete from wishlistItems models
+    item = Cart.objects.filter(item=pk,user=request.user,ordered=False)[0]
+    item.delete()
+
+    # delete from Wishlist models
+    wishlist_item = Order.objects.filter(user=request.user,ordered=False)[0]
+    wishlist_item.items.remove(item)
+
+    return redirect('cartview')
+
 @login_required
 def cartCheckoutPageView(request):
     counter = 0
     a = 0
     b = 0
-
     try:
         if request.user:
-            useraddress = UserAddresses.objects.get(user=request.user.id)
             itemsForCartPage = Order.objects.get(
                 user=request.user.id, ordered=False)
 
@@ -87,7 +106,6 @@ def cartCheckoutPageView(request):
         context = {
             'object': itemsForCartPage,
             'delivery': delivery_charges,
-            'useraddress': useraddress,
             'totalquantity': counter,
             'grandtotal': grandtotal
         }
@@ -95,34 +113,9 @@ def cartCheckoutPageView(request):
         context = {
             'object': 0,
             'delivery': 0,
-            'useraddress': useraddress,
             'totalquantity': 0,
             'grandtotal': 0
         }
-
-    except UserAddresses.DoesNotExist:
-        if request.user:
-            itemsForCartPage = Order.objects.get(
-                user=request.user.id, ordered=False)
-
-        a = round(itemsForCartPage.get_total(), 2)
-        counter = len(itemsForCartPage.items.all())
-
-        if a > 500:
-            delivery_charges = 0
-        else:
-            delivery_charges = 0
-
-        grandtotal = a + delivery_charges
-
-        context = {
-            'object': itemsForCartPage,
-            'delivery': delivery_charges,
-            'useraddress': "",
-            'totalquantity': counter,
-            'grandtotal': grandtotal
-        }
-
     return render(request, "cart.html", context)
 
 @login_required
@@ -138,7 +131,7 @@ def removeSingleItemFromCart(request, pk):
     if order_qs.exists():
         order = order_qs[0]
         # check if the order item is in the order
-        if order.items.filter(item__products__product_id=item.products.product_id).exists():
+        if order.items.filter(item__products__id=item.products.id).exists():
             order_item = Cart.objects.filter(
                 item=item,
                 user=request.user,

@@ -6,14 +6,14 @@ from django.conf.urls.static import static
 api = settings.API_VERSION
 
 urlpatterns = [
-#     path('', index, name="index"),
     path("home/", homePage, name="homepage"),
     path("categories/<str:name>", seeAllProductsInCategory,
          name="seeallproductsincategory"),
-    path("details/<int:pk>/<str:category_name>",productDetailsPageView,name="productdetail"),
+    path("details/<int:pk>/",productDetailsPageView,name="productdetail"),
     path("search?name=", autocompleteModel, name="productsearch"),
     path("categories/search/<int:pk>",searchProductsInsideCategoryPage,name="productsearchcategory"),
     path("category/products?<int:category_id>", filter_by_category,name="filter_by_category"),
+    path("products/show-all/",showAllProducts,name="show-all-products"),
 
     #APIs
     path("details/id=<int:product_id>", ProductDetailsAPI.as_view(), name="allproducts"),

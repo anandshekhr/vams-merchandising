@@ -362,7 +362,7 @@
                               {% if 'best-seller' in product.category %}
                                  <div class="single-product">
                                     <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=product.id category_name='best-seller' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                       <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
                                        <div class="product-action">
                                           <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                           <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
@@ -377,9 +377,9 @@
                                        </div>
                                     </div>
                                     <div class="product-desc">
-                                       <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">{{product.name}}</a></div>
+                                       <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
                                        <div class="product-price">
-                                          <span class="price-now">£{{product.list_price|floatformat:2}}</span>
+                                          <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
                                        </div>
                                        <ul class="product-color-nav">
                                           {% for image in pr_images %}
@@ -402,7 +402,7 @@
                               {% if 'hot-collection' in product.category %}
                                  <div class="single-product">
                                     <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=product.id category_name='hot-collection' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                       <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
                                        <div class="product-action">
                                           <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                           <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
@@ -417,9 +417,9 @@
                                        </div>
                                     </div>
                                     <div class="product-desc">
-                                       <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">{{product.name}}</a></div>
+                                       <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
                                        <div class="product-price">
-                                          <span class="price-now">£{{product.list_price|floatformat:2}}</span>
+                                          <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
                                        </div>
                                        <ul class="product-color-nav">
                                           {% for image in pr_images %}
@@ -442,7 +442,7 @@
                               {% if 'trending' in product.category %}
                                  <div class="single-product">
                                     <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=product.id category_name='trending' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                       <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
                                        <div class="product-action">
                                           <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                           <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
@@ -457,9 +457,9 @@
                                        </div>
                                     </div>
                                     <div class="product-desc">
-                                       <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">{{product.name}}</a></div>
+                                       <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
                                        <div class="product-price">
-                                          <span class="price-now">£{{product.list_price|floatformat:2}}</span>
+                                          <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
                                        </div>
                                        <ul class="product-color-nav">
                                           {% for image in pr_images %}
@@ -482,7 +482,7 @@
                               {% if 'new-arrival' in product.category %}
                                  <div class="single-product">
                                     <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=product.id category_name='new-arrival' %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                       <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
                                        <div class="product-action">
                                           <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                           <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
@@ -497,9 +497,9 @@
                                        </div>
                                     </div>
                                     <div class="product-desc">
-                                       <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">{{product.name}}</a></div>
+                                       <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
                                        <div class="product-price">
-                                          <span class="price-now">£{{product.list_price|floatformat:2}}</span>
+                                          <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
                                        </div>
                                        <ul class="product-color-nav">
                                           {% for image in pr_images %}
@@ -519,18 +519,18 @@
                   </div>
                </div>
             </div>
-            <div class="row">
+            {% comment %} <div class="row">
                <div class="col-lg-12">
                   <div class="product-area-btn mt-10 text-center">
                      <a href="shop.html" class="border-btn">View All Products</a>
                   </div>
                </div>
-            </div>
+            </div> {% endcomment %}
          </div>
       </section>
       <!-- product area end  -->
 
-      <!-- featured product area start  -->
+      {% comment %} <!-- featured product area start  -->
       <section class="featured-area pt-0">
          <div class="container">
             <div class="row justify-content-center">
@@ -559,7 +559,7 @@
                               <div class="product-desc">
                                  <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Ecomart Smart Watch</a></div>
                                  <div class="product-price">
-                                    <span class="price-now">£85.00</span>
+                                    <span class="price-now">₹85.00</span>
                                  </div>
                                  <ul class="product-color-nav">
                                     <li class="cl-blue active">
@@ -586,7 +586,7 @@
                               <div class="product-desc">
                                  <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Phoebe Bucket Crossbody</a></div>
                                  <div class="product-price">
-                                    <span class="price-now">£85.00</span>
+                                    <span class="price-now">₹85.00</span>
                                  </div>
                                  <ul class="product-color-nav">
                                     <li class="cl-brown active">
@@ -617,7 +617,7 @@
                                  <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Women's Trucker Hat</a>
                                  </div>
                                  <div class="product-price">
-                                    <span class="price-now">£85.00</span>
+                                    <span class="price-now">₹85.00</span>
                                  </div>
                                  <ul class="product-color-nav">
                                     <li class="cl-green active">
@@ -646,7 +646,7 @@
                                  <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Men's Chelsea Boot</a>
                                  </div>
                                  <div class="product-price">
-                                    <span class="price-now">£85.00</span>
+                                    <span class="price-now">₹85.00</span>
                                  </div>
                                  <ul class="product-color-nav">
                                     <li class="cl-black active">
@@ -675,7 +675,7 @@
                         <div class="product-desc">
                            <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Men's Quarter-Zip Sweater</a></div>
                            <div class="product-price">
-                              <span class="price-now">£85.00</span>
+                              <span class="price-now">₹85.00</span>
                            </div>
                            <ul class="product-color-nav">
                               <li class="cl-pink active">
@@ -695,9 +695,9 @@
             </div>
          </div>
       </section>
-      <!-- featured product area end  -->
+      <!-- featured product area end  --> {% endcomment %}
 
-      <!-- category area start  -->
+      {% comment %} <!-- category area start  -->
       <section class="category-area pt-90 pb-120">
          <div class="container">
             <div class="row justify-content-center">
@@ -734,7 +734,7 @@
             </div>
          </div>
       </section>
-      <!-- category area end  -->
+      <!-- category area end  --> {% endcomment %}
 
       <!-- features area start  -->
       <div class="features-area features-area1">

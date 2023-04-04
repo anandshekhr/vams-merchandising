@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/v1/', include('stores.urls')),
     path('api/v1/', include('products.urls')),
     path('api/v1/', include('user.urls')),
+    path('api/v1/', include('wishlist.urls')),
     path("api/v1/accounts/", include("dj_rest_auth.urls")),
     path("api/v1/accounts/registration/",
          include("dj_rest_auth.registration.urls")),
