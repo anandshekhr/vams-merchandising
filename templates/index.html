@@ -357,163 +357,211 @@
                <div class="product-tab-content">
                   <div class="tab-content" id="nav-tabContent">
                      <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-1-tab">
-                        <div class="products-wrapper">
-                           {% for product in Products %}
-                              {% if 'best-seller' in product.category %}
-                                 <div class="single-product">
-                                    <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
-                                       <div class="product-action">
-                                          <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                          <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                          <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
+                        <div class="products-wrapper-slide pos-rel">
+                           <div class="product-tab-slider-nav">
+                              <div class="product-tab-slider-button-prev"><i class="fal fa-long-arrow-left"></i>
+                              </div>
+                              <div class="product-tab-slider-button-next"><i class="fal fa-long-arrow-right"></i>
+                              </div>
+                           </div>
+                           <div class="product-tab-slider swiper-container">
+                              <div class="swiper-wrapper">
+                                 <div class="swiper-slide">
+                                 {% for product in Products %}
+                                    {% if 'best-seller' in product.category %}
+                                       <div class="single-product single-product-st2">
+                                          <div class="product-image pos-rel">
+                                             <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                             <div class="product-action-bottom">
+                                                <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                                <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
+                                                <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
+                                             </div>
+                                             <div class="product-action-bottom">
+                                                <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
+                                                   Cart</a>
+                                             </div>
+                                             <div class="product-sticker-wrapper">
+                                                <span class="product-sticker new">New</span>
+                                             </div>
+                                          </div>
+                                          <div class="product-desc">
+                                             <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
+                                             <div class="product-price">
+                                                <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                             </div>
+                                             <ul class="product-color-nav">
+                                                {% for image in pr_images %}
+                                                   {% if image.product.id == product.id %}
+                                                   <li class="cl-{{image.image_thumbnail_color}} active">
+                                                      <img src="/media/{{image.images}}" alt="img">
+                                                   </li>
+                                                   {% endif %}
+                                                {% endfor %}
+                                             </ul>
+                                          </div>
                                        </div>
-                                       <div class="product-action-bottom">
-                                          <a href="cart.html" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
-                                             Cart</a>
-                                       </div>
-                                       <div class="product-sticker-wrapper">
-                                          <span class="product-sticker new">New</span>
-                                       </div>
-                                    </div>
-                                    <div class="product-desc">
-                                       <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
-                                       <div class="product-price">
-                                          <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                       </div>
-                                       <ul class="product-color-nav">
-                                          {% for image in pr_images %}
-                                             {% if image.product.id == product.id %}
-                                             <li class="cl-{{image.image_thumbnail_color}} active">
-                                                <img src="/media/{{image.images}}" alt="img">
-                                             </li>
-                                             {% endif %}
-                                          {% endfor %}
-                                       </ul>
-                                    </div>
+                                    {% endif %}
+                                 {% endfor %}
                                  </div>
-                              {% endif %}
-                           {% endfor %}
+                              </div>
+                           </div>
                         </div>
                      </div>
                      <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab">
-                        <div class="products-wrapper">
-                           {% for product in Products %}
-                              {% if 'hot-collection' in product.category %}
-                                 <div class="single-product">
-                                    <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
-                                       <div class="product-action">
-                                          <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                          <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                          <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
+                        <div class="products-wrapper-slide pos-rel">
+                           <div class="product-tab-slider-nav">
+                              <div class="product-tab-slider-button-prev"><i class="fal fa-long-arrow-left"></i>
+                              </div>
+                              <div class="product-tab-slider-button-next"><i class="fal fa-long-arrow-right"></i>
+                              </div>
+                           </div>
+                           <div class="product-tab-slider swiper-container">
+                              <div class="swiper-wrapper">
+                                 <div class="swiper-slide">
+                                 {% for product in Products %}
+                                    {% if 'hot-collection' in product.category %}
+                                       <div class="single-product single-product-st2">
+                                          <div class="product-image pos-rel">
+                                             <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                             <div class="product-action-bottom">
+                                                <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                                <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
+                                                <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
+                                             </div>
+                                             <div class="product-action-bottom">
+                                                <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
+                                                   Cart</a>
+                                             </div>
+                                             <div class="product-sticker-wrapper">
+                                                <span class="product-sticker new">New</span>
+                                             </div>
+                                          </div>
+                                          <div class="product-desc">
+                                             <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
+                                             <div class="product-price">
+                                                <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                             </div>
+                                             <ul class="product-color-nav">
+                                                {% for image in pr_images %}
+                                                   {% if image.product.id == product.id %}
+                                                   <li class="cl-{{image.image_thumbnail_color}} active">
+                                                      <img src="/media/{{image.images}}" alt="img">
+                                                   </li>
+                                                   {% endif %}
+                                                {% endfor %}
+                                             </ul>
+                                          </div>
                                        </div>
-                                       <div class="product-action-bottom">
-                                          <a href="cart.html" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
-                                             Cart</a>
-                                       </div>
-                                       <div class="product-sticker-wrapper">
-                                          <span class="product-sticker new">New</span>
-                                       </div>
-                                    </div>
-                                    <div class="product-desc">
-                                       <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
-                                       <div class="product-price">
-                                          <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                       </div>
-                                       <ul class="product-color-nav">
-                                          {% for image in pr_images %}
-                                             {% if image.product.id == product.id %}
-                                             <li class="cl-{{image.image_thumbnail_color}} active">
-                                                <img src="/media/{{image.images}}" alt="img">
-                                             </li>
-                                             {% endif %}
-                                          {% endfor %}
-                                       </ul>
-                                    </div>
+                                    {% endif %}
+                                 {% endfor %}
                                  </div>
-                              {% endif %}
-                           {% endfor %}
+                              </div>
+                           </div>
                         </div>
                      </div>
                      <div class="tab-pane fade" id="nav-3" role="tabpanel" aria-labelledby="nav-3-tab">
-                        <div class="products-wrapper">
-                           {% for product in Products %}
-                              {% if 'trending' in product.category %}
-                                 <div class="single-product">
-                                    <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
-                                       <div class="product-action">
-                                          <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                          <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                          <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
+                        <div class="products-wrapper-slide pos-rel">
+                           <div class="product-tab-slider-nav">
+                              <div class="product-tab-slider-button-prev"><i class="fal fa-long-arrow-left"></i>
+                              </div>
+                              <div class="product-tab-slider-button-next"><i class="fal fa-long-arrow-right"></i>
+                              </div>
+                           </div>
+                           <div class="product-tab-slider swiper-container">
+                              <div class="swiper-wrapper">
+                                 <div class="swiper-slide">
+                                 {% for product in Products %}
+                                    {% if 'trending' in product.category %}
+                                       <div class="single-product single-product-st2">
+                                          <div class="product-image pos-rel">
+                                             <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                             <div class="product-action-bottom">
+                                                <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                                <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
+                                                <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
+                                             </div>
+                                             <div class="product-action-bottom">
+                                                <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
+                                                   Cart</a>
+                                             </div>
+                                             <div class="product-sticker-wrapper">
+                                                <span class="product-sticker new">New</span>
+                                             </div>
+                                          </div>
+                                          <div class="product-desc">
+                                             <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
+                                             <div class="product-price">
+                                                <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                             </div>
+                                             <ul class="product-color-nav">
+                                                {% for image in pr_images %}
+                                                   {% if image.product.id == product.id %}
+                                                   <li class="cl-{{image.image_thumbnail_color}} active">
+                                                      <img src="/media/{{image.images}}" alt="img">
+                                                   </li>
+                                                   {% endif %}
+                                                {% endfor %}
+                                             </ul>
+                                          </div>
                                        </div>
-                                       <div class="product-action-bottom">
-                                          <a href="cart.html" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
-                                             Cart</a>
-                                       </div>
-                                       <div class="product-sticker-wrapper">
-                                          <span class="product-sticker new">New</span>
-                                       </div>
-                                    </div>
-                                    <div class="product-desc">
-                                       <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
-                                       <div class="product-price">
-                                          <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                       </div>
-                                       <ul class="product-color-nav">
-                                          {% for image in pr_images %}
-                                             {% if image.product.id == product.id %}
-                                             <li class="cl-{{image.image_thumbnail_color}} active">
-                                                <img src="/media/{{image.images}}" alt="img">
-                                             </li>
-                                             {% endif %}
-                                          {% endfor %}
-                                       </ul>
-                                    </div>
+                                    {% endif %}
+                                 {% endfor %}
                                  </div>
-                              {% endif %}
-                           {% endfor %}
+                              </div>
+                           </div>
                         </div>
                      </div>
                      <div class="tab-pane fade" id="nav-4" role="tabpanel" aria-labelledby="nav-4-tab">
-                        <div class="products-wrapper">
-                           {% for product in Products %}
-                              {% if 'new-arrival' in product.category %}
-                                 <div class="single-product">
-                                    <div class="product-image pos-rel">
-                                       <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
-                                       <div class="product-action">
-                                          <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                          <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                          <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
+                        <div class="products-wrapper-slide pos-rel">
+                           <div class="product-tab-slider-nav">
+                              <div class="product-tab-slider-button-prev"><i class="fal fa-long-arrow-left"></i>
+                              </div>
+                              <div class="product-tab-slider-button-next"><i class="fal fa-long-arrow-right"></i>
+                              </div>
+                           </div>
+                           <div class="product-tab-slider swiper-container">
+                              <div class="swiper-wrapper">
+                                 <div class="swiper-slide">
+                                 {% for product in Products %}
+                                    {% if 'new-arrival' in product.category %}
+                                       <div class="single-product single-product-st2">
+                                          <div class="product-image pos-rel">
+                                             <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
+                                             <div class="product-action-bottom">
+                                                <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                                <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
+                                                <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
+                                             </div>
+                                             <div class="product-action-bottom">
+                                                <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
+                                                   Cart</a>
+                                             </div>
+                                             <div class="product-sticker-wrapper">
+                                                <span class="product-sticker new">New</span>
+                                             </div>
+                                          </div>
+                                          <div class="product-desc">
+                                             <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
+                                             <div class="product-price">
+                                                <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                             </div>
+                                             <ul class="product-color-nav">
+                                                {% for image in pr_images %}
+                                                   {% if image.product.id == product.id %}
+                                                   <li class="cl-{{image.image_thumbnail_color}} active">
+                                                      <img src="/media/{{image.images}}" alt="img">
+                                                   </li>
+                                                   {% endif %}
+                                                {% endfor %}
+                                             </ul>
+                                          </div>
                                        </div>
-                                       <div class="product-action-bottom">
-                                          <a href="cart.html" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
-                                             Cart</a>
-                                       </div>
-                                       <div class="product-sticker-wrapper">
-                                          <span class="product-sticker new">New</span>
-                                       </div>
-                                    </div>
-                                    <div class="product-desc">
-                                       <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
-                                       <div class="product-price">
-                                          <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                       </div>
-                                       <ul class="product-color-nav">
-                                          {% for image in pr_images %}
-                                             {% if image.product.id == product.id %}
-                                             <li class="cl-{{image.image_thumbnail_color}} active">
-                                                <img src="/media/{{image.images}}" alt="img">
-                                             </li>
-                                             {% endif %}
-                                          {% endfor %}
-                                       </ul>
-                                    </div>
+                                    {% endif %}
+                                 {% endfor %}
                                  </div>
-                              {% endif %}
-                           {% endfor %}
+                              </div>
+                           </div>
                         </div>
                      </div>
                   </div>

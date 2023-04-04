@@ -52,7 +52,7 @@
                                  <td class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></td>
                                  <td class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></td>
                                  <td class="product-quantity">
-                                    <a href="cart.html" class="border-btn">Add to Cart</a>
+                                    <a href="{% url 'move-to-cart' item.item.id %}" class="border-btn">Move to Cart</a>
                                  </td>
                                  <td class="product-subtotal"><span class="amount">₹{{item.get_final_price|floatformat:2}}</span></td>
                                  <td class="product-remove"><a href="{% url 'delete-item-from-wishlist' item.item.id %}"><i class="fa fa-times"></i></a></td>

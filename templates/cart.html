@@ -108,7 +108,7 @@
                            <li>Subtotal <span>₹{{object.get_total|floatformat:2}}</span></li>
                            <li>Total <span>₹{{object.get_total|floatformat:2}}</span></li>
                         </ul>
-                        <a class="border-btn" href="checkout.html">Proceed to checkout</a>
+                        <a class="border-btn" href="{% url 'payment-checkout' %}">Proceed to checkout</a>
                      </div>
                   </div>
                </div>

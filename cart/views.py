@@ -13,6 +13,7 @@ from django.views.generic import *
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from stores.models import *
+from wishlist.models import *
 from user.models import UserAddresses
 from instamojo_wrapper import Instamojo
 api = Instamojo(api_key=settings.API_KEY,
@@ -53,6 +54,54 @@ def addToCart(request, pk):
             messages.info(request, "Item Out of Stock")
             return redirect("/")
     
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            user=request.user, ordered_date=ordered_date)
+        order.items.add(order_item)
+        messages.info(request, "This item was added to your cart.")
+        return redirect("cartview")
+
+
+@login_required
+def moveToCart(request, pk):
+    #delete from wishlistItems models
+    iitem = WishlistItems.objects.filter(item=pk)[0]
+    iitem.delete()
+
+    # delete from Wishlist models
+    wishlist_item = Wishlist.objects.filter(user=request.user)[0]
+    wishlist_item.items.remove(iitem)
+
+    item = get_object_or_404(Products, id=pk)
+    order_item, created = Cart.objects.get_or_create(
+        item=item,
+        user=request.user,
+        ordered=False
+    )
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(item__id=item.id).exists() and item.stock > 0:
+            order_item.quantity += 1
+            item.stock = item.stock - 1
+            item.save()
+            order_item.save()
+            messages.info(request, "This item quantity was updated.")
+            return redirect("cartview")
+
+        elif item.stock > 0:
+            order.items.add(order_item)
+            item.stock = item.stock - 1
+            item.save()
+            messages.info(request, "This item was added to your cart.")
+            return redirect("cartview")
+
+        else:
+            messages.info(request, "Item Out of Stock")
+            return redirect("/")
+
     else:
         ordered_date = timezone.now()
         order = Order.objects.create(
@@ -169,7 +218,7 @@ def orderPaymentRequest(request, amount):
         send_sms=settings.SEND_SMS,
         send_email=settings.SEND_EMAIL,
         email=user.email,
-        phone=user.mobile,
+        phone=user.mobileno,
         redirect_url=settings.PAYMENT_SUCCESS_REDIRECT_URL,
         allow_repeated_payments=False
     )
@@ -215,6 +264,9 @@ def paymentStatusAndOrderStatusUpdate(request):
             messages.success(request, "Your order was successful!")
     return redirect("orderhistorydetail", pk=order.id)
 
+@login_required
+def checkoutPage(request):
+    return render(request,"checkout.html")
 
 class CartAddView(APIView):
     permission_classes = (IsAuthenticated,)

@@ -11,10 +11,12 @@ urlpatterns = [
     path("addtocart/<int:pk>",addToCart,name="addtocart"),
     path("api/v1/customer/order/add/",CartAddView.as_view(),name="addtocartapi"),
     path("ordersummary/",cartCheckoutPageView,name="cartview"),
+    path("checkout/",checkoutPage,name="payment-checkout"),
     path("removesingleitemfromcart/<int:pk>",removeSingleItemFromCart,name="removesingleitemfromcart"),
     path("payment/checkout/<float:amount>",orderPaymentRequest,name="paymentcheckout"),
     path("paymentstatusupdate",paymentStatusAndOrderStatusUpdate,name="paymentstatusupdate"),
     path("cart/delete/item/<int:pk>",deleteItemFromCart,name="delete-from-cart"),
+    path("cart/move/<int:pk>",moveToCart,name="move-to-cart"),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
