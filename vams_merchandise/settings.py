@@ -64,6 +64,9 @@ INSTALLED_APPS = [
     # blogs app
     'blogs.apps.BlogsConfig',
 
+    #wishlist app
+    'wishlist.apps.WishlistConfig',
+
     # Third-party App
     'rest_framework',
     'corsheaders',
@@ -122,7 +125,7 @@ if DEBUG:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "vams-merchandise",
             "USER": "postgres",
-            "PASSWORD": "shekhar123#",
+            "PASSWORD": "Shekhar123#",
             "HOST": "127.0.0.1",
             "PORT": "5432",
         }
