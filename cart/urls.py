@@ -14,9 +14,14 @@ urlpatterns = [
     path("checkout/",checkoutPage,name="payment-checkout"),
     path("removesingleitemfromcart/<int:pk>",removeSingleItemFromCart,name="removesingleitemfromcart"),
     path("payment/checkout/<float:amount>",orderPaymentRequest,name="paymentcheckout"),
-    path("paymentstatusupdate",paymentStatusAndOrderStatusUpdate,name="paymentstatusupdate"),
+    path("paymentstatusupdate/",paymentStatusAndOrderStatusUpdate,name="paymentstatusupdate"),
     path("cart/delete/item/<int:pk>",deleteItemFromCart,name="delete-from-cart"),
     path("cart/move/<int:pk>",moveToCart,name="move-to-cart"),
+    path("order-summary/<int:pk>/", order_summary, name="ordersummary"),
+    path("payment-pending/<int:pk>/",
+         pending_payment_page, name="pending-payment"),
+    path("payment-failed/<int:pk>/",
+         failed_payment_page, name="failed-payment"),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

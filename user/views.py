@@ -77,7 +77,7 @@ def logout(request):
     # if request.method == 'POST':
     auth.logout(request)
     # print('logged out from websites..')
-    return redirect('index')
+    return redirect('home')
 
 
 class UpdateProfileView(generics.UpdateAPIView):

@@ -211,6 +211,73 @@ def orderPaymentRequest(request, amount):
     if request.user:
         user = User.objects.get(pk=request.user.id)
         order = Order.objects.get(user=request.user.id, ordered=False)
+    
+    if request.method == "POST":
+        firstName = request.POST.get('first_name')
+        lastName = request.POST.get('last_name')
+        area = request.POST.get('address_line_1')+","+request.POST.get('address_line_2')
+        country = request.POST.get('country')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        pincode = request.POST.get('pincode')
+        email = request.POST.get('email')
+        phoneNumber = request.POST.get('phone_number')
+    
+        # createAccount = request.POST.get('cbox')
+        # if createAccount is not None:
+        #     password = request.POST.get('password')
+        #     confirmPassword = request.POST.get('passwordConfirm')
+
+        #     if password == confirmPassword:
+        #         if User.objects.filter(mobileno=phoneNumber).exists():
+        #             messages.info(request, "mobile number already exist")
+
+        #         else:
+        #             if User.objects.filter(email=email).exists():
+        #                 messages.info(request, "Email already exists")
+        #             else:
+        #                 user = User.objects.create_user(
+        #                     first_name=firstName, last_name=lastName, mobile=phoneNumber, email=email, password=password)
+        #                 user.save()
+        #                 messages.success(
+        #                     request, "Account Registered, Please Login Again!")
+        #     else:
+        #         messages.info(request, "Password didn;t matched!")
+
+        ifShipToDifferentAddress = request.POST.get('ship-box')
+        if ifShipToDifferentAddress is not None:
+            firstNameShip = request.POST.get('first_nameShip')
+            lastNameShip = request.POST.get('last_nameShip')
+            areaShip = request.POST.get('address_line_1Ship')+"," + \
+                request.POST.get('address_line_2Ship')
+            countryShip = request.POST.get('countryShip')
+            cityShip = request.POST.get('cityShip')
+            stateShip = request.POST.get('stateShip')
+            pincodeShip = request.POST.get('pincodeShip')
+            emailShip = request.POST.get('emailShip')
+            phoneNumberShip = request.POST.get('phone_numberShip')
+
+            ShippingAddress = "Name: "+firstNameShip+" "+lastNameShip+",\n Address: "+areaShip+", "+cityShip+", " + \
+                stateShip+", "+countryShip+",\n Pincode: "+pincodeShip + \
+                ",\n Email: "+emailShip+",\n Ph: "+phoneNumberShip
+            
+            if ShippingAddress:
+                order.shipping_address = ShippingAddress
+        
+        orderNotes = request.POST.get('checkout-mess') or None
+    
+    BillingAddress = "Name: "+firstName+" "+lastName+",\n Address: "+area+", "+city+", "+state+", "+country+",\n Pincode: "+pincode+",\n Email: "+email+",\n Ph: "+phoneNumber or None
+
+    s_address = UserAddresses(user=request.user, name=firstName+" "+lastName, address=area, state=state, city=city,
+                              pincode=pincode, addPhoneNumber=phoneNumber, set_default=True, email=email, country=country, address_type="Home")
+    s_address.save()
+    
+    if BillingAddress:
+        order.billing_address = BillingAddress
+    
+    if orderNotes:
+        order.orderNote = orderNotes
+
     response = api.payment_request_create(
         amount=str(amount),
         purpose='test_purchase',
@@ -240,13 +307,11 @@ def paymentStatusAndOrderStatusUpdate(request):
     if request.user:
         user = User.objects.get(pk=request.user.id)
         order = Order.objects.get(user=request.user.id, ordered=False)
-        # cartItems = Cart.objects.filter(user = request.user.id,ordered = False)
-        # for order in orders:
+
         if order.ref_code:
             payment_status = api.payment_request_status(order.ref_code)
+
             if payment_status['payment_request']['status'] == 'Completed':
-                # cartItems.ordered = True
-                # cartItems.save()
                 order.ordered = True
                 payment = Payment()
                 payment.instamojo_id = payment_status['payment_request']['payments'][0]['payment_id']
@@ -261,12 +326,55 @@ def paymentStatusAndOrderStatusUpdate(request):
 
                 order.payment = payment
                 order.save()
-            messages.success(request, "Your order was successful!")
-    return redirect("orderhistorydetail", pk=order.id)
+                messages.success(request, "Your order was successful!")
+                return redirect("ordersummary", pk=order.id)
+
+            elif payment_status['payment_request']['status'] == 'Pending':
+
+                if len(payment_status['payment_request']['payments']) > 0:
+
+                    if payment_status['payment_request']['payments'][0]['status'] == 'Failed':
+                        pending_payment = PendingPayment()
+                        pending_payment.order_id = payment_status['payment_request']['id']
+                        pending_payment.order_payment_id = payment_status[
+                            'payment_request']['payments'][0]['payment_id']
+                        pending_payment.phone = payment_status['payment_request']['phone']
+                        pending_payment.email = payment_status['payment_request']['email']
+                        pending_payment.buyer_name = payment_status['payment_request']['buyer_name']
+                        pending_payment.amount = payment_status['payment_request']['amount']
+                        pending_payment.purpose = payment_status['payment_request']['purpose']
+                        pending_payment.status = payment_status['payment_request']['status']
+                        pending_payment.created_at = payment_status['payment_request']['created_at']
+                        pending_payment.modified_at = payment_status['payment_request']['modified_at']
+                        pending_payment.api_response = payment_status
+                        pending_payment.save()
+                        return redirect("failed-payment", pk=order.id)
+
+                else:
+                    pending_payment = PendingPayment()
+                    pending_payment.order_id = payment_status['payment_request']['id']
+                    pending_payment.phone = payment_status['payment_request']['phone']
+                    pending_payment.email = payment_status['payment_request']['email']
+                    pending_payment.buyer_name = payment_status['payment_request']['buyer_name']
+                    pending_payment.amount = payment_status['payment_request']['amount']
+                    pending_payment.purpose = payment_status['payment_request']['purpose']
+                    pending_payment.status = payment_status['payment_request']['status']
+                    pending_payment.api_response = payment_status
+                    pending_payment.created_at = payment_status['payment_request']['created_at']
+                    pending_payment.modified_at = payment_status['payment_request']['modified_at']
+                    pending_payment.save()
+                    return redirect("pending-payment", pk=order.id)
 
 @login_required
 def checkoutPage(request):
-    return render(request,"checkout.html")
+    Items = Order.objects.get(user= request.user,ordered=False)
+    totalAmount = round(Items.get_total(), 2)
+    ShippingCharges = 0
+    if totalAmount > 500 :
+        ShippingCharges = 40
+        totalAmount += ShippingCharges
+    context = {'orderItems':Items,'totalAmount':totalAmount,'shippingCharges':ShippingCharges}
+    return render(request,"checkout.html",context)
 
 class CartAddView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -315,3 +423,34 @@ class CartAddView(APIView):
             order.items.add(order_item)
         serializer = OrderSerializer(instance=order_qs,many=True)
         return Response({'data':serializer.data},status=status.HTTP_200_OK)
+
+
+@login_required
+def order_summary(request, pk):
+    if request.user:
+        order = Order.objects.get(user=request.user.id, pk=pk)
+
+    context = {
+        'order': order
+    }
+    return render(request, "thankyou.html", context)
+
+
+def pending_payment_page(request, pk):
+    if request.user:
+        order = Order.objects.get(user=request.user.id, pk=pk)
+
+    context = {
+        'order': order
+    }
+    return render(request, "payment_pending.html", context)
+
+
+def failed_payment_page(request, pk):
+    if request.user:
+        order = Order.objects.get(user=request.user.id, pk=pk)
+
+    context = {
+        'order': order
+    }
+    return render(request, "payment_failed.html", context)
