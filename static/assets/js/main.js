@@ -686,3 +686,10 @@
 		replacedImg.attr("src", ChldImg);
 	});
 })(jQuery);
+
+function onClickAddToCartQuantity(product_id) {
+	console.log('printCall')
+	var qty = document.getElementById('pro-qty').value;
+	var url = "{% url 'productdetail' pk=" + product_id + " qty=" + qty + " %}";
+	window.location.href = url;
+}

@@ -64,6 +64,48 @@ def addToCart(request, pk):
 
 
 @login_required
+def addToCartQuantity(request, pk, qty):
+
+    item = get_object_or_404(Products, id=pk)
+    order_item, created = Cart.objects.get_or_create(
+        item=item,
+        user=request.user,
+        ordered=False
+    )
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(item__id=item.id).exists() and item.stock > 0:
+            order_item.quantity += 1
+            item.stock = item.stock - 1
+            item.save()
+            order_item.save()
+            messages.info(request, "This item quantity was updated.")
+            return redirect("cartview")
+
+        elif item.stock > 0:
+            order.items.add(order_item)
+            item.stock = item.stock - 1
+            item.save()
+            messages.info(request, "This item was added to your cart.")
+            return redirect("cartview")
+
+        else:
+            messages.info(request, "Item Out of Stock")
+            return redirect("/")
+
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            user=request.user, ordered_date=ordered_date)
+        order.items.add(order_item)
+        messages.info(request, "This item was added to your cart.")
+        return redirect("cartview")
+
+
+
+@login_required
 def moveToCart(request, pk):
     #delete from wishlistItems models
     iitem = WishlistItems.objects.filter(item=pk)[0]
@@ -245,6 +287,8 @@ def orderPaymentRequest(request, amount):
         #         messages.info(request, "Password didn;t matched!")
 
         ifShipToDifferentAddress = request.POST.get('ship-box')
+
+        ifSaveAddress = request.POST.get('save-address')
         if ifShipToDifferentAddress is not None:
             firstNameShip = request.POST.get('first_nameShip')
             lastNameShip = request.POST.get('last_nameShip')
@@ -267,10 +311,10 @@ def orderPaymentRequest(request, amount):
         orderNotes = request.POST.get('checkout-mess') or None
     
     BillingAddress = "Name: "+firstName+" "+lastName+",\n Address: "+area+", "+city+", "+state+", "+country+",\n Pincode: "+pincode+",\n Email: "+email+",\n Ph: "+phoneNumber or None
-
-    s_address = UserAddresses(user=request.user, name=firstName+" "+lastName, address=area, state=state, city=city,
-                              pincode=pincode, addPhoneNumber=phoneNumber, set_default=True, email=email, country=country, address_type="Home")
-    s_address.save()
+    if ifSaveAddress is not None:
+        s_address = UserAddresses(user=request.user, name=firstName+" "+lastName, address=area, state=state, city=city,
+                                pincode=pincode, addPhoneNumber=phoneNumber, set_default=True, email=email, country=country, address_type="Home")
+        s_address.save()
     
     if BillingAddress:
         order.billing_address = BillingAddress
@@ -443,7 +487,7 @@ def pending_payment_page(request, pk):
     context = {
         'order': order
     }
-    return render(request, "payment_pending.html", context)
+    return render(request, "payment-failed.html", context)
 
 
 def failed_payment_page(request, pk):
@@ -453,4 +497,4 @@ def failed_payment_page(request, pk):
     context = {
         'order': order
     }
-    return render(request, "payment_failed.html", context)
+    return render(request, "payment-failed.html", context)

@@ -243,11 +243,11 @@
                         <div class="product-quantity-form">
                            <form action="#">
                               <button class="cart-minus"><i class="far fa-minus"></i></button>
-                              <input class="cart-input" type="text" value="1">
+                              <input class="cart-input" id="pro-qty" type="text" value="1">
                               <button class="cart-plus"><i class="far fa-plus"></i></button>
                            </form>
                         </div>
-                        <a href="{% url 'addtocart' product.id %}" class="fill-btn">Add to Cart</a>
+                        <a onclick="onClickAddToCartQuantity({{product.id}})" class="fill-btn">Add to Cart</a>
                      </div>
                      <a href="{% url 'add-to-wishlist' product.id %}" class="border-btn">Add to Wishlist</a>
                      {% comment %} <div class="product__details__tag tagcloud mt-25 mb-10"><span>Tags : </span>
@@ -437,7 +437,7 @@
                            <div class="product-desc">
                               <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">{{product.name}}</a></div>
                               <div class="product-price">
-                                 <span class="price-now">£{{product.list_price|floatformat:2}}</span>
+                                 <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
                               </div>
                               <ul class="product-color-nav">
                                  {% for image in pr_images %}

@@ -325,8 +325,8 @@
       </div>
       <!-- category banner area end  -->
 
-      <!-- product area start  -->
-      <section class="product-area pt-90 pb-120">
+            <!-- product area start  -->
+      <section class="product-area pt-120 pb-90">
          <div class="container">
             <div class="row justify-content-center">
                <div class="col-xl-8">
@@ -341,16 +341,19 @@
                      <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1"
                            type="button" role="tab" aria-controls="nav-1" aria-selected="true">Best Seller <span
-                              class="total-product">[57]</span></button>
+                              class="total-product">[{{len_bs}}]</span></button>
                         <button class="nav-link" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2"
-                           type="button" role="tab" aria-controls="nav-2" aria-selected="false">Hot Collection <span
-                              class="total-product">[25]</span></button>
+                           type="button" role="tab" aria-controls="nav-2" aria-selected="false">Hot Collection<span
+                              class="total-product">
+                              [{{len_hc}}]</span></button>
                         <button class="nav-link" id="nav-3-tab" data-bs-toggle="tab" data-bs-target="#nav-3"
-                           type="button" role="tab" aria-controls="nav-3" aria-selected="false">Trendy <span
-                              class="total-product">[32]</span></button>
+                           type="button" role="tab" aria-controls="nav-3" aria-selected="false">Trendy<span
+                              class="total-product">[{{len_tr}}]</span>
+                        </button>
                         <button class="nav-link" id="nav-4-tab" data-bs-toggle="tab" data-bs-target="#nav-4"
                            type="button" role="tab" aria-controls="nav-4" aria-selected="false">New Arrival<span
-                              class="total-product">[64]</span></button>
+                              class="total-product">[{{len_na}}]
+                           </span></button>
                      </div>
                   </nav>
                </div>
@@ -366,49 +369,64 @@
                            </div>
                            <div class="product-tab-slider swiper-container">
                               <div class="swiper-wrapper">
+                                 {% for product in Products_bs %}
                                  <div class="swiper-slide">
-                                 {% for product in Products %}
-                                    {% if 'best-seller' in product.category %}
-                                       <div class="single-product single-product-st2">
-                                          <div class="product-image pos-rel">
-                                             <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
-                                             <div class="product-action-bottom">
-                                                <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                                <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                                <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                                             </div>
-                                             <div class="product-action-bottom">
-                                                <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
-                                                   Cart</a>
-                                             </div>
-                                             <div class="product-sticker-wrapper">
-                                                <span class="product-sticker new">New</span>
-                                             </div>
+                                    <div class="single-product single-product-st2">
+                                       <div class="product-image pos-rel">
+                                          <a href="shop-details.html" class=""><img src="/media/{{product.image1}}"
+                                                alt="img"></a>
+                                          <div class="product-action-bottom">
+                                             <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                             <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i
+                                                   class="fal fa-shopping-bag"></i>Add
+                                                to
+                                                Cart</a>
+                                             <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
-                                          <div class="product-desc">
-                                             <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
-                                             <div class="product-price">
-                                                <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                             </div>
-                                             <ul class="product-color-nav">
-                                                {% for image in pr_images %}
-                                                   {% if image.product.id == product.id %}
-                                                   <li class="cl-{{image.image_thumbnail_color}} active">
-                                                      <img src="/media/{{image.images}}" alt="img">
-                                                   </li>
-                                                   {% endif %}
-                                                {% endfor %}
-                                             </ul>
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker new">New</span>
+                                          </div>
+                                          <div class="product-nav">
+                                             <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
+                                             <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
                                           </div>
                                        </div>
-                                    {% endif %}
+                                       <div class="product-desc">
+                                          <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
+                                          </div>
+                                          <div class="product-price">
+                                             <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                          </div>
+                                          <ul class="product-color-nav">
+                                             <li class="cl-brown active">
+                                                <img src="/media/{{product.image1}}" alt="img">
+                                             </li>
+                                             <li class="cl-ash">
+                                                <img src="/media/{{product.image2}}" alt="img">
+                                             </li>
+                                             <li class="cl-black">
+                                                <img src="/media/{{product.image3}}" alt="img">
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
                                  {% endfor %}
+                              </div>
+
+                              <div class="product-tab-pagination-container">
+                                 <div class="container">
+                                    <!-- If we need pagination -->
+                                    <div class="product-tab-pagination"></div>
                                  </div>
                               </div>
                            </div>
+
                         </div>
                      </div>
                      <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab">
+
+
                         <div class="products-wrapper-slide pos-rel">
                            <div class="product-tab-slider-nav">
                               <div class="product-tab-slider-button-prev"><i class="fal fa-long-arrow-left"></i>
@@ -418,49 +436,65 @@
                            </div>
                            <div class="product-tab-slider swiper-container">
                               <div class="swiper-wrapper">
+
+                                 {% for product in Products_hc %}
                                  <div class="swiper-slide">
-                                 {% for product in Products %}
-                                    {% if 'hot-collection' in product.category %}
-                                       <div class="single-product single-product-st2">
-                                          <div class="product-image pos-rel">
-                                             <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
-                                             <div class="product-action-bottom">
-                                                <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                                <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                                <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                                             </div>
-                                             <div class="product-action-bottom">
-                                                <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
-                                                   Cart</a>
-                                             </div>
-                                             <div class="product-sticker-wrapper">
-                                                <span class="product-sticker new">New</span>
-                                             </div>
+                                    <div class="single-product single-product-st2">
+                                       <div class="product-image pos-rel">
+                                          <a href="shop-details.html" class=""><img src="/media/{{product.image1}}"
+                                                alt="img"></a>
+                                          <div class="product-action-bottom">
+                                             <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                             <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i
+                                                   class="fal fa-shopping-bag"></i>Add
+                                                to
+                                                Cart</a>
+                                             <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
-                                          <div class="product-desc">
-                                             <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
-                                             <div class="product-price">
-                                                <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                             </div>
-                                             <ul class="product-color-nav">
-                                                {% for image in pr_images %}
-                                                   {% if image.product.id == product.id %}
-                                                   <li class="cl-{{image.image_thumbnail_color}} active">
-                                                      <img src="/media/{{image.images}}" alt="img">
-                                                   </li>
-                                                   {% endif %}
-                                                {% endfor %}
-                                             </ul>
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker new">New</span>
+                                          </div>
+                                          <div class="product-nav">
+                                             <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
+                                             <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
                                           </div>
                                        </div>
-                                    {% endif %}
+                                       <div class="product-desc">
+                                          <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
+                                          </div>
+                                          <div class="product-price">
+                                             <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                          </div>
+                                          <ul class="product-color-nav">
+                                             <li class="cl-brown active">
+                                                <img src="/media/{{product.image1}}" alt="img">
+                                             </li>
+                                             <li class="cl-ash">
+                                                <img src="/media/{{product.image2}}" alt="img">
+                                             </li>
+                                             <li class="cl-black">
+                                                <img src="/media/{{product.image3}}" alt="img">
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
                                  {% endfor %}
+                                 
+                              </div>
+
+                              <div class="product-tab-pagination-container">
+                                 <div class="container">
+                                    <!-- If we need pagination -->
+                                    <div class="product-tab-pagination"></div>
                                  </div>
                               </div>
                            </div>
+
                         </div>
                      </div>
                      <div class="tab-pane fade" id="nav-3" role="tabpanel" aria-labelledby="nav-3-tab">
+
                         <div class="products-wrapper-slide pos-rel">
                            <div class="product-tab-slider-nav">
                               <div class="product-tab-slider-button-prev"><i class="fal fa-long-arrow-left"></i>
@@ -470,49 +504,63 @@
                            </div>
                            <div class="product-tab-slider swiper-container">
                               <div class="swiper-wrapper">
+                                 {% for product in Products_tr %}
                                  <div class="swiper-slide">
-                                 {% for product in Products %}
-                                    {% if 'trending' in product.category %}
-                                       <div class="single-product single-product-st2">
-                                          <div class="product-image pos-rel">
-                                             <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
-                                             <div class="product-action-bottom">
-                                                <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                                <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                                <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                                             </div>
-                                             <div class="product-action-bottom">
-                                                <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
-                                                   Cart</a>
-                                             </div>
-                                             <div class="product-sticker-wrapper">
-                                                <span class="product-sticker new">New</span>
-                                             </div>
+                                    <div class="single-product single-product-st2">
+                                       <div class="product-image pos-rel">
+                                          <a href="shop-details.html" class=""><img src="/media/{{product.image1}}"
+                                                alt="img"></a>
+                                          <div class="product-action-bottom">
+                                             <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                             <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i
+                                                   class="fal fa-shopping-bag"></i>Add
+                                                to
+                                                Cart</a>
+                                             <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
-                                          <div class="product-desc">
-                                             <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
-                                             <div class="product-price">
-                                                <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                             </div>
-                                             <ul class="product-color-nav">
-                                                {% for image in pr_images %}
-                                                   {% if image.product.id == product.id %}
-                                                   <li class="cl-{{image.image_thumbnail_color}} active">
-                                                      <img src="/media/{{image.images}}" alt="img">
-                                                   </li>
-                                                   {% endif %}
-                                                {% endfor %}
-                                             </ul>
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker new">New</span>
+                                          </div>
+                                          <div class="product-nav">
+                                             <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
+                                             <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
                                           </div>
                                        </div>
-                                    {% endif %}
+                                       <div class="product-desc">
+                                          <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
+                                          </div>
+                                          <div class="product-price">
+                                             <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                          </div>
+                                          <ul class="product-color-nav">
+                                             <li class="cl-brown active">
+                                                <img src="/media/{{product.image1}}" alt="img">
+                                             </li>
+                                             <li class="cl-ash">
+                                                <img src="/media/{{product.image2}}" alt="img">
+                                             </li>
+                                             <li class="cl-black">
+                                                <img src="/media/{{product.image3}}" alt="img">
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
                                  {% endfor %}
+                              </div>
+
+                              <div class="product-tab-pagination-container">
+                                 <div class="container">
+                                    <!-- If we need pagination -->
+                                    <div class="product-tab-pagination"></div>
                                  </div>
                               </div>
                            </div>
+
                         </div>
                      </div>
                      <div class="tab-pane fade" id="nav-4" role="tabpanel" aria-labelledby="nav-4-tab">
+
                         <div class="products-wrapper-slide pos-rel">
                            <div class="product-tab-slider-nav">
                               <div class="product-tab-slider-button-prev"><i class="fal fa-long-arrow-left"></i>
@@ -522,268 +570,70 @@
                            </div>
                            <div class="product-tab-slider swiper-container">
                               <div class="swiper-wrapper">
+
+                                 {% for product in Products_na %}
                                  <div class="swiper-slide">
-                                 {% for product in Products %}
-                                    {% if 'new-arrival' in product.category %}
-                                       <div class="single-product single-product-st2">
-                                          <div class="product-image pos-rel">
-                                             <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image}}" alt="img"></a>
-                                             <div class="product-action-bottom">
-                                                <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                                <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                                <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                                             </div>
-                                             <div class="product-action-bottom">
-                                                <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i class="fal fa-shopping-bag"></i>Add to
-                                                   Cart</a>
-                                             </div>
-                                             <div class="product-sticker-wrapper">
-                                                <span class="product-sticker new">New</span>
-                                             </div>
+                                    <div class="single-product single-product-st2">
+                                       <div class="product-image pos-rel">
+                                          <a href="shop-details.html" class=""><img src="/media/{{product.image1}}"
+                                                alt="img"></a>
+                                          <div class="product-action-bottom">
+                                             <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                             <a href="{% url 'addtocart' product.id %}" class="add-cart-btn"><i
+                                                   class="fal fa-shopping-bag"></i>Add
+                                                to
+                                                Cart</a>
+                                             <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
-                                          <div class="product-desc">
-                                             <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
-                                             <div class="product-price">
-                                                <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                             </div>
-                                             <ul class="product-color-nav">
-                                                {% for image in pr_images %}
-                                                   {% if image.product.id == product.id %}
-                                                   <li class="cl-{{image.image_thumbnail_color}} active">
-                                                      <img src="/media/{{image.images}}" alt="img">
-                                                   </li>
-                                                   {% endif %}
-                                                {% endfor %}
-                                             </ul>
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker new">New</span>
+                                          </div>
+                                          <div class="product-nav">
+                                             <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
+                                             <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
                                           </div>
                                        </div>
-                                    {% endif %}
+                                       <div class="product-desc">
+                                          <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
+                                          </div>
+                                          <div class="product-price">
+                                             <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                          </div>
+                                          <ul class="product-color-nav">
+                                             <li class="cl-brown active">
+                                                <img src="/media/{{product.image1}}" alt="img">
+                                             </li>
+                                             <li class="cl-ash">
+                                                <img src="/media/{{product.image2}}" alt="img">
+                                             </li>
+                                             <li class="cl-black">
+                                                <img src="/media/{{product.image3}}" alt="img">
+                                             </li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </div>
                                  {% endfor %}
+                              </div>
+
+                              <div class="product-tab-pagination-container">
+                                 <div class="container">
+                                    <!-- If we need pagination -->
+                                    <div class="product-tab-pagination"></div>
                                  </div>
                               </div>
                            </div>
+
                         </div>
                      </div>
                   </div>
                </div>
             </div>
-            {% comment %} <div class="row">
-               <div class="col-lg-12">
-                  <div class="product-area-btn mt-10 text-center">
-                     <a href="shop.html" class="border-btn">View All Products</a>
-                  </div>
-               </div>
-            </div> {% endcomment %}
          </div>
       </section>
       <!-- product area end  -->
 
-      {% comment %} <!-- featured product area start  -->
-      <section class="featured-area pt-0">
-         <div class="container">
-            <div class="row justify-content-center">
-               <div class="col-xl-8">
-                  <div class="section-title text-center">
-                     <h2 class="section-main-title mb-50">Featured Products</h2>
-                  </div>
-               </div>
-            </div>
-            <div class="featured-products-wrapper">
-               <div class="row">
-
-                  <div class="col-xxl-6 col-lg-12 order-xxl-last">
-                     <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                           <div class="single-product mb-30 featured-product">
-                              <div class="product-image pos-rel">
-                                 <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="{% static 'assets/img/product/1.png' %}" alt="img"></a>
-                                 <div class="product-action">
-                                    <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                    <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                    <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                                    <a href="#" class="add-cart-btn"><i class="fal fa-shopping-bag"></i></a>
-                                 </div>
-                              </div>
-                              <div class="product-desc">
-                                 <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Ecomart Smart Watch</a></div>
-                                 <div class="product-price">
-                                    <span class="price-now">₹85.00</span>
-                                 </div>
-                                 <ul class="product-color-nav">
-                                    <li class="cl-blue active">
-                                       <img src="{% static 'assets/img/product/1.png' %}" alt="img">
-                                    </li>
-                                    <li class="cl-ash">
-                                       <img src="{% static 'assets/img/product/2.png' %}" alt="img">
-                                    </li>
-                                 </ul>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                           <div class="single-product mb-30 featured-product">
-                              <div class="product-image pos-rel">
-                                 <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="{% static 'assets/img/product/3.png' %}" alt="img"></a>
-                                 <div class="product-action">
-                                    <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                    <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                    <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                                    <a href="#" class="add-cart-btn"><i class="fal fa-shopping-bag"></i></a>
-                                 </div>
-                              </div>
-                              <div class="product-desc">
-                                 <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Phoebe Bucket Crossbody</a></div>
-                                 <div class="product-price">
-                                    <span class="price-now">₹85.00</span>
-                                 </div>
-                                 <ul class="product-color-nav">
-                                    <li class="cl-brown active">
-                                       <img src="{% static 'assets/img/product/3.png' %}" alt="img">
-                                    </li>
-                                    <li class="cl-black">
-                                       <img src="{% static 'assets/img/product/4.png' %}" alt="img">
-                                    </li>
-                                    <li class="cl-wood">
-                                       <img src="{% static 'assets/img/product/5.png' %}" alt="img">
-                                    </li>
-                                 </ul>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                           <div class="single-product mb-30 featured-product">
-                              <div class="product-image pos-rel">
-                                 <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="{% static 'assets/img/product/6.png' %}" alt="img"></a>
-                                 <div class="product-action">
-                                    <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                    <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                    <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                                    <a href="#" class="add-cart-btn"><i class="fal fa-shopping-bag"></i></a>
-                                 </div>
-                              </div>
-                              <div class="product-desc">
-                                 <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Women's Trucker Hat</a>
-                                 </div>
-                                 <div class="product-price">
-                                    <span class="price-now">₹85.00</span>
-                                 </div>
-                                 <ul class="product-color-nav">
-                                    <li class="cl-green active">
-                                       <img src="{% static 'assets/img/product/6.png' %}" alt="img">
-                                    </li>
-                                    <li class="cl-orange">
-                                       <img src="{% static 'assets/img/product/7.png' %}" alt="img">
-                                    </li>
-                                 </ul>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                           <div class="single-product mb-30 featured-product">
-                              <div class="product-image pos-rel">
-                                 <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="{% static 'assets/img/product/11.png' %}"
-                                       alt="img"></a>
-                                 <div class="product-action">
-                                    <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                    <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                    <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                                    <a href="#" class="add-cart-btn"><i class="fal fa-shopping-bag"></i></a>
-                                 </div>
-                              </div>
-                              <div class="product-desc">
-                                 <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Men's Chelsea Boot</a>
-                                 </div>
-                                 <div class="product-price">
-                                    <span class="price-now">₹85.00</span>
-                                 </div>
-                                 <ul class="product-color-nav">
-                                    <li class="cl-black active">
-                                       <img src="{% static 'assets/img/product/11.png' %}" alt="img">
-                                    </li>
-                                    <li class="cl-wood">
-                                       <img src="{% static 'assets/img/product/12.png' %}" alt="img">
-                                    </li>
-                                 </ul>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-lg-6 col-md-6 order-xxl-first">
-                     <div class="single-product mb-30 featured-product">
-                        <div class="product-image pos-rel">
-                           <a href="{% url 'productdetail' pk=1 category_name='Home' %}" class=""><img src="{% static 'assets/img/product/8.png' %}" alt="img"></a>
-                           <div class="product-action">
-                              <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                              <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                              <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                              <a href="#" class="add-cart-btn"><i class="fal fa-shopping-bag"></i></a>
-                           </div>
-                        </div>
-                        <div class="product-desc">
-                           <div class="product-name"><a href="{% url 'productdetail' pk=1 category_name='Home' %}">Men's Quarter-Zip Sweater</a></div>
-                           <div class="product-price">
-                              <span class="price-now">₹85.00</span>
-                           </div>
-                           <ul class="product-color-nav">
-                              <li class="cl-pink active">
-                                 <img src="{% static 'assets/img/product/8.png' %}" alt="img">
-                              </li>
-                              <li class="cl-ash">
-                                 <img src="{% static 'assets/img/product/9.png' %}" alt="img">
-                              </li>
-                              <li class="cl-navy">
-                                 <img src="{% static 'assets/img/product/10.png' %}" alt="img">
-                              </li>
-                           </ul>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section>
-      <!-- featured product area end  --> {% endcomment %}
-
-      {% comment %} <!-- category area start  -->
-      <section class="category-area pt-90 pb-120">
-         <div class="container">
-            <div class="row justify-content-center">
-               <div class="col-xl-8">
-                  <div class="section-title text-center">
-                     <h2 class="section-main-title mb-50">Browse More</h2>
-                  </div>
-               </div>
-            </div>
-            <div class="row">
-               <div class="col-xl-12">
-                  <div class="product-category-wrapper">
-                     {% for banner in Banners %}
-                        {% if banner.banner_status == 'Activate' and 'homepage' in banner.position and 'browse-more' in banner.position and 'bottom' in banner.position %}
-                           <div class="product-category-single pos-rel">
-                              <div class="product-category-img">
-                                 <a href="shop.html"><img src="/media/{{banner.banner_images}}"
-                                       alt="product-img"></a>
-                              </div>
-                              <div class="product-category-inner">
-                                 <div class="product-category-content">
-                                    <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
-                                    <div class="product-meta-item">
-                                       <div class="product-available">{{banner.products_available}}</div>
-                                       <div class="product-meta-type">products</div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        {% endif %}
-                     {% endfor %}
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section>
-      <!-- category area end  --> {% endcomment %}
-
+      
       <!-- features area start  -->
       <div class="features-area features-area1">
          <div class="container">

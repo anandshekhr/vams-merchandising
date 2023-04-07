@@ -25,6 +25,9 @@
    <link rel="stylesheet" href="{% static 'assets/css/flaticon.css' %}">
    <link rel="stylesheet" href="{% static 'assets/css/default.css' %}">
    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+   
+   {% block head %}{% endblock head %}
+   
 </head>
 
 <body>
@@ -44,7 +47,7 @@
                <div class="col-xl-6 col-lg-6 col-md-6">
                   <div class="header-top-link">
                      <a href="{% url 'about-us' %}" class="text-btn">About Us</a>
-                     {% comment %} <a href="{% url 'login-user' %}" class="text-btn">My account</a> {% endcomment %}
+                     <a href="{% url 'user-dashboard' %}" class="text-btn">My account</a>
                   </div>
                </div>
                <div class="col-xl-6 col-lg-6 col-md-6">
@@ -131,13 +134,25 @@
                            <div class="action-item action-item-cart">
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-shopping-bag"></i>
+                                 {% if cart.get_quantity %}
                                  <span class="action-item-number">{{cart.get_quantity}}</span></a>
+                                 {% else %}
+                                 <span class="action-item-number">0</span></a>
+                                 {% endif %}
+                              {% if cart.get_total %}
                               <a href="#" class="cart-items-price">₹{{cart.get_total|floatformat:2}}</a>
+                              {% else %}
+                              <a href="#" class="cart-items-price">₹0.00</a>
+                              {% endif %}
                            </div>
                            <div class="action-item action-item-wishlist">
                               <a href="javascript:void(0)" class="view-wishlist-button">
                                  <i class="fal fa-heart"></i>
+                                 {% if wishlist.get_quantity %}
                                  <span class="action-item-number">{{wishlist.get_quantity}}</span></a>
+                                 {% else %}
+                                 <span class="action-item-number">0</span></a>
+                                 {% endif %}
                            </div>
                            {% if request.user.is_authenticated %}
                            <div class="user-btn">
@@ -315,7 +330,7 @@
                {% for cart_items in cart.items.all %}
                <div class="sidebar-list-item">
                   <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=cart_items.item.id %}" class=""><img src="/media/{{cart_items.item.image}}" alt="img"></a>
+                     <a href="{% url 'productdetail' pk=cart_items.item.id %}" class=""><img src="/media/{{cart_items.item.image1}}" alt="img"></a>
                   </div>
                   <div class="product-desc">
                      <div class="product-name"><a href="{% url 'productdetail' pk=cart_items.item.id %}">{{cart_items.item.name}}</a></div>
@@ -326,11 +341,19 @@
                      <a href="{% url 'delete-from-cart' cart_items.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
                </div>
+               {% empty %}
+                                <tr>
+                                    <td colspan='6'>Your cart is empty</td>
+                                </tr>
                {% endfor %}
             </div>
             <div class="product-price-total">
                <span>Subtotal :</span>
+               {% if cart.get_total %}
                <span class="subtotal-price">₹{{cart.get_total|floatformat:2}}</span>
+               {% else %}
+                <span class="subtotal-price">₹0.00</span>
+               {% endif %}
             </div>
             <div class="sidebar-action-btn">
                <a href="{% url 'cartview' %}" class="fill-btn">View cart</a>
@@ -346,7 +369,7 @@
                {% for item in wishlist.items.all %}
                <div class="sidebar-list-item">
                   <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=item.item.id %}" class=""><img src="/media/{{item.item.image}}" alt="img"></a>
+                     <a href="{% url 'productdetail' pk=item.item.id %}" class=""><img src="/media/{{item.item.image1}}" alt="img"></a>
                   </div>
                   <div class="product-desc">
                      <div class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></div>
@@ -356,11 +379,19 @@
                      <a href="{% url 'delete-item-from-wishlist' item.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
                </div>
+               {% empty %}
+                                <tr>
+                                    <td colspan='6'>No item in wishlist</td>
+                                </tr>
                {% endfor %}
             </div>
             <div class="product-price-total">
                <span>Subtotal :</span>
+               {% if wishlist.get_total %}
                <span class="subtotal-price">₹{{wishlist.get_total|floatformat:2}}</span>
+               {% else %}
+                <span class="subtotal-price">₹0.00</span>
+               {% endif %}
             </div>
             <div class="sidebar-action-btn">
                <a href="{% url 'wishlist-view' %}" class="fill-btn">View Wishlist</a>

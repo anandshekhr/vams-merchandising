@@ -8,7 +8,8 @@ from .utils import FloatConverter
 register_converter(FloatConverter, 'float')
 
 urlpatterns = [
-    path("addtocart/<int:pk>",addToCart,name="addtocart"),
+    path("addtocart/<int:pk>", addToCart, name="addtocart"),
+    path("addtocart/<int:pk>/<int:qty>", addToCartQuantity, name="add-to-cart-qty"),
     path("api/v1/customer/order/add/",CartAddView.as_view(),name="addtocartapi"),
     path("ordersummary/",cartCheckoutPageView,name="cartview"),
     path("checkout/",checkoutPage,name="payment-checkout"),

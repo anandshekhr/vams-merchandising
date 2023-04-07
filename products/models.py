@@ -50,7 +50,11 @@ class Products(models.Model):
         _("Product Category"), max_length=255, choices=CATEGORIES, null=True, blank=True), null=True)
     max_retail_price = models.DecimalField(
         _("MRP (in Rs.)"), max_digits=8, decimal_places=2, null=True)
-    image = models.ImageField(_("Product Main Image"), upload_to="product/media/mainImage/%Y/%m/%d",
+    image1 = models.ImageField(_("Product Image 1"), upload_to="product/media/mainImage/%Y/%m/%d",
+                              height_field=None, width_field=None, max_length=None, null=True, default=None, blank=True)
+    image2 = models.ImageField(_("Product Image 2"), upload_to="product/media/secondaryImage/%Y/%m/%d",
+                              height_field=None, width_field=None, max_length=None, null=True, default=None, blank=True)
+    image3 = models.ImageField(_("Product Image 3"), upload_to="product/media/tertiaryImage/%Y/%m/%d",
                               height_field=None, width_field=None, max_length=None, null=True, default=None, blank=True)
     brand = models.CharField(_("Brand"), max_length=50, null=True, blank=True)
     vendor = models.CharField(

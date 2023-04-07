@@ -14,13 +14,23 @@ def addVariableBaseTemplate(request):
             'cart': cartitems,
             'wishlist':wishlist_items,
             }
-    except Order.DoesNotExist or Wishlist.DoesNotExist:
+    except Order.DoesNotExist:
         return {
             'cart': {
                 'name':'Does not exist'
             },
             'wishlist':{
                 'name':'Does not exist'
+            }
+        }
+
+    except Wishlist.DoesNotExist:
+        return {
+            'cart': {
+                'name': 'Does not exist'
+            },
+            'wishlist': {
+                'name': 'Does not exist'
             }
         }
 

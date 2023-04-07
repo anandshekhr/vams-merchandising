@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock title %}
+{% block head %}
+   <link rel="stylesheet" href="{% static 'style.css' %}">
+
+{% endblock head %}
+{% block body %}
+
+<main>
+    <div class="das-nav md-mt-6 p-0 bg-current-shade bg-image-bottomcenter bg-image-cover" style="background-image: url({% if request.user.timeline_image %}{{request.user.timeline_image.url}}{% else %}{% static 'assets/img/dashboard/timeline-1.jpg' %}{% endif %});">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 ps-4 offset-lg-4 d-flex align-items-start flex-column h-250">
+                    <h1 class="mt-lg-auto mb-4 mt-5 display3-size display1-sm-size text-dark-900 fw-700">Dashboard</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-div pb-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card rounded-10 shadow-xss p-4 border-0 mt-n10">
+                        <div class="card-body text-center">
+                            {% if request.user.avatar %}
+                            <figure class="avatar ms-auto me-auto mb-0 mt-0 w100"><img src="/media/{{request.user.avatar}}" alt="image" class="shadow-sm rounded-circle w-125"></figure>
+                            {% else %}
+                            <figure class="avatar ms-auto me-auto mb-0 mt-0 w100"><img src="{% static 'assets/img/dashboard/profile.png' %}" alt="image" class="shadow-sm rounded-circle w-125"></figure>
+                            {% endif %}
+                            <h4 class="fw-700 text-grey-900 white-text font-sm mb-0 mt-3">{{request.user.user_full_name}}</h4>
+                            <span class="fw-600 font-xssss text-grey-500 mt-0 d-block">@{{request.user.username}}</span>
+                        </div>
+                        <div class="card-body p-0 mt-4">
+                            <ul class="list-inline mb-0">
+                                <li class="list-inline-item d-block me-0"><a href="{% url 'user-dashboard' %}" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-sm bg-primary-gradiant text-white feather-home font-xss me-3"></i> <h4 class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Dashboard</h4><i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i></a></li>
+                                <li class="list-inline-item d-block me-0"><a href="{% url 'profile-address' %}" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-sm bg-gold-gradiant text-white feather-map-pin font-xss me-3"></i> <h4 class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Saved Address</h4><i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i></a></li>
+                                <li class="list-inline-item d-block me-0"><a href="{% url 'profile-orders' %}" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-sm bg-mini-gradiant text-white feather-hard-drive font-xss me-3"></i> <h4 class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Orders</h4><i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i></a></li>
+                                <li class="list-inline-item d-block me-0"><a href="{% url 'profile-coupon' %}" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-sm bg-skype text-white feather-award font-xss me-3"></i> <h4 class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Coupon</h4><i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i></a></li>
+                                {% comment %} <li class="list-inline-item d-block me-0"><a href="{% url 'profile-payments' %}" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-sm bg-current-gradiant text-white feather-credit-card font-xss me-3"></i> <h4 class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Payment</h4><i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i></a></li> {% endcomment %}
+                                <li class="list-inline-item d-block me-0"><a href="{% url 'profile-notification' %}" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-sm bg-blue-gradiant text-white feather-bell font-xss me-3"></i> <h4 class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Notification</h4><i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i></a></li>
+                                <li class="list-inline-item d-block me-0"><a href="{% url 'logout-user' %}" class="pt-2 pb-2 d-flex align-items-center"><i class="btn-round-sm bg-red-gradiant text-white feather-lock font-xss me-3"></i> <h4 class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Logout</h4><i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% block profile %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+</main>
+    {% endblock body %}

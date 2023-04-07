@@ -291,3 +291,6 @@ def set_primary_address(request, pk):
         address.set_default == True
         address.save()
     return redirect('profile-address')
+
+def userDashboard(request):
+    return render(request,"user/dashboard.html")
