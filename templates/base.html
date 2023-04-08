@@ -47,7 +47,11 @@
                <div class="col-xl-6 col-lg-6 col-md-6">
                   <div class="header-top-link">
                      <a href="{% url 'about-us' %}" class="text-btn">About Us</a>
+                  {% if request.user.is_authenticated %}
                      <a href="{% url 'user-dashboard' %}" class="text-btn">My account</a>
+                  {% else %}
+                     <a href="{% url 'login-user' %}" class="text-btn">My account</a>
+                  {% endif %}
                   </div>
                </div>
                <div class="col-xl-6 col-lg-6 col-md-6">
@@ -430,15 +434,15 @@
                <div class="col-lg-3 col-md-6 col-sm-6">
                   <div class="footer-widget footer1-widget footer1-widget2 mb-40">
                      <div class="footer-widget-title">
-                        <h4>Category</h4>
+                        <h4>Pages</h4>
                      </div>
                      <ul>
-                        <li><a href="#">Handbags & Wallets</a></li>
-                        <li><a href="#">Women's Clothing</a></li>
-                        <li><a href="#">Plus Sizes</a></li>
-                        <li><a href="#">Complete Your Look</a></li>
-                        <li><a href="#">Baby Corner</a></li>
-                        <li><a href="#">Man & Woman Shoe</a></li>
+                        <li><a href="{% url 'login-user' %}">Login</a></li>
+                        <li><a href="{% url 'register-user' %}">Register</a></li>
+                        <li><a href="{% url 'user-dashboard' %}">My Account</a></li>
+                        <li><a href="{% url 'cartview' %}">Cart</a></li>
+                        <li><a href="{% url 'wishlist-view' %}">Wishlist</a></li>
+                        <li><a href="#">Track Order</a></li>
                      </ul>
                   </div>
                </div>

@@ -25,6 +25,7 @@ api = Instamojo(api_key=settings.API_KEY,
 User = get_user_model()
 
 
+
 @login_required
 def addToCart(request, pk):
 
@@ -281,7 +282,7 @@ def orderPaymentRequest(request, amount):
     
     if orderNotes:
         order.orderNote = orderNotes
-
+    domain_name = request.get_host()
     response = api.payment_request_create(
         amount=str(amount),
         purpose='test_purchase',
@@ -463,23 +464,23 @@ def failed_payment_page(request, pk):
 
 def addToCartWithSizeQuantity(request,pk):
 
-    # current_site = get_current_site(request)
-    # domain_name = current_site.domain
-    # print(domain_name)
+    current_site = get_current_site(request)
+    domain_name = request.get_host()
+    print(domain_name)
     
     if request.method == "POST":
         size = request.POST.get('choose-size')
-        print(size)
+        # print(size)
         qty = request.POST.get('pro-qty')
 
-        print(qty)
+        # print(qty)
     user = Token.objects.get(user=request.user)
-    api_url = "http://127.0.0.1:8000/api/v1/customer/order/add/"
+    api_url = "http://"+domain_name+"/api/v1/customer/order/add/"
     headers ={'Authorization':f'Token {user}'}
     data = {'product':pk,'quantity':qty,'size':size}
-    print(data)
+    # print(data)
     response = requests.post(url=api_url,data=data,headers=headers)
-    print(response.json())
+    # print(response.json())
         
     
     return redirect("cartview")

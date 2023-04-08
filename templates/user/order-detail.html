@@ -1,0 +1,108 @@
+{% extends 'user/base.html' %}
+{% block profile %}
+<div class="col-lg-8 pb-5 pt-4 ps-4">
+<div class="card border-0">
+    <div class="table-content table-responsive">
+        <table class="table text-center mb-0">
+            <thead class="bg-greylight rounded-10 ovh">
+                <tr>
+                    <th class="border-0 p-3">&nbsp;</th>
+                    <th class="border-0 p-3">&nbsp;</th>
+                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Size</th>
+                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Quantity</th>
+                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Price</th>
+                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Date</th>
+                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Status</th>
+                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders.items.all %}
+                <tr>
+                    <td>
+                        <div class="form-check mt-1">
+                            <input class="form-check-input" type="checkbox" value="option1" aria-label="">
+                            <label class="text-grey-500 font-xssss"></label>
+                        </div>
+                    </td>
+                    
+                    <td class="product-thumbnail text-start ps-0">
+                        <img src="/media/{{order.item.image1}}" alt="product-image"
+                            class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6">
+                    </td>
+                    
+                    <td class="product-p">
+                        <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
+                                class="font-xsssss text-grey-500"></span>{{order.size}}</h6>
+                    </td>
+                    <td class="product-p">
+                        <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
+                                class="font-xsssss text-grey-500"></span>{{order.quantity}}</h6>
+                    </td>
+                    <td class="product-p">
+                        <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
+                                class="font-xsssss text-grey-500">₹</span>{{order.get_final_price|floatformat:2}}</h6>
+                    </td>
+                    <td class="product-quantity">
+                        <span class="money text-grey-500 ls-3 font-xsssss fw-700">{{orders.ordered_date|date}}</span>
+                    </td>
+                    <td class="product-total-price">
+                        </span>
+                        {% if order.ordered %}
+                        <span
+                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Confirmed</span>
+                        {% else %}
+                        <span
+                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-danger d-inline-block text-danger mb-1">Pending</span> 
+                        {% endif %}
+                        {% if order.being_delivered %}
+                        <span
+                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Shipped</span> 
+                        {% endif %}
+                        {% if order.received %}
+                        <span
+                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Delivered</span> 
+                        {% endif %}
+                        {% if order.refund_requested%}
+                        <span
+                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refund Requested</span> 
+                        {% endif %}
+                        {% if order.refund_granted %}
+                        <span
+                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refunded</span> 
+                        {% endif %}
+                    </td>
+                    <td class="product-remove text-right">
+                        <a href="#"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>
+                        <a href="#"><i class="ti-trash font-xs text-grey-500"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end mt-4">
+            {% if page_orders.has_previous %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{page_orders.previous_page_number}}"><i class="feather-chevrons-left"></i></a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="?page={{page_orders.previous_page_number}}"><i class="feather-chevrons-left"></i></a>
+            </li>
+            {% endif %}
+            <li class="page-item active"><a class="page-link" href="#">{{page_orders.number}}</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#"><i class="feather-chevrons-right"></i></a>
+            </li>
+            {% if page_orders.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{page_orders.next_page_number}}"><i class="feather-chevrons-right"></i></a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+<div>
+{% endblock profile %}

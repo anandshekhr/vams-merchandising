@@ -23,10 +23,10 @@
                             <label class="text-grey-500 font-xssss"></label>
                         </div>
                     </td>
-                    {% for item in order.items.all %}
+                    {% for item in order.items.all|slice:":1" %}
                     <td class="product-thumbnail text-start ps-0">
-                        <img src="/media/{{item.item.image}}" alt="product-image"
-                            class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6">
+                        <a href="{% url 'orderhistorydetail' order.id %}"><img src="/media/{{item.item.image1}}" alt="product-image"
+                            class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
                     </td>
                     {% endfor %}
                     <td class="product-p">
@@ -63,7 +63,7 @@
                         {% endif %}
                     </td>
                     <td class="product-remove text-right">
-                        <a href="#"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>
+                        <a href="{% url 'orderhistorydetail' order.id %}"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>
                         <a href="#"><i class="ti-trash font-xs text-grey-500"></i></a>
                     </td>
                 </tr>

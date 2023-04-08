@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib import auth,messages
@@ -123,11 +124,10 @@ def userOrderDetail(request):
 def userOrderDetailExpanded(request, pk):
     if request.user:
         order_detail = Order.objects.get(user=request.user.id, pk=pk)
-        print(order_detail)
     context = {
         'orders': order_detail
     }
-    return render(request, "order_history.html", context)
+    return render(request, "user/order-detail.html", context)
 
 
 @api_view(['POST'])
@@ -230,8 +230,7 @@ def user_orders(request):
     if request.user:
         # fetching all post objects from database
         orders = Order.objects.filter(user=request.user.id)
-        # orders = Order.objects.all()
-        print(orders)
+    
         if len(orders) > 5:
             p = Paginator(orders, 5)  # creating a paginator object
             # getting the desired page number from url
