@@ -17,6 +17,7 @@ CATEGORIES = (('new-arrival', 'New Arrival'), ('best-seller', 'Best Seller'), ('
               ('Featured Products', 'Featured Products'), ('kids-collection', 'Kids Collection'),('hot-collection','Hot Collection'))
 TAGS = (('cotton', 'Cotton'), ('synthetic',
                                'Synthetic'), ('woolen', 'Woolen'), ('polyster', 'Polyster'),)
+SIZES = (('XS','XS'),('S','S'),('M','M'),('L','L'),('XL','XL'),('XXL','XXL'),('XXL','XXL'))
 
 
 def user_directory_path(instance, filename):
@@ -57,6 +58,8 @@ class Products(models.Model):
     image3 = models.ImageField(_("Product Image 3"), upload_to="product/media/tertiaryImage/%Y/%m/%d",
                               height_field=None, width_field=None, max_length=None, null=True, default=None, blank=True)
     brand = models.CharField(_("Brand"), max_length=50, null=True, blank=True)
+    available_sizes = ModifiedArrayField(models.CharField(
+        _("Product Available"), max_length=255, choices=SIZES, null=True, blank=True), null=True)
     vendor = models.CharField(
         _("Vendor"), max_length=50, null=True, blank=True)
     tags = ModifiedArrayField(models.CharField(

@@ -1,4 +1,6 @@
 # from django.shortcuts import render
+from rest_framework.authtoken.models import Token
+from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect, HttpResponse, get_list_or_404, get_object_or_404
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib import auth, messages
@@ -16,6 +18,7 @@ from stores.models import *
 from wishlist.models import *
 from user.models import UserAddresses
 from instamojo_wrapper import Instamojo
+import requests
 api = Instamojo(api_key=settings.API_KEY,
                 auth_token=settings.AUTH_TOKEN, endpoint='https://test.instamojo.com/api/1.1/')
 
@@ -61,49 +64,6 @@ def addToCart(request, pk):
         order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
         return redirect("cartview")
-
-
-@login_required
-def addToCartQuantity(request, pk, qty):
-
-    item = get_object_or_404(Products, id=pk)
-    order_item, created = Cart.objects.get_or_create(
-        item=item,
-        user=request.user,
-        ordered=False
-    )
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(item__id=item.id).exists() and item.stock > 0:
-            order_item.quantity += 1
-            item.stock = item.stock - 1
-            item.save()
-            order_item.save()
-            messages.info(request, "This item quantity was updated.")
-            return redirect("cartview")
-
-        elif item.stock > 0:
-            order.items.add(order_item)
-            item.stock = item.stock - 1
-            item.save()
-            messages.info(request, "This item was added to your cart.")
-            return redirect("cartview")
-
-        else:
-            messages.info(request, "Item Out of Stock")
-            return redirect("/")
-
-    else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date)
-        order.items.add(order_item)
-        messages.info(request, "This item was added to your cart.")
-        return redirect("cartview")
-
-
 
 @login_required
 def moveToCart(request, pk):
@@ -428,7 +388,7 @@ class CartAddView(APIView):
         try:
             itemsForCartPage = Order.objects.get(
                 user=request.user.id, ordered=False)
-            serializer = OrderSerializer(instance=itemsForCartPage,many=True)
+            serializer = OrderSerializer(instance=itemsForCartPage)
             return Response(serializer.data,status=status.HTTP_200_OK)
         except Order.DoesNotExist:
             return Response({'data':'No items in cart'},status=status.HTTP_204_NO_CONTENT)
@@ -437,9 +397,12 @@ class CartAddView(APIView):
         data = request.data
         product_pk = data.get('product')
         quantity = int(data.get('quantity'))
-        item = get_object_or_404(Products, pk=product_pk)
+        req_size = data.get('size')
+        item = get_object_or_404(Products, pk=product_pk,available_sizes__contains=[req_size])
         order_item, created = Cart.objects.get_or_create(
             item=item,
+            quantity =quantity,
+            size = req_size,
             user=request.user,
             ordered=False
         )
@@ -447,13 +410,11 @@ class CartAddView(APIView):
         if order_qs.exists():
             order = order_qs[0]
             # check if the order item is in the order
-            if order.items.filter(item__id=item.id).exists() and item.stock > 0:
+            if order.items.filter(item__id=item.id,size = req_size).exists() and item.stock > 0:
                 order_item.quantity += quantity
                 item.stock = item.stock - quantity
                 item.save()
                 order_item.save()
-
-                 
             elif item.stock > 0:
                 order.items.add(order_item)
                 item.stock = item.stock - quantity
@@ -498,3 +459,27 @@ def failed_payment_page(request, pk):
         'order': order
     }
     return render(request, "payment-failed.html", context)
+
+
+def addToCartWithSizeQuantity(request,pk):
+
+    # current_site = get_current_site(request)
+    # domain_name = current_site.domain
+    # print(domain_name)
+    
+    if request.method == "POST":
+        size = request.POST.get('choose-size')
+        print(size)
+        qty = request.POST.get('pro-qty')
+
+        print(qty)
+    user = Token.objects.get(user=request.user)
+    api_url = "http://127.0.0.1:8000/api/v1/customer/order/add/"
+    headers ={'Authorization':f'Token {user}'}
+    data = {'product':pk,'quantity':qty,'size':size}
+    print(data)
+    response = requests.post(url=api_url,data=data,headers=headers)
+    print(response.json())
+        
+    
+    return redirect("cartview")

@@ -49,6 +49,7 @@
                         <tr>
                            <th class="product-thumbnail">Images</th>
                            <th class="cart-product-name">Product</th>
+                           <th class="product-size">Size</th>
                            <th class="product-price">Unit Price</th>
                            <th class="product-quantity">Quantity</th>
                            <th class="product-subtotal">Total</th>
@@ -61,6 +62,7 @@
                            <td class="product-thumbnail"><a href="{% url 'productdetail' obj.item.id %}"><img
                                     src="/media/{{obj.item.image1}}" alt="img"></a></td>
                            <td class="product-name"><a href="shop-details.html">{{obj.item.name}}</a></td>
+                           <td class="product-size"><a href="#">{{obj.size}}</a></td>
                            <td class="product-price"><span class="amount">₹{{obj.item.list_price|floatformat:2}}</span></td>
                            <td class="product-quantity text-center">
                               <div class="product-quantity mt-10 mb-10">

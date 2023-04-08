@@ -373,7 +373,7 @@
                                  <div class="swiper-slide">
                                     <div class="single-product single-product-st2">
                                        <div class="product-image pos-rel">
-                                          <a href="shop-details.html" class=""><img src="/media/{{product.image1}}"
+                                          <a href="{% url 'productdetail' product.id %}" class=""><img src="/media/{{product.image1}}"
                                                 alt="img"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>

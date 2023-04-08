@@ -334,6 +334,7 @@
                   </div>
                   <div class="product-desc">
                      <div class="product-name"><a href="{% url 'productdetail' pk=cart_items.item.id %}">{{cart_items.item.name}}</a></div>
+                     <div class="product-size">Size: {{cart_items.size}}</div>
                      <div class="product-pricing">
                         <span class="item-number">{{cart_items.quantity}} &times;</span>
                         <span class="price-now">₹{{cart_items.get_final_price|floatformat:2}}</span>
@@ -373,6 +374,8 @@
                   </div>
                   <div class="product-desc">
                      <div class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></div>
+                     <div class="product-size">Size: {{item.size}}</div>
+                     <div class="product-quantity">Quantity: {{item.quantity}}</div>
                      <div class="product-pricing">
                         <span class="price-now">₹{{item.item.list_price|floatformat:2}}</span>
                      </div>

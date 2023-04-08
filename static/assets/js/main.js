@@ -688,8 +688,11 @@
 })(jQuery);
 
 function onClickAddToCartQuantity(product_id) {
-	console.log('printCall')
+	// console.log('printCall')
 	var qty = document.getElementById('pro-qty').value;
+	console.log(qty);
+	var size = document.querySelectorAll("");
+	console.log(size);
 	var url = "{% url 'productdetail' pk=" + product_id + " qty=" + qty + " %}";
-	window.location.href = url;
+	// window.location.href = url;
 }

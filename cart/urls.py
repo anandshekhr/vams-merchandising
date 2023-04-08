@@ -9,20 +9,24 @@ register_converter(FloatConverter, 'float')
 
 urlpatterns = [
     path("addtocart/<int:pk>", addToCart, name="addtocart"),
-    path("addtocart/<int:pk>/<int:qty>", addToCartQuantity, name="add-to-cart-qty"),
-    path("api/v1/customer/order/add/",CartAddView.as_view(),name="addtocartapi"),
+#     path("addtocart/<int:pk>/<int:qty>", addToCartQuantity, name="add-to-cart-qty"),
+    path("cart/add/<int:pk>", addToCartWithSizeQuantity,name="add-to-cart-size-qty"),
     path("ordersummary/",cartCheckoutPageView,name="cartview"),
     path("checkout/",checkoutPage,name="payment-checkout"),
     path("removesingleitemfromcart/<int:pk>",removeSingleItemFromCart,name="removesingleitemfromcart"),
     path("payment/checkout/<float:amount>",orderPaymentRequest,name="paymentcheckout"),
     path("paymentstatusupdate/",paymentStatusAndOrderStatusUpdate,name="paymentstatusupdate"),
     path("cart/delete/item/<int:pk>",deleteItemFromCart,name="delete-from-cart"),
-    path("cart/move/<int:pk>",moveToCart,name="move-to-cart"),
     path("order-summary/<int:pk>/", order_summary, name="ordersummary"),
     path("payment-pending/<int:pk>/",
          pending_payment_page, name="pending-payment"),
     path("payment-failed/<int:pk>/",
          failed_payment_page, name="failed-payment"),
+    path("cart/move-to-cart/<int:pk>", moveToCart,name="move-to-cart"),
+
+     # api
+     path("customer/order/add/",
+          CartAddView.as_view(), name="addtocartapi"),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

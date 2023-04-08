@@ -18,6 +18,7 @@ from random import randint
 from cart.models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
+from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
@@ -49,7 +50,8 @@ def register(request):
                     user = User.objects.create_user(
                         first_name=first_name,last_name=last_name,mobile=phone_number, email=email, password=password)
                     user.save()
-                    messages.success(request,"Account Registered, Please Login Again!")
+                    token, created = Token.objects.get_or_create(user=user)
+                    messages.success(request,f"Account Registered, Please Login Again!")
                     return redirect('login-user')
         else:
             messages.info(request,"Password didn;t matched!")

@@ -16,12 +16,14 @@ class Cart(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    size = models.CharField(_("Item Size"), max_length=50,
+                            null=True, blank=True, default="L")
     
     class Meta:
         verbose_name_plural = 'Cart'
 
     def __str__(self):
-        return f"{self.quantity} of {self.item.name}"
+        return f"{self.quantity} Size:{self.size} of {self.item.name}"
 
     def get_total_item_price(self):
         return self.quantity * self.item.max_retail_price
