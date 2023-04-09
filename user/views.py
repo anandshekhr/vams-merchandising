@@ -120,12 +120,16 @@ def userOrderDetail(request):
         }
     return render(request, "user-order-detail.html", context)
 
+from datetime import date,datetime,timedelta
 
 def userOrderDetailExpanded(request, pk):
     if request.user:
         order_detail = Order.objects.get(user=request.user.id, pk=pk)
+        expected_delivery = datetime.strptime(
+            str(order_detail.ordered_date), '%Y-%m-%d %H:%M:%S%z')+timedelta(days=6)
     context = {
-        'orders': order_detail
+        'orders': order_detail,
+        'expected_delivery_date':expected_delivery
     }
     return render(request, "user/order-detail.html", context)
 
@@ -276,7 +280,8 @@ def user_coupon(request):
 
 
 def user_notification(request):
-    return render(request, "user/notification.html")
+    notifications = request.user.notifications.filter(is_read=False)
+    return render(request, "user/notification.html",{'notifications': notifications})
 
 
 def delete_user_address(request, pk):

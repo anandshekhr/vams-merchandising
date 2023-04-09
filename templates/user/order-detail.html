@@ -1,108 +1,70 @@
 {% extends 'user/base.html' %}
 {% block profile %}
 <div class="col-lg-8 pb-5 pt-4 ps-4">
-<div class="card border-0">
-    <div class="table-content table-responsive">
-        <table class="table text-center mb-0">
-            <thead class="bg-greylight rounded-10 ovh">
-                <tr>
-                    <th class="border-0 p-3">&nbsp;</th>
-                    <th class="border-0 p-3">&nbsp;</th>
-                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Size</th>
-                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Quantity</th>
-                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Price</th>
-                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Date</th>
-                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Status</th>
-                    <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">&nbsp;</th>
-                </tr>
-            </thead>
-            <tbody>
+<div class="container">
+    <article class="card">
+        <header class="card-header"> My Orders / Tracking </header>
+        <div class="card-body">
+            <h6>Order ID: {{orders.sid}}</h6>
+            <article class="card">
+                <div class="card-body row">
+                    <div class="col"> <strong>Estimated Delivery time:</strong> <br>{{expected_delivery_date}} </div>
+                    {% if orders.shipped %}
+                    <div class="col"> <strong>Shipping BY:</strong> <br> {{orders.shipping_by.name}} | <i class="fa fa-phone"></i> {{orders.shipping_by.customer_care}} </div>
+                    {% endif %}
+                    <div class="col"> <strong>Status:</strong> <br> {{orders.status}}</div>
+                    {% if orders.tracking_id %}
+                    <div class="col"> <strong>Tracking #:</strong> <br> {{orders.tracking_id}} </div>
+                    {% endif %}
+                </div>
+            </article>
+            <div class="track">
+                {% if orders.ordered %}
+                <div class="step active"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Order confirmed</span> </div>
+                {% else %}
+                <div class="step"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Order confirmed</span> </div>
+                {% endif %}
+                {% if orders.shipped %}
+                <div class="step active"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text"> Shipped</span> </div>
+                {% else %}
+                <div class="step"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text"> Shipped</span> </div>
+                {% endif %}
+
+                {% if orders.shipped %}
+                <div class="step active"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text"> On the way </span> </div>
+                {% else %}
+                <div class="step"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text"> On the way </span> </div>
+                {% endif %}
+
+                {% if orders.out_for_delivery %}
+                <div class="step active"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Out for Delivery</span> </div>
+                {% else %}
+                <div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Out for Delivery</span> </div>
+                {% endif %}
+
+                {% if orders.delivered %}
+                <div class="step active"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Delivered</span> </div>
+                {% else %}
+                <div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Delivered</span> </div>
+                {% endif %}
+            </div>
+            <hr>
+            <ul class="row">
                 {% for order in orders.items.all %}
-                <tr>
-                    <td>
-                        <div class="form-check mt-1">
-                            <input class="form-check-input" type="checkbox" value="option1" aria-label="">
-                            <label class="text-grey-500 font-xssss"></label>
-                        </div>
-                    </td>
-                    
-                    <td class="product-thumbnail text-start ps-0">
-                        <img src="/media/{{order.item.image1}}" alt="product-image"
-                            class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6">
-                    </td>
-                    
-                    <td class="product-p">
-                        <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
-                                class="font-xsssss text-grey-500"></span>{{order.size}}</h6>
-                    </td>
-                    <td class="product-p">
-                        <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
-                                class="font-xsssss text-grey-500"></span>{{order.quantity}}</h6>
-                    </td>
-                    <td class="product-p">
-                        <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
-                                class="font-xsssss text-grey-500">₹</span>{{order.get_final_price|floatformat:2}}</h6>
-                    </td>
-                    <td class="product-quantity">
-                        <span class="money text-grey-500 ls-3 font-xsssss fw-700">{{orders.ordered_date|date}}</span>
-                    </td>
-                    <td class="product-total-price">
-                        </span>
-                        {% if order.ordered %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Confirmed</span>
-                        {% else %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-danger d-inline-block text-danger mb-1">Pending</span> 
-                        {% endif %}
-                        {% if order.being_delivered %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Shipped</span> 
-                        {% endif %}
-                        {% if order.received %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Delivered</span> 
-                        {% endif %}
-                        {% if order.refund_requested%}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refund Requested</span> 
-                        {% endif %}
-                        {% if order.refund_granted %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refunded</span> 
-                        {% endif %}
-                    </td>
-                    <td class="product-remove text-right">
-                        <a href="#"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>
-                        <a href="#"><i class="ti-trash font-xs text-grey-500"></i></a>
-                    </td>
-                </tr>
+                <li class="col-md-4">
+                    <figure class="itemside mb-3">
+                        <div class="aside"><img src="/media/{{order.item.image1}}" class="img-sm border"></div>
+                        <figcaption class="info align-self-center">
+                            <p class="title">{{order.item.name}} <br>Size: {{order.size}} <br>Qty: {{order.quantity}}</p> <span class="text-muted">₹{{order.get_final_price|floatformat:2}} </span>
+                        </figcaption>
+                    </figure>
+                </li>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-end mt-4">
-            {% if page_orders.has_previous %}
-            <li class="page-item active">
-                <a class="page-link" href="?page={{page_orders.previous_page_number}}"><i class="feather-chevrons-left"></i></a>
-            </li>
-            {% else %}
-            <li class="page-item disabled">
-                <a class="page-link" href="?page={{page_orders.previous_page_number}}"><i class="feather-chevrons-left"></i></a>
-            </li>
-            {% endif %}
-            <li class="page-item active"><a class="page-link" href="#">{{page_orders.number}}</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#"><i class="feather-chevrons-right"></i></a>
-            </li>
-            {% if page_orders.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{page_orders.next_page_number}}"><i class="feather-chevrons-right"></i></a>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
+            </ul>
+            <hr>
+            <a href="{% url 'profile-orders' %}" class="btn btn-outline-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
+        </div>
+    </article>
 </div>
 <div>
 {% endblock profile %}

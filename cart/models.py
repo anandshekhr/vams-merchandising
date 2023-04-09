@@ -3,11 +3,12 @@ from django.conf import settings
 from stores.models import *
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from datetime import date
 
 
 User = get_user_model()
 
-
+STATUS =(('shipped','SHIPPED'),('ordered','ORDERED'),('in-transit','IN TRANSIT'),('out-for-delivery','OUT FOR DELIVERY'),('delivered','DELIVERED'),('refund-requested','REFUND REQUESTED'),('refunded','REFUNDED'))
 
 # Create your models here.
 class Cart(models.Model):
@@ -45,14 +46,28 @@ class Cart(models.Model):
     def get_product_name(self):
         return self.item.name
 
+
+class DeliveryPartnerDetails(models.Model):
+    name = models.CharField(_("Courier Partner Name"), max_length=50)
+    address = models.CharField(_("Courier Partner Address"), max_length=2000)
+    contact_no = models.CharField(
+        _("Courier Partner Contact No"), max_length=50)
+    customer_care = models.CharField(
+        _("Courier Partner Customer Care"), max_length=50)
+    toll_free_number = models.CharField(
+        _("Courier Partner Toll Free Number"), max_length=50)
+    email = models.EmailField(_("Courier Partner Email"), max_length=254)
+
+    def __str__(self) -> str:
+        return f"Name: {self.name} Ph. No: {self.contact_no}"
 class Order(models.Model):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE)
     ref_code = models.CharField(max_length=200, blank=True, null=True)
+    tracking_id = models.CharField(max_length=200, blank=True, null=True)
     items = models.ManyToManyField(Cart)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
-    ordered = models.BooleanField(default=False)
     shipping_address = models.CharField(_("shipping_address"), max_length=250,blank=True,null=True)
     billing_address = models.CharField(_("billing_address"), max_length=250,blank=True,null=True)
     orderNote = models.CharField(
@@ -61,7 +76,13 @@ class Order(models.Model):
         'Payment', on_delete=models.SET_NULL, blank=True, null=True)
     coupon = models.ForeignKey(
         'Coupon', on_delete=models.SET_NULL, blank=True, null=True)
-    being_delivered = models.BooleanField(default=False)
+    status = models.CharField(
+        _("Order Status"), max_length=255, choices=STATUS, null=True, blank=True, default="ordered")
+    ordered = models.BooleanField(default=False)
+    shipped = models.BooleanField(default=False)
+    shipping_by = models.ForeignKey(DeliveryPartnerDetails, verbose_name=_("Delivery Partner"), on_delete=models.CASCADE,blank=True,null=True)
+    delivered = models.BooleanField(default=False)
+    out_for_delivery = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
@@ -76,6 +97,9 @@ class Order(models.Model):
     5. Received
     6. Refunds
     '''
+    @property
+    def sid(self):
+        return "VAMS/{}/{}".format(date.today().strftime("%Y/%m%d"),self.id)
 
     def get_total(self):
         total = 0
@@ -166,3 +190,4 @@ class PendingPayment(models.Model):
 
     def __str__(self):
         return self.order_id
+

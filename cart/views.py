@@ -318,6 +318,7 @@ def paymentStatusAndOrderStatusUpdate(request):
 
             if payment_status['payment_request']['status'] == 'Completed':
                 order.ordered = True
+                order.status = 'ordered'
                 payment = Payment()
                 payment.instamojo_id = payment_status['payment_request']['payments'][0]['payment_id']
                 payment.user = request.user
