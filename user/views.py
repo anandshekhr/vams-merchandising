@@ -192,7 +192,7 @@ def verify_otp(request):
 
 def profileDashboard(request):
     try:
-        orders = Order.objects.filter(user=request.user.id)
+        orders = Order.objects.filter(user=request.user.id,ordered = False)
 
         context = {
             'page_orders': orders

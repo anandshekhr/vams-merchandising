@@ -3,7 +3,7 @@ from .models import *
 
 # Register your models here.
 class CartAdmin(admin.ModelAdmin):
-    list_display: list = ('user','itemname','itemavailablestock','quantity','ordered')
+    list_display: list = ('user','itemname','itemavailablestock','quantity','ordered','created_at','modified_at')
     ordering: list = ['user']
     search_fields: list = ('user','ordered')
 

@@ -8,8 +8,7 @@ from .utils import FloatConverter
 register_converter(FloatConverter, 'float')
 
 urlpatterns = [
-    path("addtocart/<int:pk>", addToCart, name="addtocart"),
-#     path("addtocart/<int:pk>/<int:qty>", addToCartQuantity, name="add-to-cart-qty"),
+    path("addtocart/<int:pk>/<str:size>", addToCart, name="addtocart"),
     path("cart/add/<int:pk>", addToCartWithSizeQuantity,name="add-to-cart-size-qty"),
     path("ordersummary/",cartCheckoutPageView,name="cartview"),
     path("checkout/",checkoutPage,name="payment-checkout"),
@@ -25,8 +24,7 @@ urlpatterns = [
     path("cart/move-to-cart/<int:pk>", moveToCart,name="move-to-cart"),
 
      # api
-     path("customer/order/add/",
-          CartAddView.as_view(), name="addtocartapi"),
+     path("customer/order/add/", CartAddView.as_view()),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

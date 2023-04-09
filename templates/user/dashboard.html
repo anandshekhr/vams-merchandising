@@ -70,11 +70,17 @@
                                         <label class="text-grey-500 font-xssss"></label>
                                     </div>
                                 </td>
+                                {% for item in order.items.all|slice:":1" %}
                                 <td class="product-thumbnail text-start ps-0">
-                                    <img src="https://via.placeholder.com/171x148.png" alt="product-image"
-                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6">
+                                    {% if order.ordered %}
+                                    <a href="{% url 'orderhistorydetail' order.id %}"><img src="/media/{{item.item.image1}}" alt="product-image"
+                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
+                                    {% else %}
+                                    <a href="#"><img src="/media/{{item.item.image1}}" alt="product-image"
+                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
+                                    {% endif %}
                                 </td>
-
+                                {% endfor %}
                                 <td class="product-p">
                                     <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
                                             class="font-xsssss text-grey-500">₹</span>{{order.get_total|floatformat:2}}</h6>

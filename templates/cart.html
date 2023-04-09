@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{% endblock title %}
+{% block title %}Cart{% endblock title %}
 {% block body %}
 <main>
    {% if messages %}
@@ -68,14 +68,14 @@
                               <div class="product-quantity mt-10 mb-10">
                                  <div class="product-quantity-form">
                                     <form action="#">
-                                       <button class="cart-minus"><i class="far fa-minus"></i></button>
-                                       <input class="cart-input" type="text" value="{{obj.quantity}}">
-                                       <button class="cart-plus"><i class="far fa-plus"></i></button>
+                                       <button class="cart-minus cart-minus-ck far fa-minus" id="{{obj.item.id}}-cart-minus-btn:{{obj.size}}"></button>
+                                       <input class="cart-input cart-input-ck" type="text" id="{{obj.item.id}}-name-value:{{obj.size}}" value="{{obj.quantity}}">
+                                       <button class="cart-plus cart-plus-ck far fa-plus" id="{{obj.item.id}}-cart-plus-btn:{{obj.size}}"></button>
                                     </form>
                                  </div>
                               </div>
                            </td>
-                           <td class="product-subtotal"><span class="amount">₹{{obj.get_final_price|floatformat:2}}</span></td>
+                           <td class="product-subtotal" id="product-subtotal"><span class="amount">₹{{obj.get_final_price|floatformat:2}}</span></td>
                            <td class="product-remove"><a href="{% url 'delete-from-cart' obj.item.id %}"><i class="fa fa-times"></i></a></td>
                         </tr>
                         {% empty %}
@@ -107,8 +107,8 @@
                      <div class="cart-page-total">
                         <h2>Cart totals</h2>
                         <ul class="mb-20">
-                           <li>Subtotal <span>₹{{object.get_total|floatformat:2}}</span></li>
-                           <li>Total <span>₹{{object.get_total|floatformat:2}}</span></li>
+                           <li id="grand-subtotal">Subtotal <span>₹{{object.get_total|floatformat:2}}</span></li>
+                           <li id="grand-total">Total <span>₹{{object.get_total|floatformat:2}}</span></li>
                         </ul>
                         <a class="border-btn" href="{% url 'payment-checkout' %}">Proceed to checkout</a>
                      </div>

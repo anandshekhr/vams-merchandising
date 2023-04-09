@@ -19,6 +19,8 @@ class Cart(models.Model):
     quantity = models.IntegerField(default=1)
     size = models.CharField(_("Item Size"), max_length=50,
                             null=True, blank=True, default="L")
+    created_at = models.DateTimeField(_("Created Date"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Modified Date"), auto_now=True)
     
     class Meta:
         verbose_name_plural = 'Cart'

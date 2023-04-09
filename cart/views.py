@@ -25,13 +25,48 @@ api = Instamojo(api_key=settings.API_KEY,
 User = get_user_model()
 
 
+@login_required
+def cartCheckoutPageView(request):
+    counter = 0
+    a = 0
+    b = 0
+    try:
+        if request.user:
+            itemsForCartPage = Order.objects.get(
+                user=request.user.id, ordered=False)
+
+        a = round(itemsForCartPage.get_total(), 2)
+        counter = len(itemsForCartPage.items.all())
+
+        if a > 500:
+            delivery_charges = 0
+        else:
+            delivery_charges = 0
+
+        grandtotal = a + delivery_charges
+
+        context = {
+            'object': itemsForCartPage,
+            'delivery': delivery_charges,
+            'totalquantity': counter,
+            'grandtotal': grandtotal
+        }
+    except Order.DoesNotExist:
+        context = {
+            'object': 0,
+            'delivery': 0,
+            'totalquantity': 0,
+            'grandtotal': 0
+        }
+    return render(request, "cart.html", context)
 
 @login_required
-def addToCart(request, pk):
+def addToCart(request, pk,size):
 
     item = get_object_or_404(Products, id=pk)
     order_item, created = Cart.objects.get_or_create(
         item=item,
+        size=size,
         user=request.user,
         ordered=False
     )
@@ -39,7 +74,7 @@ def addToCart(request, pk):
     if order_qs.exists():
         order = order_qs[0]
         # check if the order item is in the order
-        if order.items.filter(item__id=item.id).exists() and item.stock > 0:
+        if order.items.filter(item__id=item.id, size="L").exists() and item.stock > 0:
             order_item.quantity += 1
             item.stock = item.stock - 1
             item.save()
@@ -135,40 +170,6 @@ def deleteItemFromCart(request, pk):
 
     return redirect('cartview')
 
-@login_required
-def cartCheckoutPageView(request):
-    counter = 0
-    a = 0
-    b = 0
-    try:
-        if request.user:
-            itemsForCartPage = Order.objects.get(
-                user=request.user.id, ordered=False)
-
-        a = round(itemsForCartPage.get_total(), 2)
-        counter = len(itemsForCartPage.items.all())
-
-        if a > 500:
-            delivery_charges = 0
-        else:
-            delivery_charges = 0
-
-        grandtotal = a + delivery_charges
-
-        context = {
-            'object': itemsForCartPage,
-            'delivery': delivery_charges,
-            'totalquantity': counter,
-            'grandtotal': grandtotal
-        }
-    except Order.DoesNotExist:
-        context = {
-            'object': 0,
-            'delivery': 0,
-            'totalquantity': 0,
-            'grandtotal': 0
-        }
-    return render(request, "cart.html", context)
 
 @login_required
 def removeSingleItemFromCart(request, pk):
@@ -403,7 +404,6 @@ class CartAddView(APIView):
         item = get_object_or_404(Products, pk=product_pk,available_sizes__contains=[req_size])
         order_item, created = Cart.objects.get_or_create(
             item=item,
-            quantity =quantity,
             size = req_size,
             user=request.user,
             ordered=False
@@ -429,7 +429,7 @@ class CartAddView(APIView):
                 user=request.user, ordered_date=ordered_date)
             order.items.add(order_item)
         serializer = OrderSerializer(instance=order_qs,many=True)
-        return Response({'data':serializer.data},status=status.HTTP_200_OK)
+        return Response({'cart': serializer.data, 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": order_item.get_amount_saved()}, status=status.HTTP_200_OK)
 
 
 @login_required
