@@ -27,5 +27,5 @@ urlpatterns = [
          views.user_notification, name="profile-notification"),
     path('accounts/profile/coupon/',
          views.user_coupon, name="profile-coupon"),
-     path('accounts/user/dashboard/',views.userDashboard,name="user-dashboard"),
+     # path('accounts/user/dashboard/',views.userDashboard,name="user-dashboard"),
 ]

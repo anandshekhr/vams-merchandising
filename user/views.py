@@ -195,7 +195,7 @@ def profileDashboard(request):
         orders = Order.objects.filter(user=request.user.id,ordered = False)
 
         context = {
-            'page_orders': orders
+            'orders': orders
         }
         return render(request, "user/dashboard.html", context)
     except Exception as e:

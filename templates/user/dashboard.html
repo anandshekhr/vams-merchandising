@@ -62,7 +62,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for order in page_orders %}
+                            {% for order in orders %}
+                            {% if order.items.all|length > 0 %}
                             <tr>
                                 <td>
                                     <div class="form-check mt-1">
@@ -119,6 +120,12 @@
                                     <a href="#"><i class="ti-trash font-xs text-grey-500"></i></a>
                                 </td>
                             </tr>
+                            
+                            {% else %}
+                                <tr>
+                                    <td colspan='6'>No Orders to display, <a href="{% url 'home' %}">Continue Shopping</a></td>
+                                </tr>
+                            {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
