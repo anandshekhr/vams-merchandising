@@ -12,12 +12,11 @@ User = get_user_model()
 class WishlistItems(models.Model):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE)
-    ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Products, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
 
     class Meta:
-        verbose_name_plural = 'Cart'
+        verbose_name_plural = 'WishlistItems'
 
     def __str__(self):
         return f"{self.quantity} of {self.item.name}"
@@ -49,6 +48,9 @@ class Wishlist(models.Model):
     items = models.ManyToManyField(WishlistItems)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = 'Wishlist'
 
     
     def get_total(self):

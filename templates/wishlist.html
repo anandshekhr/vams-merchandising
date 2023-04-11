@@ -39,7 +39,7 @@
                                  <th class="product-thumbnail">Images</th>
                                  <th class="cart-product-name">Product</th>
                                  <th class="product-price">Unit Price</th>
-                                 <th class="product-quantity">Add to cart</th>
+                                 {% comment %} <th class="product-quantity">Add to cart</th> {% endcomment %}
                                  <th class="product-subtotal">Total</th>
                                  <th class="product-remove">Remove</th>
                               </tr>
@@ -51,9 +51,9 @@
                                           src="/media/{{item.item.image1}}" alt="img"></a></td>
                                  <td class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></td>
                                  <td class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></td>
-                                 <td class="product-quantity">
+                                 {% comment %} <td class="product-quantity">
                                     <a href="{% url 'move-to-cart' item.item.id %}" class="border-btn">Move to Cart</a>
-                                 </td>
+                                 </td> {% endcomment %}
                                  <td class="product-subtotal"><span class="amount">₹{{item.get_final_price|floatformat:2}}</span></td>
                                  <td class="product-remove"><a href="{% url 'delete-item-from-wishlist' item.item.id %}"><i class="fa fa-times"></i></a></td>
                               </tr>

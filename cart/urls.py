@@ -24,7 +24,8 @@ urlpatterns = [
     path("cart/move-to-cart/<int:pk>", moveToCart,name="move-to-cart"),
 
      # api
-     path("customer/order/add/", CartAddView.as_view()),
+     path("customer/order/add/", CartAddView.as_view(),name="order-add-api"),
+     path("customer/order/remove/",CartRemoveView.as_view(),name="order-remove-api"),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

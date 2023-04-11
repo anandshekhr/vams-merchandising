@@ -104,9 +104,9 @@ def productDetailsPageView(request, pk):
     # filter product for images, reviews and ratings
     product = Products.objects.get(pk=pk)
     # if ProductImages.
-    image1 = ProductImages.objects.filter(product=product)[0]
-    image2 = ProductImages.objects.filter(product=product)[1]
-    image3 = ProductImages.objects.filter(product=product)[2]
+    # image1 = ProductImages.objects.filter(product=product)[0]
+    # image2 = ProductImages.objects.filter(product=product)[1]
+    # image3 = ProductImages.objects.filter(product=product)[2]
     rating = ProductReviewAndRatings.objects.filter(
         product=product).aggregate(Avg('ratings'))
     reviews = ProductReviewAndRatings.objects.filter(product=product)
@@ -124,9 +124,9 @@ def productDetailsPageView(request, pk):
 
     context = {
         'product': product,
-        'image1': image1 or '',
-        'image2': image2 or '',
-        'image3': image3 or '',
+        # 'image1': image1 or '',
+        # 'image2': image2 or '',
+        # 'image3': image3 or '',
         'rating': int(rating['ratings__avg'] or 0),
         'ratingr': [*range(int(rating['ratings__avg'] if rating['ratings__avg'] is not None else 0))],
         'nonratingr': [*range(nonrating)],

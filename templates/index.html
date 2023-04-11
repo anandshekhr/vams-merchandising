@@ -377,11 +377,12 @@
                                                 alt="img"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                             <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
+                                             {% comment %} <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
                                                    class="fal fa-shopping-bag"></i>Add
                                                 to
-                                                Cart</a>
-                                             <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
+                                                Cart</a> {% endcomment %}
+                                             {% comment %} <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a> {% endcomment %}
+                                             <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
                                           </div>
                                           <div class="product-sticker-wrapper">
                                              <span class="product-sticker new">New</span>
@@ -445,10 +446,10 @@
                                                 alt="img"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                             <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
+                                             {% comment %} <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
                                                    class="fal fa-shopping-bag"></i>Add
                                                 to
-                                                Cart</a>
+                                                Cart</a> {% endcomment %}
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
                                           <div class="product-sticker-wrapper">
@@ -512,9 +513,9 @@
                                                 alt="img"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                             <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
+                                             {% comment %} <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
                                                    class="fal fa-shopping-bag"></i>Add
-                                                to
+                                                to {% endcomment %}
                                                 Cart</a>
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
@@ -579,10 +580,10 @@
                                                 alt="img"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                             <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
+                                             {% comment %} <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
                                                    class="fal fa-shopping-bag"></i>Add
                                                 to
-                                                Cart</a>
+                                                Cart</a> {% endcomment %}
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
                                           <div class="product-sticker-wrapper">

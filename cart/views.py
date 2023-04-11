@@ -104,12 +104,13 @@ def addToCart(request, pk,size):
 @login_required
 def moveToCart(request, pk):
     #delete from wishlistItems models
-    iitem = WishlistItems.objects.filter(item=pk)[0]
-    iitem.delete()
+    # iitem = WishlistItems.objects.filter(item=pk)
+    # for ir in iitem:
+    #     ir.item.delete()
 
     # delete from Wishlist models
-    wishlist_item = Wishlist.objects.filter(user=request.user)[0]
-    wishlist_item.items.remove(iitem)
+    # wishlist_item = Wishlist.objects.filter(user=request.user)[0]
+    # wishlist_item.items.remove(iitem)
 
     item = get_object_or_404(Products, id=pk)
     order_item, created = Cart.objects.get_or_create(
@@ -430,6 +431,54 @@ class CartAddView(APIView):
             order.items.add(order_item)
         serializer = OrderSerializer(instance=order_qs,many=True)
         return Response({'cart': serializer.data, 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": order_item.get_amount_saved()}, status=status.HTTP_200_OK)
+
+
+class CartRemoveView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (authentication.BasicAuthentication,
+                              authentication.SessionAuthentication, authentication.TokenAuthentication)
+
+    def post(self, request, format=None):
+        data = request.data
+        product_pk = data.get('product')
+        quantity = int(data.get('quantity'))
+        req_size = data.get('size')
+
+        
+        item = get_object_or_404(
+            Products, pk=product_pk, available_sizes__contains=[req_size])
+        
+        order_qs = Order.objects.filter(
+            user=request.user,
+            ordered=False
+        )
+        if order_qs.exists():
+            order = order_qs[0]
+            if order.items.filter(item__id=item.id, size=req_size).exists():
+                order_item = Cart.objects.filter(
+                    item=item,
+                    size=req_size,
+                    user=request.user,
+                    ordered=False
+                )[0]
+                if order_item.quantity > 1:
+                    order_item.quantity -= 1
+                    order_item.save()
+                    item.stock += 1
+                    item.save()
+
+                    return Response({'cart': 'Item updated', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": order_item.get_amount_saved()}, status=status.HTTP_200_OK)
+                else:
+                    order.items.remove(order_item)
+                    order_item.delete()
+                    item.stock += 1
+                    item.save()
+                    return Response({'cart': 'Item updated', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': 0, "item_tprice": 0, "item_dprice": 0}, status=status.HTTP_200_OK)
+            else:
+                return Response({'cart': 'Item not available in cart', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': 0, "item_tprice": 0, "item_dprice": 0}, status=status.HTTP_200_OK)
+        else:
+            return Response({'cart': 'No Active Orders'}, status=status.HTTP_201_OK)
+
 
 
 @login_required

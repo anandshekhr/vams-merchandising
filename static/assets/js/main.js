@@ -696,3 +696,48 @@ function onClickAddToCartQuantity(product_id) {
 	var url = "{% url 'productdetail' pk=" + product_id + " qty=" + qty + " %}";
 	// window.location.href = url;
 }
+
+function addToWislistAPIRequest(id) {
+	domain = window.location.origin
+	path_name = "api/v1/wishlist/add/"
+	console.log(id);
+	jQuery(document).ready(function () {
+		$.ajax({
+			type: 'GET',
+			url: domain + path_name,
+			data: {
+				"csrfmiddlewaretoken": g_csrftoken,
+				"product": id,
+			},
+			success: function (response) {
+				console.log(response);
+			}
+		})
+	});
+	
+
+}
+
+//For Adding items to Wishlist in Index.html
+jQuery(document).ready(function () {
+	$('.wishlist-btn').click(function (e) {
+		e.preventDefault();
+		const elementId = $(this).attr('id').split('-')[1];
+		domain = window.location.origin;
+		path_name = '/api/v1/wishlist/add/';
+		
+		$.ajax({
+			type: 'POST',
+			url: domain + path_name,
+			data: {
+				"csrfmiddlewaretoken": g_csrftoken,
+				"product": elementId.toString()
+			},
+			success: function (response) {
+				if (response) {
+					location.reload(true);
+				}
+			}
+		})
+	});
+});

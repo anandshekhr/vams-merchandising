@@ -21,11 +21,13 @@ jQuery(document).ready(function () {
         //showLoader();
         e.preventDefault();
         //fieldName = $(this).attr('field');
-        const elementId = $(this).attr('id').split('-')[0]
-        const size = $(this).attr('id').split(':')[1]
-        console.log(elementId);
-        domain = window.location.origin
-        path_name = '/api/v1/customer/order/add/' //change-this url
+        const elementId = $(this).attr('id').split('-')[0];
+        const size = $(this).attr('id').split(':')[1];
+        console.log(size);
+        // console.log(elementId);
+        domain = window.location.origin;
+        // domain = "http://127.0.0.1:8000"
+        path_name = '/api/v1/customer/order/add/'; //change-this url
         $.ajax({
             type: 'POST',
             url: domain + path_name,
@@ -37,7 +39,7 @@ jQuery(document).ready(function () {
             },
             success: function (response) {
                 if (response) {
-                    console.log(response);
+                    // console.log(response);
                     //hideLoader();
                     // document.getElementById("dis_price").innerHTML = "₹" + response['amount'];
                     document.getElementById("product-subtotal").innerHTML = "₹" + response['item_dprice']+".00";
@@ -53,41 +55,19 @@ jQuery(document).ready(function () {
             }
         })
     });
-    $('.add-to-cart').click(function (e) {
-        e.preventDefault();
-        //fieldName = $(this).attr('field');
-        const elementId = $(this).attr('id').split('-')[0]
-        console.log(elementId);
-        domain = window.location.origin
-        path_name = '/buy/api/v1/customer/order/add/' //change-this url
-        $.ajax({
-            type: 'POST',
-            url: domain + path_name,
-            data: {
-                "csrfmiddlewaretoken": g_csrftoken,
-                "product": elementId.toString(),
-                "quantity": "1"
-            },
-            success: function (response) {
-                if (response) {
-                    //console.log(response);
-                    document.getElementById("cart-amount").innerHTML = "₹" + response['amount'];
-                    document.getElementById("quantity").innerHTML = response['qty'];
-                    document.getElementById(elementId + "-qunt_val-category").innerHTML = response['item_qty'];
-                }
-            }
-        })
-    });
-
+    
     $('.cart-minus-ck').click(function (e) {
         //showLoader();
         e.preventDefault();
         //fieldName = $(this).attr('field');
-        const elementId = $(this).attr('id').split('-')[0]
-        const size = $(this).attr('id').split(':')[1]
-        console.log(elementId);
-        domain = window.location.origin
-        path_name = '/api/v1/customer/order/remove/' //change-this url
+        const elementId = $(this).attr('id').split('-')[0];
+        const size = $(this).attr('id').split(':')[1];
+        console.log(size);
+
+        // console.log(elementId);
+        domain = window.location.origin;
+        // domain = "http://127.0.0.1:8000"
+        path_name = '/api/v1/customer/order/remove/'; //change-this url
         $.ajax({
             type: 'POST',
             url: domain + path_name,
@@ -101,13 +81,9 @@ jQuery(document).ready(function () {
                 if (response) {
                     //hideLoader();
                     //console.log(response);
-                    document.getElementById("dis_price").innerHTML = "₹" + response['amount'];
-                    document.getElementById("sell_price").innerHTML = "₹" + response['tmax_amount'];
-                    document.getElementById("grand-total").innerHTML = "₹" + response['amount'];
-                    document.getElementById(elementId + "-item-sell-price").innerHTML = "₹" + response['item_tprice'];
-                    document.getElementById(elementId + "-item-dis-price").innerHTML = "₹" + response['item_dprice'];
-                    //document.getElementById("quantity").innerHTML = response['qty'];
-                    document.getElementById(elementId + "-name-value").value = response['item_qty'];
+                    document.getElementById("product-subtotal").innerHTML = "₹" + response['item_dprice'] + ".00";
+                    document.getElementById("grand-total").innerHTML = "Total <span>" + "₹" + response['amount'] + ".00</span>";
+                    document.getElementById("grand-subtotal").innerHTML = "Subtotal <span>" + "₹" + response['amount'] + ".00</span>";
                     if (response['item_qty'] == 0) {
                         location.reload(true);
                     }

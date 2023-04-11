@@ -11,6 +11,7 @@ urlpatterns = [
         path("wishlist/<int:pk>/",addToWishlist,name="add-to-wishlist"),
         path("wishlist/",wishlistView,name="wishlist-view"),
         path("wishlist/delete/item/<int:pk>",deleteItemFromWishlist,name="delete-item-from-wishlist"),
+        path("wishlist/add/",AddToWishlistAPI.as_view()),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
