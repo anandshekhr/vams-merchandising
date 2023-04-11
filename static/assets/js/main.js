@@ -735,6 +735,7 @@ jQuery(document).ready(function () {
 			},
 			success: function (response) {
 				if (response) {
+					console.log(response);
 					location.reload(true);
 				}
 			}

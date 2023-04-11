@@ -97,7 +97,7 @@ class AddToWishlistAPI(APIView):
         data = request.data
         product_pk = data.get('product')
         item = get_object_or_404(
-            Products, pk=product_pk)
+            Products, id=product_pk)
         order_item, created = WishlistItems.objects.get_or_create(
             item=item,
             user=request.user,
@@ -110,7 +110,7 @@ class AddToWishlistAPI(APIView):
                 order_item.quantity += 1
                 order_item.save()
             else:
-                return Response({'data': 'Item out of Stock'}, status=status.HTTP_200_OK)
+                order.items.add(order_item)
         else:
             order = Wishlist.objects.create(
                 user=request.user)
