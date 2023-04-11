@@ -52,8 +52,7 @@ def addToWishlist(request, pk):
     item = get_object_or_404(Products, id=pk)
     order_item, created = WishlistItems.objects.get_or_create(
         item=item,
-        user=request.user,
-        ordered=False
+        user=request.user
     )
 
     order_qs = Wishlist.objects.filter(user=request.user)
