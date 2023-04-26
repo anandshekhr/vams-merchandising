@@ -1028,10 +1028,10 @@ p {
 }
 
 .user-icon {
-  width: 55px;
-  height: 55px;
+  width: 30px;
+  height: 30px;
   text-align: center;
-  line-height: 55px;
+  line-height: 20px;
   background: var(--clr-bg-footer);
   border-radius: 50%;
 }

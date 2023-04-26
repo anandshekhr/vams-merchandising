@@ -22,11 +22,11 @@ def update_product_average_rating(sender, instance, **kwargs):
     product.save()
 
 
-@receiver(post_save, sender=User)
-def create_notification(sender, instance, created, message,**kwargs):
-    if created:
-        Notification.objects.create(
-            recipient=instance,
-            sender=User.objects.get(username='admin'),
-            message=message
-        )
+# @receiver(post_save, sender=User)
+# def create_notification(sender, instance, created, message,**kwargs):
+#     if created:
+#         Notification.objects.create(
+#             recipient=instance,
+#             sender=User.objects.get(username='admin'),
+#             message=message
+#         )
