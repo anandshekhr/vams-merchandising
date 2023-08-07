@@ -19,7 +19,7 @@ api = Instamojo(api_key=settings.API_KEY,
 
 User = get_user_model()
 # Create your views here.
-
+@login_required(login_url="login-user")
 def wishlistView(request):
     items = Wishlist.objects.get(user=request.user)
     context = {'items':items}
@@ -46,7 +46,7 @@ def deleteItemFromWishlist(request,pk):
     
     return redirect('home')
 
-@login_required
+@login_required(login_url="login-user")
 def addToWishlist(request, pk):
 
     item = get_object_or_404(Products, id=pk)

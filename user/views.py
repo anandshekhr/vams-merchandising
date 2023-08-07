@@ -20,6 +20,7 @@ from cart.models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.decorators import login_required
 
 User = get_user_model()
 
@@ -229,7 +230,7 @@ def user_address(request):
     context = {'address': address}
     return render(request, "user/address.html", context)
 
-
+@login_required(login_url="login-user")
 def user_orders(request):
     if request.user:
         # fetching all post objects from database

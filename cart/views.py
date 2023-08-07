@@ -25,7 +25,7 @@ api = Instamojo(api_key=settings.API_KEY,
 User = get_user_model()
 
 
-@login_required
+@login_required(login_url="login-user")
 def cartCheckoutPageView(request):
     counter = 0
     a = 0
@@ -60,7 +60,7 @@ def cartCheckoutPageView(request):
         }
     return render(request, "cart.html", context)
 
-@login_required
+@login_required(login_url="login-user")
 def addToCart(request, pk,size):
 
     item = get_object_or_404(Products, id=pk)
@@ -101,7 +101,7 @@ def addToCart(request, pk,size):
         messages.info(request, "This item was added to your cart.")
         return redirect("cartview")
 
-@login_required
+@login_required(login_url="login-user")
 def moveToCart(request, pk):
     #delete from wishlistItems models
     # iitem = WishlistItems.objects.filter(item=pk)
@@ -172,7 +172,7 @@ def deleteItemFromCart(request, pk):
     return redirect('cartview')
 
 
-@login_required
+@login_required(login_url="login-user")
 def removeSingleItemFromCart(request, pk):
     if request.user:
         user_details = UserAddresses.objects.get(user=request.user.id)
@@ -211,7 +211,7 @@ def removeSingleItemFromCart(request, pk):
         return redirect("/")
 
 
-@login_required
+@login_required(login_url="login-user")
 def orderPaymentRequest(request, amount):
     if request.user:
         user = User.objects.get(pk=request.user.id)
@@ -309,7 +309,7 @@ def orderPaymentRequest(request, amount):
         return redirect("cartview")
 
 
-@login_required
+@login_required(login_url="login-user")
 def paymentStatusAndOrderStatusUpdate(request):
     if request.user:
         user = User.objects.get(pk=request.user.id)
@@ -373,7 +373,7 @@ def paymentStatusAndOrderStatusUpdate(request):
                     pending_payment.save()
                     return redirect("pending-payment", pk=order.id)
 
-@login_required
+@login_required(login_url="login-user")
 def checkoutPage(request):
     Items = Order.objects.get(user= request.user,ordered=False)
     totalAmount = round(Items.get_total(), 2)
@@ -481,7 +481,7 @@ class CartRemoveView(APIView):
 
 
 
-@login_required
+@login_required(login_url="login-user")
 def order_summary(request, pk):
     if request.user:
         order = Order.objects.get(user=request.user.id, pk=pk)
@@ -511,7 +511,7 @@ def failed_payment_page(request, pk):
     }
     return render(request, "payment-failed.html", context)
 
-
+@login_required(login_url="login-user")
 def addToCartWithSizeQuantity(request,pk):
 
     current_site = get_current_site(request)
