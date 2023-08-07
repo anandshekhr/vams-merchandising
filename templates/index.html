@@ -402,12 +402,16 @@
                                              <li class="cl-brown active">
                                                 <img src="/media/{{product.image1}}" alt="img">
                                              </li>
+                                             {% if product.image2 %}
                                              <li class="cl-ash">
                                                 <img src="/media/{{product.image2}}" alt="img">
                                              </li>
+                                             {% endif %}
+                                             {% if product.image3 %}
                                              <li class="cl-black">
                                                 <img src="/media/{{product.image3}}" alt="img">
                                              </li>
+                                             {% endif %}
                                           </ul>
                                        </div>
                                     </div>
