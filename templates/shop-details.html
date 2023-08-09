@@ -193,6 +193,7 @@
                      </div>
                      <div class="product-details-nav">
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
+                           {% if product.image1 %}
                            <li class="nav-item" role="presentation">
                               <button class="nav-link active" id="pro-1-tab" data-bs-toggle="tab"
                                  data-bs-target="#pro-1" type="button" role="tab" aria-controls="pro-1"
@@ -200,18 +201,31 @@
                                  <img src="/media/{{product.image1}}" alt="...">
                               </button>
                            </li>
+                           {% else %}
+                           <li class="nav-item" role="presentation">
+                              <button class="nav-link active" id="pro-1-tab" data-bs-toggle="tab"
+                                 data-bs-target="#pro-1" type="button" role="tab" aria-controls="pro-1"
+                                 aria-selected="false">
+                                 <img src="{% static 'assets/img/product/no-thumb.jpg' %}" alt="...">
+                              </button>
+                           </li>
+                           {% endif %}
+                           {% if product.image2 %}
                            <li class="nav-item" role="presentation">
                               <button class="nav-link" id="pro-2-tab" data-bs-toggle="tab" data-bs-target="#pro-2"
                                  type="button" role="tab" aria-controls="pro-2" aria-selected="true">
                                  <img src="/media/{{product.image2}}" alt="...">
                               </button>
                            </li>
+                           {% endif %}
+                           {% if product.image3 %}
                            <li class="nav-item" role="presentation">
                               <button class="nav-link" id="pro-3-tab" data-bs-toggle="tab" data-bs-target="#pro-3"
                                  type="button" role="tab" aria-controls="pro-3" aria-selected="false">
                                  <img src="/media/{{product.image3}}" alt="...">
                               </button>
                            </li>
+                           {% endif %}
                         </ul>
                      </div>
                   </div>

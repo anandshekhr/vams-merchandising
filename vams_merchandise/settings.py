@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
+    'django_rest_passwordreset',
+
     # home app
     'Home.apps.HomeConfig',
 
@@ -75,9 +77,15 @@ INSTALLED_APPS = [
     'allauth',  # new
     'allauth.account',  # new
     'allauth.socialaccount',  # new
+
+    'allauth.socialaccount.providers.apple',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+
+
     'dj_rest_auth.registration',
     'django_quill',
-    # 'django-filter',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -228,3 +236,13 @@ SEND_EMAIL = env('INSTAMOJO_SEND_PAYMENT_RECEIVED_EMAIL')
 ENDPOINT = env('INSTAMOJO_TEST_ENDPOINT')
 
 API_VERSION = env('API_VERSION')
+
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]

@@ -19,6 +19,8 @@ from django.template.loader import render_to_string
 from blogs.models import *
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 User = get_user_model()
@@ -137,6 +139,24 @@ def productDetailsPageView(request, pk):
 
     return render(request, "shop-details.html", context)
 
+class ProductAPI(generics.ListAPIView):
+    queryset = Products.objects.all()
+    serializer_class = ProductsSerializer
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter]
+    search_fields = ['id','name','longname','desc','brand','tags','discount']
+    permission_classes = (AllowAny,)
+    # authentication_classes = (AllowAny,)
+
+    def list(self, request,*args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 class ProductDetailsAPI(APIView):
     permission_classes = (AllowAny,)

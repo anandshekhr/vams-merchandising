@@ -21,6 +21,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.decorators import login_required
+import requests
 
 User = get_user_model()
 
@@ -78,10 +79,28 @@ def login(request):
         return render(request, 'login.html') 
 
 def logout(request):
-    # if request.method == 'POST':
     auth.logout(request)
-    # print('logged out from websites..')
     return redirect('home')
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password_reset_request = requests.post('http://127.0.0.1:8000/api/v1/account/password/reset/', {'email': email})
+        # print(password_reset_request.text)
+        if password_reset_request.status_code == 200:
+            print("200 aaya,, redirecting !!!")
+            return redirect('password-reset-web-page')
+        else:
+            print(password_reset_request.text)
+    return render(request, 'forgot-password.html')
+
+def password_reset_method(request):
+    print("yaha aaya")
+    # if request.method == 'POST':
+    #     password = request.POST.get('password')
+    
+    return render(request, 'reset-password.html')
 
 
 class UpdateProfileView(generics.UpdateAPIView):

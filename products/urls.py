@@ -16,6 +16,7 @@ urlpatterns = [
     path("products/show-all/",showAllProducts,name="show-all-products"),
 
     #APIs
+    path("products/show-all",ProductAPI.as_view(),name="show-all-products"),
     path("details/id=<int:product_id>", ProductDetailsAPI.as_view(), name="allproducts"),
     path("banners/", BannersAPIView.as_view(), name="banners"),
     path("categories/", CategoriesAPI.as_view(), name="categories"),

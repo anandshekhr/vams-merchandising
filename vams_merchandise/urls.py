@@ -41,6 +41,8 @@ urlpatterns = [
         'rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/',
         PasswordResetConfirmView.as_view(), name='password_reset_confirm'
     ),
+    path('api/v1/account/password/reset/',
+         include('django_rest_passwordreset.urls', namespace='password_reset')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler500 = 'Home.views.err_500'
