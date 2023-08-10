@@ -7334,3 +7334,27 @@ h3 {
   }
   
 }
+
+.star {
+  display: inline-block;
+  width: 20px;
+  /* Adjust size as needed */
+  height: 20px;
+  /* Adjust size as needed */
+  background-image: url('../img/star-regular.svg') ;
+  /* Empty star image */
+  background-size: contain;
+  cursor: pointer;
+}
+
+.star:hover,
+.star:hover~.star {
+  background-image: url('../img/star-solid.svg');
+  /* Filled star image */
+}
+
+.star.selected {
+  background-position: 0 0;
+  background-image: url('../img/star-solid.svg');
+  /* Position for filled star */
+}

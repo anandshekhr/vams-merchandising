@@ -30,7 +30,7 @@ admin.site.register(ProductImages)
 
 
 class ProductRARAdmin(admin.ModelAdmin):
-    list_display: list = ('author', 'ratings', 'review')
+    list_display: list = ('author', 'ratings', 'review','is_approved')
     search_fields: list = ('author', 'ratings')
 
 

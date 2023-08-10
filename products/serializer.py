@@ -20,10 +20,10 @@ class ProductImagesSerializer(serializers.ModelSerializer):
         fields = ['images']
 
 class ProductReviewAndRatingsSerializer(serializers.ModelSerializer):
-    author = userSerializer()
+    
     class Meta:
         model = ProductReviewAndRatings
-        fields = ['review','ratings','upload_image','author']
+        fields = '__all__'
     
 class ProductsSerializer(serializers.ModelSerializer):
 

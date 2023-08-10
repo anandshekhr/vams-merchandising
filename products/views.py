@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib import auth
 from rest_framework import generics, status, authentication, permissions
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import SessionAuthentication,TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
@@ -105,36 +106,20 @@ def productDetailsPageView(request, pk):
 
     # filter product for images, reviews and ratings
     product = Products.objects.get(pk=pk)
-    # if ProductImages.
-    # image1 = ProductImages.objects.filter(product=product)[0]
-    # image2 = ProductImages.objects.filter(product=product)[1]
-    # image3 = ProductImages.objects.filter(product=product)[2]
     rating = ProductReviewAndRatings.objects.filter(
         product=product).aggregate(Avg('ratings'))
-    reviews = ProductReviewAndRatings.objects.filter(product=product)
+    reviews = ProductReviewAndRatings.objects.filter(product=product,is_approved=True)
 
     # for greyed stars
     nonrating = 5 - int(rating['ratings__avg']
                         if rating['ratings__avg'] is not None else 0)
-
-    # filter related products
-    # category = Categories.objects.get(category_name=category_name)
-    # related_products = Products.objects.filter(
-    #     category__contains=[category.category_name]).exclude(pk=pk)
-    # related_product_ratings = ProductReviewAndRatings.objects.filter(
-    #     product__in=related_products).aggregate(Avg('ratings'))
-
     context = {
+        'total_stars':range(5),
         'product': product,
-        # 'image1': image1 or '',
-        # 'image2': image2 or '',
-        # 'image3': image3 or '',
         'rating': int(rating['ratings__avg'] or 0),
         'ratingr': [*range(int(rating['ratings__avg'] if rating['ratings__avg'] is not None else 0))],
         'nonratingr': [*range(nonrating)],
-        # 'related_products': related_products,
-        # 'rp_ratings': related_product_ratings or 0,
-        'review': reviews,
+        'reviews': reviews,
     }
 
     return render(request, "shop-details.html", context)
@@ -338,3 +323,28 @@ class CategoryProductsAPI(generics.ListAPIView):
             queryset = queryset.filter(
                 category__contains=[category.category_name])
         return queryset
+
+class ProductReviewsAPI(APIView):
+
+    permission_classes =(IsAuthenticated,)
+    authentication_classes = (SessionAuthentication,TokenAuthentication)
+
+    def get(self, request, *args, **kwargs):
+        queryset = ProductReviewAndRatings.objects.all()
+        serializer = ProductReviewAndRatingsSerializer(queryset,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        # data ={}
+        # product_id = request.data.get('product_id')
+        # product = Products.objects.get(id=product_id)
+        # data['product_id'] = product
+        # data['author'] = request.data.get('author')
+        # data['ratings'] = request.data.get('ratings')
+        # data['review'] = request.data.get('review')
+        serializer = ProductReviewAndRatingsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

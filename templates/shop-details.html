@@ -285,102 +285,65 @@
                      </div>
                      <div class="tab-pane fade active show" id="nav-seller" role="tabpanel">
                         <div class="tabs-wrapper mt-35">
+                           {% for review in reviews %}
                            <div class="course-review-item mb-30">
                               <div class="course-reviews-img">
-                                 <a href="#"><img src="assets/img/testimonial/course-reviews-1.png"
-                                       alt="image not found"></a>
+                                 {% if review.auther.avatar %}
+                                 <a><img src="/media/{{review.auther.avatar}}"
+                                       alt="image not found" style="width:50px;"></a>
+                                 {% else %}
+                                 <a><img src="{% static 'assets/img/dashboard/profile.png' %}"
+                                       alt="image not found" style="width:50px;"></a>
+                                 {% endif %}
+                                 
                               </div>
                               <div class="course-review-list">
-                                 <h5><a href="#">Sotapdi Kunda</a></h5>
+                                 <h5><a href="#">{{review.author.user_full_name}}</a></h5>
                                  <div class="course-start-icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <span>55 min ago</span>
+                                    {% for i in total_stars %}
+                                       {% if i  < review.ratings %}
+                                       <i class="fas fa-star"></i>
+                                       {% else %}
+                                       <i class="fal fa-star"></i>
+                                       {% endif %}
+                                    
+                                    {% endfor %}
+                                    <span>{{review.review_date}}</span>
                                  </div>
-                                 <p>Very clean and organized with easy to follow tutorials, Exercises, and
-                                    solutions.
-                                    This course does start from the beginning with very little knowledge and
-                                    gives a
-                                    great overview of common tools used for data science and progresses into
-                                    more
-                                    complex concepts and ideas.</p>
+                                 <p>{{review.review}}</p>
                               </div>
                            </div>
-                           <div class="course-review-item mb-30">
-                              <div class="course-reviews-img">
-                                 <a href="#"><img src="assets/img/testimonial/course-reviews-2.png"
-                                       alt="image not found"></a>
-                              </div>
-                              <div class="course-review-list">
-                                 <h5><a href="#">Samantha</a></h5>
-                                 <div class="course-start-icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <span>45 min ago</span>
-                                 </div>
-                                 <p>The course is good at explaining very basic intuition of the concepts. It
-                                    will get
-                                    you scratching the surface so to say. where this course is unique is the
-                                    implementation methods are so well defined Thank you to the team !.</p>
-                              </div>
-                           </div>
-                           <div class="course-review-item mb-30">
-                              <div class="course-reviews-img">
-                                 <a href="#"><img src="assets/img/testimonial/course-reviews-3.png"
-                                       alt="image not found"></a>
-                              </div>
-                              <div class="course-review-list">
-                                 <h5><a href="#">Michell Mariya</a></h5>
-                                 <div class="course-start-icon">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <span>30 min ago</span>
-                                 </div>
-                                 <p>This course is amazing..!
-                                    I started this course as a beginner and learnt a lot. Instructors are great.
-                                    Query
-                                    handling can be improved.Overall very happy with the course.</p>
-                              </div>
-                           </div>
+                           {% empty %}
+                           <p>No Reviews</p>
+                           {% endfor %}
                            <div class="product__details-comment ">
                               <div class="comment-title mb-20">
                                  <h3>Add a review</h3>
                                  <p>Your email address will not be published. Required fields are marked *</p>
                               </div>
-                              <div class="comment-rating mb-20">
-                                 <span>Overall ratings</span>
-                                 <ul>
-                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                    <li><a href="#"><i class="fal fa-star"></i></a></li>
-                                 </ul>
+                              <span>Overall ratings: </span>
+                              <div class="comment-rating mb-20" data-rating="{{ user_rating }}">
+                                    <span class="star" data-value="1"></span>
+                                    <span class="star" data-value="2"></span>
+                                    <span class="star" data-value="3"></span>
+                                    <span class="star" data-value="4"></span>
+                                    <span class="star" data-value="5"></span>
                               </div>
                               <div class="comment-input-box mb-20">
-                                 <form action="#">
+                                 <form action="" id="submit-review-form">{% csrf_token %}
                                     <div class="row">
                                        <div class="col-xxl-12">
                                           <textarea placeholder="Your review"
-                                             class="comment-input comment-textarea mb-20"></textarea>
+                                             class="comment-input comment-textarea mb-20" id="product-review"></textarea>
                                        </div>
                                        <div class="col-xxl-6">
                                           <div class="comment-input mb-20">
-                                             <input type="text" placeholder="Your Name">
+                                             <input type="text" placeholder="Your Name" id="user-author" style="display:None;" value="{{request.user.id}}">
                                           </div>
                                        </div>
                                        <div class="col-xxl-6">
                                           <div class="comment-input mb-20">
-                                             <input type="email" placeholder="Your Email">
+                                             <input type="text" placeholder="" id="product-id" value="{{product.id}}" style="display:None;">
                                           </div>
                                        </div>
                                        <div class="col-xxl-12">
@@ -456,4 +419,7 @@
          </div>
       </div>
    </main>
+   
+
+
 {% endblock body %}

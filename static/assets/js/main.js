@@ -293,7 +293,7 @@
 		});
 	});
 
-	
+
 
 	/* magnificPopup img view */
 	$(".image-popups").magnificPopup({
@@ -467,7 +467,7 @@
 
 		autoplay: {
 			delay: 3000,
-			pauseOnMouseEnter:true,
+			pauseOnMouseEnter: true,
 		},
 		// Responsive breakpoints
 		breakpoints: {
@@ -714,7 +714,7 @@ function addToWislistAPIRequest(id) {
 			}
 		})
 	});
-	
+
 
 }
 
@@ -725,7 +725,7 @@ jQuery(document).ready(function () {
 		const elementId = $(this).attr('id').split('-')[1];
 		domain = window.location.origin;
 		path_name = '/api/v1/wishlist/add/';
-		
+
 		$.ajax({
 			type: 'POST',
 			url: domain + path_name,
@@ -742,3 +742,99 @@ jQuery(document).ready(function () {
 		})
 	});
 });
+
+
+
+
+var getCookie = function (name) {
+	var cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		var cookies = document.cookie.split(';');
+		for (var i = 0; i < cookies.length; i++) {
+			var cookie = jQuery.trim(cookies[i]);
+			// Does this cookie string begin with the name we want?
+			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
+};
+const stars = document.querySelectorAll('.star');
+// stars.forEach((star, index) => {
+// 	star.addEventListener('click', () => {
+// 		// Send the selected rating to the server or update UI
+// 		const selectedRating = index + 1;
+// 		console.log('Selected Rating:', selectedRating);
+// 	});
+// });
+function updateStarRating(starRating, rating) {
+	const stars = starRating.querySelectorAll('.star');
+	stars.forEach(star => {
+		if (parseInt(star.getAttribute('data-value')) <= rating) {
+			star.classList.add('selected');
+		} else {
+			star.classList.remove('selected');
+		}
+	});
+}
+
+stars.forEach(star => {
+	star.addEventListener('click', function () {
+		const rating = parseInt(this.getAttribute('data-value'));
+		const starRating = this.parentNode;
+		starRating.setAttribute('data-rating', rating);
+		updateStarRating(starRating, rating);
+	});
+
+	star.addEventListener('mouseover', function () {
+		const rating = parseInt(this.getAttribute('data-value'));
+		const starRating = this.parentNode;
+		updateStarRating(starRating, rating);
+	});
+
+	star.addEventListener('mouseout', function () {
+		const starRating = this.parentNode;
+		const selectedRating = parseInt(starRating.getAttribute('data-rating'));
+		updateStarRating(starRating, selectedRating);
+	});
+});
+
+
+
+
+$(document).on('submit', '#submit-review-form', function (e) {
+	// const stars = document.querySelectorAll('.star');
+	// stars.forEach((star, index) => {
+	// 	star.addEventListener('click', () => {
+	// 		// Send the selected rating to the server or update UI
+	// 		const selectedRating = index + 1;
+	// 		console.log('Selected Rating:', selectedRating);
+	// 	});
+	// });
+
+	const token = getCookie('token');
+
+	domain = window.location.origin;
+	$.ajax({
+		type: 'POST',
+		url: domain + '/api/v1/products/reviews',
+		headers: { 'Authorization': 'Token ' + token },
+		data: {
+			review: $('#product-review').val(),
+			ratings: $('.comment-rating').attr('data-rating'),
+			product: $('#product-id').val(),
+			author: $('#user-author').val(),
+			csrfmiddlewaretoken: getCookie('csrftoken'),
+		},
+		success: function (response) {
+			console.log('Data submitted successfully:', response);
+			// Handle successful response
+		},
+		error: function (error) {
+			console.error('Error submitting data:', error);
+			// Handle error
+		}
+	})
+})

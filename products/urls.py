@@ -22,6 +22,7 @@ urlpatterns = [
     path("categories/", CategoriesAPI.as_view(), name="categories"),
     re_path('^category/items/(?P<pk>.+)/$',
          CategoryProductsAPI.as_view(), name="category-products-api"),
+     path("products/reviews",ProductReviewsAPI.as_view()),
 
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -7,6 +7,7 @@ from django import forms
 from django.contrib.postgres.fields import ArrayField
 from django_quill.fields import QuillField
 from django.db.models import Avg, Sum
+from datetime import datetime
 import os
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -137,18 +138,17 @@ class ProductImages(models.Model):
 
 
 class ProductReviewAndRatings(models.Model):
-    product = models.ForeignKey("products", verbose_name=_(
-        "product rating"), on_delete=models.CASCADE, null=False, blank=False, default="")
+    product = models.ForeignKey(Products, verbose_name=_(
+        "product rating"), on_delete=models.CASCADE)
     RATINGS = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5),)
     author = models.ForeignKey(user, verbose_name=_(
         "Author Id"), on_delete=models.CASCADE)
-    review = models.CharField(_("Product Review"), max_length=1024, null=True)
+    review = models.CharField(_("Product Review"), max_length=1024, null=True,blank=True)
     ratings = models.IntegerField(
-        _("Product Rating"), choices=RATINGS, null=True)
-    upload_image = models.ImageField(_("ImagesForReview"), upload_to="product/media/reviews/%Y/%m/%d",
-                                     height_field=None, width_field=None, max_length=None, null=True)
+        _("Product Rating"), choices=RATINGS, null=True,blank=True)
     review_date = models.DateTimeField(
-        verbose_name="review_date", auto_now=True)
+        verbose_name="review_date",auto_now=True)
+    is_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return "Author ID: {}, Ratings: {}".format(self.author, self.ratings)

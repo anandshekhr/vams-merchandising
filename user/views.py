@@ -1,3 +1,4 @@
+import http.cookies
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, get_user_model
@@ -62,8 +63,16 @@ def register(request):
     else:
         return render(request, 'register.html')
 
+def set_token_cookie(response, token):
+
+    cookie = http.cookies.SimpleCookie()
+    cookie['token']=token
+    cookie['token']['expires'] = 60*60*24*30
+    response.set_cookie(key='token',value=token,expires=3600*24*30)
+
 
 def login(request):
+    token = ""
     if request.method == 'POST':
         mobileno = request.POST.get('phone_number')
         password = request.POST.get('password')
@@ -72,7 +81,13 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect('home')
+            try: 
+                token = Token.objects.get(user=user)
+            except Token.DoesNotExist:
+                messages.info(request,'Token not generated')
+            response = redirect('home')
+            set_token_cookie(response,token)
+            return response
         else:
             return redirect('login-user')
     else:
