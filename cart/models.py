@@ -8,7 +8,7 @@ from datetime import date
 
 User = get_user_model()
 
-STATUS =(('shipped','SHIPPED'),('ordered','ORDERED'),('in-transit','IN TRANSIT'),('out-for-delivery','OUT FOR DELIVERY'),('delivered','DELIVERED'),('refund-requested','REFUND REQUESTED'),('refunded','REFUNDED'))
+STATUS =(('Shipped','SHIPPED'),('Ordered','ORDERED'),('In-transit','IN TRANSIT'),('Out-For-Delivery','OUT FOR DELIVERY'),('Delivered','DELIVERED'),('Refund Requested','REFUND REQUESTED'),('Refunded','REFUNDED'))
 
 # Create your models here.
 class Cart(models.Model):
