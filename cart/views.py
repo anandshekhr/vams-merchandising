@@ -38,10 +38,10 @@ def cartCheckoutPageView(request):
         a = round(itemsForCartPage.get_total(), 2)
         counter = len(itemsForCartPage.items.all())
 
-        if a > 500:
+        if a > 599:
             delivery_charges = 0
         else:
-            delivery_charges = 0
+            delivery_charges = 40
 
         grandtotal = a + delivery_charges
 
@@ -213,101 +213,99 @@ def removeSingleItemFromCart(request, pk):
 
 @login_required(login_url="login-user")
 def orderPaymentRequest(request, amount):
-    if request.user:
+    if request.user.is_authenticated:
         user = User.objects.get(pk=request.user.id)
         order = Order.objects.get(user=request.user.id, ordered=False)
     
-    if request.method == "POST":
-        firstName = request.POST.get('first_name')
-        lastName = request.POST.get('last_name')
-        area = request.POST.get('address_line_1')+","+request.POST.get('address_line_2')
-        country = request.POST.get('country')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        pincode = request.POST.get('pincode')
-        email = request.POST.get('email')
-        phoneNumber = request.POST.get('phone_number')
-    
-        # createAccount = request.POST.get('cbox')
-        # if createAccount is not None:
-        #     password = request.POST.get('password')
-        #     confirmPassword = request.POST.get('passwordConfirm')
+        if request.method == "POST":
+            firstName = request.POST.get('first_name')
+            lastName = request.POST.get('last_name')
+            area = request.POST.get('address_line_1')+","+request.POST.get('address_line_2')
+            country = request.POST.get('country')
+            city = request.POST.get('city')
+            state = request.POST.get('state')
+            pincode = request.POST.get('pincode')
+            email = request.POST.get('email')
+            phoneNumber = request.POST.get('phone_number')
 
-        #     if password == confirmPassword:
-        #         if User.objects.filter(mobileno=phoneNumber).exists():
-        #             messages.info(request, "mobile number already exist")
-
-        #         else:
-        #             if User.objects.filter(email=email).exists():
-        #                 messages.info(request, "Email already exists")
-        #             else:
-        #                 user = User.objects.create_user(
-        #                     first_name=firstName, last_name=lastName, mobile=phoneNumber, email=email, password=password)
-        #                 user.save()
-        #                 messages.success(
-        #                     request, "Account Registered, Please Login Again!")
-        #     else:
-        #         messages.info(request, "Password didn;t matched!")
-
-        ifShipToDifferentAddress = request.POST.get('ship-box')
-
-        ifSaveAddress = request.POST.get('save-address')
-        if ifShipToDifferentAddress is not None:
-            firstNameShip = request.POST.get('first_nameShip')
-            lastNameShip = request.POST.get('last_nameShip')
-            areaShip = request.POST.get('address_line_1Ship')+"," + \
-                request.POST.get('address_line_2Ship')
-            countryShip = request.POST.get('countryShip')
-            cityShip = request.POST.get('cityShip')
-            stateShip = request.POST.get('stateShip')
-            pincodeShip = request.POST.get('pincodeShip')
-            emailShip = request.POST.get('emailShip')
-            phoneNumberShip = request.POST.get('phone_numberShip')
-
-            ShippingAddress = "Name: "+firstNameShip+" "+lastNameShip+",\n Address: "+areaShip+", "+cityShip+", " + \
-                stateShip+", "+countryShip+",\n Pincode: "+pincodeShip + \
-                ",\n Email: "+emailShip+",\n Ph: "+phoneNumberShip
+            ifSaveAddress = request.POST.get('save-address')
+            ifShipToDifferentAddress = request.POST.get('ship-box')
             
-            if ShippingAddress:
-                order.shipping_address = ShippingAddress
-        
-        orderNotes = request.POST.get('checkout-mess') or None
-    
-    BillingAddress = "Name: "+firstName+" "+lastName+",\n Address: "+area+", "+city+", "+state+", "+country+",\n Pincode: "+pincode+",\n Email: "+email+",\n Ph: "+phoneNumber or None
-    if ifSaveAddress is not None:
-        s_address = UserAddresses(user=request.user, name=firstName+" "+lastName, address=area, state=state, city=city,
-                                pincode=pincode, addPhoneNumber=phoneNumber, set_default=True, email=email, country=country, address_type="Home")
-        s_address.save()
-    
-    if BillingAddress:
-        order.billing_address = BillingAddress
-    
-    if orderNotes:
-        order.orderNote = orderNotes
-    domain_name = request.get_host()
-    response = api.payment_request_create(
-        amount=str(amount),
-        purpose='test_purchase',
-        buyer_name=user.user_full_name(),
-        send_sms=settings.SEND_SMS,
-        send_email=settings.SEND_EMAIL,
-        email=user.email,
-        phone=user.mobileno,
-        redirect_url=settings.PAYMENT_SUCCESS_REDIRECT_URL,
-        allow_repeated_payments=False
-    )
-    # print(response)
-    order.ref_code = response['payment_request']['id']
-    order.save()
-    payment_redirect_url = response['payment_request']['longurl']
-    if payment_redirect_url:
-        context = {
-            'payment_url': payment_redirect_url
-        }
-        return render(request, "paymentredirect.html", context)
-    else:
-        return redirect("cartview")
+            BillingAddress = "Name: "+firstName+" "+lastName+",\n Address: "+area+", "+city+", "+state + \
+                ", "+country+",\n Pincode: "+pincode+",\n Email: " + \
+                email+",\n Ph: "+phoneNumber or None
+            
+            if pincode!=None or area!=None or country!=None or city!=None or state!=None:
+                order.billing_address = BillingAddress
+                if ifShipToDifferentAddress is not None:
+                    firstNameShip = request.POST.get('first_nameShip')
+                    lastNameShip = request.POST.get('last_nameShip')
+                    areaShip = request.POST.get('address_line_1Ship')+"," + \
+                        request.POST.get('address_line_2Ship')
+                    countryShip = request.POST.get('countryShip')
+                    cityShip = request.POST.get('cityShip')
+                    stateShip = request.POST.get('stateShip')
+                    pincodeShip = request.POST.get('pincodeShip')
+                    emailShip = request.POST.get('emailShip')
+                    phoneNumberShip = request.POST.get('phone_numberShip')
 
+                    ShippingAddress = "Name: "+firstNameShip+" "+lastNameShip+",\n Address: "+areaShip+", "+cityShip+", " + \
+                        stateShip+", "+countryShip+",\n Pincode: "+pincodeShip + \
+                        ",\n Email: "+emailShip+",\n Ph: "+phoneNumberShip
+
+                    if ShippingAddress:
+                        order.shipping_address = ShippingAddress
+                else:
+                    order.shipping_address = BillingAddress
+                
+                if ifSaveAddress:
+                    s_address = UserAddresses(user=request.user, name=firstName+" "+lastName, address=area, state=state, city=city,
+                                              pincode=pincode, addPhoneNumber=phoneNumber, set_default=True, email=email, country=country, address_type="Home")
+                    s_address.save()
+
+            else:
+                try:
+                    user_saved_address = UserAddresses.objects.get(user=request.user,set_default=True)
+                    BillingAddress_model = "Name: "+user_saved_address.name+",\n Address: "+user_saved_address.address+", "+user_saved_address.city+", "+user_saved_address.state + \
+                        ", "+user_saved_address.country+",\n Pincode: "+user_saved_address.pincode+",\n Email: " + \
+                        user_saved_address.email+",\n Ph: "+user_saved_address.addPhoneNumber or None
+                    order.billing_address = BillingAddress_model
+                    order.shipping_address = BillingAddress_model
+                except UserAddresses.DoesNotExist:
+                    messages.info(request,"Please Fill the delivery address")
+                    return redirect('payment-checkout')
+
+            orderNotes = request.POST.get('checkout-mess') or None
+        
+        
+        
+            if orderNotes:
+                order.orderNote = orderNotes
+        domain_name = request.get_host()
+        response = api.payment_request_create(
+            amount=str(amount),
+            purpose='test_purchase',
+            buyer_name=user.user_full_name(),
+            send_sms=settings.SEND_SMS,
+            send_email=settings.SEND_EMAIL,
+            email=user.email,
+            phone=user.mobileno,
+            redirect_url=settings.PAYMENT_SUCCESS_REDIRECT_URL,
+            allow_repeated_payments=False
+        )
+        # print(response)
+        order.ref_code = response['payment_request']['id']
+        order.save()
+        payment_redirect_url = response['payment_request']['longurl']
+        if payment_redirect_url:
+            context = {
+                'payment_url': payment_redirect_url
+            }
+            return render(request, "paymentredirect.html", context)
+        else:
+            return redirect("cartview")
+    else:
+        return redirect("login-user")
 
 @login_required(login_url="login-user")
 def paymentStatusAndOrderStatusUpdate(request):
@@ -321,6 +319,7 @@ def paymentStatusAndOrderStatusUpdate(request):
             if payment_status['payment_request']['status'] == 'Completed':
                 order.ordered = True
                 order.status = 'ordered'
+                order.ordered_date = datetime.now()
                 payment = Payment()
                 payment.instamojo_id = payment_status['payment_request']['payments'][0]['payment_id']
                 payment.user = request.user
@@ -377,10 +376,10 @@ def paymentStatusAndOrderStatusUpdate(request):
 def checkoutPage(request):
     Items = Order.objects.get(user= request.user,ordered=False)
     totalAmount = round(Items.get_total(), 2)
-    ShippingCharges = 0
-    if totalAmount > 500 :
-        ShippingCharges = 40
-        totalAmount += ShippingCharges
+    ShippingCharges = 40
+    if totalAmount > 599 :
+        ShippingCharges = 0
+    totalAmount += ShippingCharges
     context = {'orderItems':Items,'totalAmount':totalAmount,'shippingCharges':ShippingCharges}
     return render(request,"checkout.html",context)
 

@@ -68,8 +68,7 @@ class Order(models.Model):
     ref_code = models.CharField(max_length=200, blank=True, null=True)
     tracking_id = models.CharField(max_length=200, blank=True, null=True)
     items = models.ManyToManyField(Cart)
-    start_date = models.DateTimeField(auto_now_add=True)
-    ordered_date = models.DateTimeField()
+    start_date = models.DateTimeField(auto_now_add=True,verbose_name="Addition to cart date")
     shipping_address = models.CharField(_("shipping_address"), max_length=250,blank=True,null=True)
     billing_address = models.CharField(_("billing_address"), max_length=250,blank=True,null=True)
     orderNote = models.CharField(
@@ -81,13 +80,33 @@ class Order(models.Model):
     status = models.CharField(
         _("Order Status"), max_length=255, choices=STATUS, null=True, blank=True, default="ordered")
     ordered = models.BooleanField(default=False)
+    ordered_date = models.DateTimeField(auto_now_add=True)
+    
     shipped = models.BooleanField(default=False)
+    shipped_date = models.DateTimeField(
+        auto_now_add=True)
+
     shipping_by = models.ForeignKey(DeliveryPartnerDetails, verbose_name=_("Delivery Partner"), on_delete=models.CASCADE,blank=True,null=True)
     delivered = models.BooleanField(default=False)
+    delivered_date = models.DateTimeField(
+        auto_now_add=True)
+
     out_for_delivery = models.BooleanField(default=False)
+    out_for_delivery_date = models.DateTimeField(
+        auto_now_add=True)
+
     received = models.BooleanField(default=False)
+    received_date = models.DateTimeField(
+        auto_now_add=True)
+
     refund_requested = models.BooleanField(default=False)
+    refund_requested_date = models.DateTimeField(
+        auto_now_add=True)
+
     refund_granted = models.BooleanField(default=False)
+    refund_granted_date = models.DateTimeField(
+        auto_now_add=True)
+
 
     '''
     1. Item added to cart

@@ -109,6 +109,9 @@ def productDetailsPageView(request, pk):
     rating = ProductReviewAndRatings.objects.filter(
         product=product).aggregate(Avg('ratings'))
     reviews = ProductReviewAndRatings.objects.filter(product=product,is_approved=True)
+    print(product.category)
+    related_products = Products.objects.filter(category__contains = [product.category[0]])
+    print(related_products)
 
     # for greyed stars
     nonrating = 5 - int(rating['ratings__avg']
@@ -120,6 +123,7 @@ def productDetailsPageView(request, pk):
         'ratingr': [*range(int(rating['ratings__avg'] if rating['ratings__avg'] is not None else 0))],
         'nonratingr': [*range(nonrating)],
         'reviews': reviews,
+        'related_products': related_products,
     }
 
     return render(request, "shop-details.html", context)

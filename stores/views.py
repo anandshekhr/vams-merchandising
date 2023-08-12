@@ -54,7 +54,6 @@ class StoreProductDetailsView(APIView):
 
 class StoreVerifyAtLocation(APIView):
     permission_classes = (AllowAny,)
-    authentication_classes = [authentication.BasicAuthentication,authentication.TokenAuthentication,authentication.SessionAuthentication]
 
     def get(self,request,format=None):
         global defaultLocationpincode

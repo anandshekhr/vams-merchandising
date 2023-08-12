@@ -167,7 +167,7 @@
                                        <h1 class="banner-title" data-animation="fadeInUp" data-delay=".5s">
                                           {{banner.banner_desc.html|safe}}</h1>
                                        <div class="banner-btn" data-animation="fadeInUp" data-delay=".7s">
-                                          <a href="shop.html" class="fill-btn">Shop Now</a>
+                                          <a href="" class="fill-btn">Shop Now</a>
                                        </div>
                                     </div>
                                  </div>
@@ -252,9 +252,9 @@
                            </div>
                            <div class="category-banner-inner">
                               <div class="category-banner-content">
-                                 <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                 <a href="" class="product-category">{{banner.banner_name}}</a>
                                  <p class="category-short-desc">{{banner.banner_desc.html|safe}}</p>
-                                 <a href="shop.html" class="border-btn">Shop Now</a>
+                                 <a href="" class="border-btn">Shop Now</a>
                               </div>
                            </div>
                         </div>
@@ -270,9 +270,9 @@
                            </div>
                            <div class="category-banner-inner">
                               <div class="category-banner-content">
-                                 <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                 <a href="" class="product-category">{{banner.banner_name}}</a>
                                  <p class="category-short-desc">{{banner.banner_desc.html|safe}}</p>
-                                 <a href="shop.html" class="border-btn">Shop Now</a>
+                                 <a href="" class="border-btn">Shop Now</a>
                               </div>
                            </div>
                         </div>
@@ -290,9 +290,9 @@
                            </div>
                            <div class="category-banner-inner align-items-end">
                               <div class="category-banner-content">
-                                 <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                 <a href="" class="product-category">{{banner.banner_name}}</a>
                                  <p class="category-short-desc">{{banner.banner_desc.html|safe}}</p>
-                                 <a href="shop.html" class="border-btn">Shop Now</a>
+                                 <a href="" class="border-btn">Shop Now</a>
                               </div>
                            </div>
                         </div>
@@ -308,9 +308,9 @@
                            </div>
                            <div class="category-banner-inner align-items-end">
                               <div class="category-banner-content">
-                                 <a href="shop.html" class="product-category">{{banner.banner_name}}</a>
+                                 <a href="" class="product-category">{{banner.banner_name}}</a>
                                  <p class="category-short-desc">{{banner.banner_desc.html|safe}}</p>
-                                 <a href="shop.html" class="border-btn">Shop Now</a>
+                                 <a href="" class="border-btn">Shop Now</a>
                               </div>
                            </div>
                         </div>
@@ -384,9 +384,15 @@
                                              {% comment %} <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a> {% endcomment %}
                                              <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
                                           </div>
+                                          {% if product.discount %}
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+                                          </div>
+                                          {% else %}
                                           <div class="product-sticker-wrapper">
                                              <span class="product-sticker new">New</span>
                                           </div>
+                                          {% endif %}
                                           <div class="product-nav">
                                              <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
                                              <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
@@ -397,6 +403,7 @@
                                           </div>
                                           <div class="product-price">
                                              <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                                             <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
@@ -456,9 +463,15 @@
                                                 Cart</a> {% endcomment %}
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
-                                          <div class="product-sticker-wrapper">
-                                             <span class="product-sticker new">New</span>
-                                          </div>
+                                          {% if product.discount %}
+                              <div class="product-sticker-wrapper">
+                                 <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+                              </div>
+                              {% else %}
+                              <div class="product-sticker-wrapper">
+                                 <span class="product-sticker new">New</span>
+                              </div>
+                              {% endif %}
                                           <div class="product-nav">
                                              <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
                                              <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
@@ -523,9 +536,15 @@
                                                 Cart</a>
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
-                                          <div class="product-sticker-wrapper">
-                                             <span class="product-sticker new">New</span>
-                                          </div>
+                                          {% if product.discount %}
+                              <div class="product-sticker-wrapper">
+                                 <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+                              </div>
+                              {% else %}
+                              <div class="product-sticker-wrapper">
+                                 <span class="product-sticker new">New</span>
+                              </div>
+                              {% endif %}
                                           <div class="product-nav">
                                              <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
                                              <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
@@ -590,9 +609,15 @@
                                                 Cart</a> {% endcomment %}
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
-                                          <div class="product-sticker-wrapper">
-                                             <span class="product-sticker new">New</span>
-                                          </div>
+                                          {% if product.discount %}
+                              <div class="product-sticker-wrapper">
+                                 <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+                              </div>
+                              {% else %}
+                              <div class="product-sticker-wrapper">
+                                 <span class="product-sticker new">New</span>
+                              </div>
+                              {% endif %}
                                           <div class="product-nav">
                                              <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
                                              <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
@@ -721,7 +746,7 @@
                            </div>
                            <div class="irc-item-content">
                               <div class="irc-item-heading">Easy Returns</div>
-                              <p>30 Day Returns Policy</p>
+                              <p>7 Day Returns Policy</p>
                            </div>
                         </div>
                      </div>

@@ -3,6 +3,18 @@
 {% block title %} Checkout {% endblock title %}
 {% block body %}
 <main>
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} auto-dismiss">
+                  {{ message }}
+            </div>
+         {% endfor %}
+         <script>
+            setTimeout(function() {
+                  $('.auto-dismiss').fadeOut('slow');
+            }, 3000);
+         </script> 
+      {% endif %}
       <!-- page title area start  -->
       <section class="page-title-area" data-background="assets/img/bg/page-title-bg.jpg">
          <div class="container">
@@ -146,7 +158,8 @@
                            <div class="col-md-6">
                               <div class="checkout-form-list">
                                  <label>Postcode / Zip <span class="required">*</span></label>
-                                 <input type="text" placeholder="Postcode / Zip" name="pincode" id="pincode" />
+                                 <input type="text" placeholder="Postcode / Zip" name="pincode" id="pincode" onkeyup="getPincodeDeliveryValidation(this.value);"/>
+                                 <div id="pincode-availability-message" class="error-message"></div>
                               </div>
                            </div>
                            <div class="col-md-6">

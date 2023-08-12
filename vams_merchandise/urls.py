@@ -22,6 +22,7 @@ from dj_rest_auth.views import PasswordResetConfirmView
 from django.conf.urls import handler404, handler500
 
 
+
 admin.site.site_header = env.str('ADMIN_SITE_HEADER')
 admin.site.index_title = env.str('ADMIN_INDEX_TITLE')
 admin.site.site_title = env.str('ADMIN_SITE_TITLE')
@@ -29,6 +30,7 @@ admin.site.site_title = env.str('ADMIN_SITE_TITLE')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('Home.urls')),
+    path('api/v1/', include('about.urls')),
     path('api/v1/', include('cart.urls')),
     path('api/v1/', include('stores.urls')),
     path('api/v1/', include('products.urls')),
@@ -43,6 +45,11 @@ urlpatterns = [
     ),
     path('api/v1/account/password/reset/',
          include('django_rest_passwordreset.urls', namespace='password_reset')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,
+                                                                             document_root=settings.MEDIA_ROOT)
+
+
+
 
 handler500 = 'Home.views.err_500'

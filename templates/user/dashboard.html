@@ -5,20 +5,20 @@
         <div class="col-lg-3 ps-2 pe-2 mb-3">
             <div class="card border-0 pt-4 pb-4 text-center alert-warning align-items-center rounded-10">
                 <i class="psor mt-n5 feather-hard-drive text-white btn-round-md bg-warning font-xs"></i>
-                <h3 class="fw-700 font-xl text-grey-900 mt-2 ls-3 mb-0">0</h3>
+                <h3 class="fw-700 font-xl text-grey-900 mt-2 ls-3 mb-0">{{completed_orders}}</h3>
                 <span class="font-xssss ls-0 text-grey-700 fw-600 mt-0">Order complete</span>
-                <span class="mt-2 text-success font-xsssss fw-700 ls-6">+ 0% </span>
+                {% comment %} <span class="mt-2 text-success font-xsssss fw-700 ls-6">+ 0% </span> {% endcomment %}
             </div>  
         </div>
         <div class="col-lg-3 ps-2 pe-2 mb-3">
             <div class="card border-0 pt-4 pb-4 text-center alert-success align-items-center rounded-10">
                 <i class="psor mt-n5 feather-box text-white btn-round-md bg-success font-xs"></i>
-                <h3 class="fw-700 font-xl text-grey-900 mt-2 ls-3 mb-0">0</h3>
+                <h3 class="fw-700 font-xl text-grey-900 mt-2 ls-3 mb-0">{{pending_orders}}</h3>
                 <span class="font-xssss ls-0 text-grey-700 fw-600 mt-0">Order Pending</span>
-                <span class="mt-2 text-warning font-xsssss fw-700 ls-6">+ 0% </span>
+                {% comment %} <span class="mt-2 text-warning font-xsssss fw-700 ls-6">+ 0% </span> {% endcomment %}
             </div>  
         </div>
-        <div class="col-lg-3 ps-2 pe-2 mb-3">
+        {% comment %} <div class="col-lg-3 ps-2 pe-2 mb-3">
             <div class="card border-0 pt-4 pb-4 text-center alert-info align-items-center rounded-10">
                 <i class="psor mt-n5 feather-award text-white btn-round-md bg-info font-xs"></i>
                 <h3 class="fw-700 font-xl text-grey-900 mt-2 ls-3 mb-0">0</h3>
@@ -33,7 +33,7 @@
                 <span class="font-xssss ls-0 text-grey-700 fw-600 mt-0">Total Spend</span>
                 <span class="mt-2 text-danger font-xsssss fw-700 ls-6">+ 0% </span>
             </div>  
-        </div>
+        </div> {% endcomment %}
         {% comment %} <div class="col-lg-12 ps-2 pe-2">
             <div class="card border-0  bg-lightblue rounded-10">
                 <div class="row">

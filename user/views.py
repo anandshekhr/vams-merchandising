@@ -33,6 +33,7 @@ def register(request):
     if request.method == 'POST':
         phone_number = request.POST.get('phone_number')
         email = request.POST.get('email')
+        username = request.POST.get('username')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         password = request.POST.get('password1')
@@ -52,7 +53,7 @@ def register(request):
                     return redirect('register-user')
                 else:
                     user = User.objects.create_user(
-                        first_name=first_name,last_name=last_name,mobile=phone_number, email=email, password=password)
+                        first_name=first_name,last_name=last_name,mobile=phone_number, email=email,username=username, password=password)
                     user.save()
                     token, created = Token.objects.get_or_create(user=user)
                     messages.success(request,f"Account Registered, Please Login Again!")
@@ -161,7 +162,7 @@ def userOrderDetailExpanded(request, pk):
     if request.user:
         order_detail = Order.objects.get(user=request.user.id, pk=pk)
         expected_delivery = datetime.strptime(
-            str(order_detail.ordered_date), '%Y-%m-%d %H:%M:%S%z')+timedelta(days=6)
+            str(order_detail.ordered_date), '%Y-%m-%d %H:%M:%S.%f%z')+timedelta(days=6)
     context = {
         'orders': order_detail,
         'expected_delivery_date':expected_delivery
@@ -227,10 +228,16 @@ def verify_otp(request):
 
 def profileDashboard(request):
     try:
-        orders = Order.objects.filter(user=request.user.id,ordered = False)
+        orders = Order.objects.filter(
+            user=request.user.id)
+
+        pending_orders = Order.objects.filter(user=request.user.id,ordered = False)
+        completed_orders_count = Order.objects.filter(user=request.user.id,ordered=True).count()
 
         context = {
-            'orders': orders
+            'orders': orders,
+            'completed_orders':completed_orders_count,
+            'pending_orders':pending_orders.count()
         }
         return render(request, "user/dashboard.html", context)
     except Exception as e:

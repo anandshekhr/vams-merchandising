@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}FAQ{% endblock title %}
+{% block body %}
+   <!-- Add your site or application content here -->
+   <main>
+
+      <!-- page title area start  -->
+      <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
+         <div class="container">
+            <div class="row">
+               <div class="col-lg-12">
+                  <div class="page-title-wrapper text-center">
+                     <h1 class="page-title mb-10">Refund Policy</h1>
+                     <div class="breadcrumb-menu">
+                        <nav aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs">
+                           <ul class="trail-items">
+                              <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span>Home</span></a></li>
+                              <li class="trail-item trail-end"><span>Refund Policy</span></li>
+                           </ul>
+                        </nav>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <!-- page title area end  -->
+
+      <!-- faq area start -->
+      <section class="faq-area pt-120 pb-40 bg-grey fix">
+         <div class="container container-small">
+            <div class="row">
+               {% for policy in policies %}
+               <p>{{policy.refund_policy|safe}}</p>
+               {% endfor %}
+            </div>
+         </div>
+      </section>
+      <!-- faq area end -->
+
+   </main>
+{% endblock body %}
+
+

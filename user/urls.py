@@ -1,6 +1,8 @@
 from django.urls import path
 
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('accounts/register', views.register, name='register-user'),
@@ -31,4 +33,7 @@ urlpatterns = [
     path('accounts/profile/coupon/',
          views.user_coupon, name="profile-coupon"),
      # path('accounts/user/dashboard/',views.userDashboard,name="user-dashboard"),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,
+                                                                          document_root=settings.MEDIA_ROOT)
+
+

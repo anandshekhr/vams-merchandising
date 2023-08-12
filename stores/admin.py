@@ -32,3 +32,6 @@ class StoreDetailsAdmin(admin.ModelAdmin):
     search_fields: list = ('storeName','storeLocalityPinCode','storeServicablePinCodes','storeRating','storeStatus')
 
 admin.site.register(StoreDetail,StoreDetailsAdmin)
+
+admin.site.register(PoliciesDetails)
+admin.site.register(FAQ)

@@ -44,9 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',
     'django.contrib.sites',
 
     'django_rest_passwordreset',
+
+    # About app
+    'about.apps.AboutConfig',
 
     # home app
     'Home.apps.HomeConfig',
@@ -131,7 +135,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vams-merchandise",
+            "NAME": "ekart.vamsmechatronica",
             "USER": "postgres",
             "PASSWORD": "Shekhar123#",
             "HOST": "127.0.0.1",
@@ -184,13 +188,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 if DEBUG:
-    STATIC_URL = '/static/'
+    STATIC_URL = 'static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_DIRS = [
         BASE_DIR / "static"
     ]
 else:
     STATIC_URL = 'static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

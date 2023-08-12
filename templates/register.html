@@ -59,6 +59,11 @@
                            </div>
                            <div class="col-md-12">
                               <div class="signup-wrapper">
+                                 <input type="text" placeholder="Username" name="username" id="username">
+                              </div>
+                           </div>
+                           <div class="col-md-12">
+                              <div class="signup-wrapper">
                                  <input type="text" placeholder="Email" name="email" id="email">
                               </div>
                            </div>
@@ -91,7 +96,7 @@
                         <div class="acount-login text-center">
                            <span>Already have an account? <a href="{% url 'login-user' %}">Log in</a></span>
                         </div>
-                        <div class="sign-social text-center">
+                        {% comment %} <div class="sign-social text-center">
                            <span>Or Sign- in with</span>
                         </div>
                         <div class="sign-social-icon">
@@ -127,7 +132,7 @@
                               </svg>
                               <span>Google</span>
                            </a>
-                        </div>
+                        </div> {% endcomment %}
                      </div>
                   </form>
                </div>

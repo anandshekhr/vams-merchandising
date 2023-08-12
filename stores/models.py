@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from products.models import * 
 from django.utils.translation import gettext_lazy as _
 from datetime import datetime
@@ -33,3 +34,39 @@ class StoreProductsDetails(models.Model):
     def __str__(self) -> str:
         return "StoreName: {} ProductName: {} AvailableStock: {}".format(self.store,self.products,self.available_stock)
     
+class PoliciesDetails(models.Model):
+    store = models.ForeignKey(StoreDetail, verbose_name=_("Store"), on_delete=models.CASCADE)
+    refund_policy = QuillField()
+    return_policy = QuillField()
+    shipping_and_delivery_policy = QuillField()
+    payment_type = QuillField()
+
+    
+    class Meta:
+        verbose_name = _("PoliciesDetails")
+        verbose_name_plural = _("PoliciesDetailss")
+
+    def __str__(self):
+        return self.store.storeName
+
+    def get_absolute_url(self):
+        return reverse("PoliciesDetails_detail", kwargs={"pk": self.pk})
+    
+class FAQ(models.Model):
+
+    question = models.TextField(_("FAQ Question"), max_length=500)
+    answer = models.TextField(_("FAQ Answer"), max_length=5000)
+
+    
+
+    class Meta:
+        verbose_name = _("FAQ")
+        verbose_name_plural = _("FAQs")
+
+    def __str__(self):
+        return self.question
+
+    def get_absolute_url(self):
+        return reverse("FAQ_detail", kwargs={"pk": self.pk})
+
+
