@@ -397,7 +397,8 @@ class CartAddView(APIView):
             return Response({'data':'No items in cart'},status=status.HTTP_204_NO_CONTENT)
     
     def post(self,request,format = None):
-        data = request.data
+        data = request.POST
+        print(data)
         product_pk = data.get('product')
         quantity = int(data.get('quantity'))
         req_size = data.get('size')
@@ -405,6 +406,7 @@ class CartAddView(APIView):
         order_item, created = Cart.objects.get_or_create(
             item=item,
             size = req_size,
+            quantity=quantity,
             user=request.user,
             ordered=False
         )
@@ -427,6 +429,7 @@ class CartAddView(APIView):
             ordered_date = timezone.now()
             order = Order.objects.create(
                 user=request.user, ordered_date=ordered_date)
+            
             order.items.add(order_item)
         serializer = OrderSerializer(instance=order_qs,many=True)
         return Response({'cart': serializer.data, 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": order_item.get_amount_saved()}, status=status.HTTP_200_OK)
@@ -515,14 +518,17 @@ def addToCartWithSizeQuantity(request,pk):
 
     current_site = get_current_site(request)
     domain_name = request.get_host()
-    print(domain_name)
     
     if request.method == "POST":
         size = request.POST.get('choose-size')
-        # print(size)
         qty = request.POST.get('pro-qty')
 
-        # print(qty)
+        if size == None:
+            previous_page = request.META.get('HTTP_REFERER')
+            messages.info(request,"Please select the item size")
+            return redirect(previous_page)
+
+
     user = Token.objects.get(user=request.user)
     api_url = "http://"+domain_name+"/api/v1/customer/order/add/"
     headers ={'Authorization':f'Token {user}'}

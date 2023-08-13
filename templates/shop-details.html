@@ -4,7 +4,18 @@
 {% block body %}
 <!-- Add your site or application content here -->
    <main>
-
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} auto-dismiss">
+                  {{ message }}
+            </div>
+         {% endfor %}
+         <script>
+            setTimeout(function() {
+                  $('.auto-dismiss').fadeOut('slow');
+            }, 3000);
+         </script> 
+      {% endif %}
       <!-- page title area start  -->
       <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
          <div class="container">
@@ -93,7 +104,8 @@
                      <span class="product-price">₹{{product.list_price|floatformat:2}}</span>
 
                      <p class="mb-30">{{product.desc.html|safe}}</p>
-                     <form action="{% url 'add-to-cart-size-qty' product.id %}" method="post">{% csrf_token %}
+                     <form action="{% url 'add-to-cart-size-qty' product.id %}" method="post" id="add-to-cart-form">{% csrf_token %}
+                        <input type="hidden" value="{{product.id}}" id="get-single-product-id">
                         <div class="available-sizes btn-group-toggle" role="group" name="choose-size" id="choose-size">
                            <span>Available Sizes : </span>
                            {% for size in product.available_sizes %}
@@ -103,9 +115,9 @@
                         </div>
                         <div class="product-quantity-cart mb-25">
                            <div class="product-quantity-form">
-                              <button class="cart-minus"><i class="far fa-minus"></i></button>
+                              <button class="cart-minus" id="cart-minus-product" onclick="minusBtnClick('cart-minus-product')"><i class="far fa-minus"></i></button>
                               <input class="cart-input" id="pro-qty" name="pro-qty" type="text" value="1">
-                              <button class="cart-plus"><i class="far fa-plus"></i></button>
+                              <button class="cart-plus" onclick="plusBtnClick('cart-plus-product')" id="cart-plus-product"><i class="far fa-plus"></i></button>
                            </div>
                            <button role="submit" class="fill-btn">Add to Cart</button>
                         </div>

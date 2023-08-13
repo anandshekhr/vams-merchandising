@@ -6284,6 +6284,7 @@ html .ui-button.ui-state-disabled:active {
   margin-bottom: 20px;
   display: flex;
   padding: 10px 20px;
+  padding-right: 30px;
   outline: none;
   color: var(--clr-common-text);
   font-size: 16px;
@@ -7332,7 +7333,7 @@ h3 {
     padding-right: 0px !important;
     font-size: 13px;
   }
-  
+
 }
 
 .star {
@@ -7341,7 +7342,7 @@ h3 {
   /* Adjust size as needed */
   height: 20px;
   /* Adjust size as needed */
-  background-image: url('../img/star-regular.svg') ;
+  background-image: url('../img/star-regular.svg');
   /* Empty star image */
   background-size: contain;
   cursor: pointer;
@@ -7357,4 +7358,17 @@ h3 {
   background-position: 0 0;
   background-image: url('../img/star-solid.svg');
   /* Position for filled star */
+}
+
+.show-password-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background-image: url('../img/eye-solid.svg');
+  /* Replace with your icon path */
+  width: 20px;
+  height: 20px;
+  background-size: cover;
 }

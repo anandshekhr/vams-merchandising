@@ -313,6 +313,7 @@
                                  <i class="fal fa-shopping-bag"></i>
                                  {% if cart.get_quantity %}
                                  <span class="action-item-number">{{cart.get_quantity}}</span></a>
+
                                  {% else %}
                                  <span class="action-item-number">0</span></a>
                                  {% endif %}
@@ -391,19 +392,27 @@
                         <div class="action-item action-item-cart">
                            <a href="javascript:void(0)" class="view-cart-button">
                               <i class="fal fa-shopping-bag"></i>
-                              <span class="action-item-number">5</span></a>
+                              {% if cart.get_quantity %}
+                              <span class="action-item-number">{{cart.get_quantity}}</span></a>
+                              {% else %}
+                              <span class="action-item-number">0</span></a>
+                              {% endif %}
                         </div>
                         <div class="action-item action-item-wishlist">
                            <a href="javascript:void(0)" class="view-wishlist-button">
                               <i class="fal fa-heart"></i>
-                              <span class="action-item-number">5</span></a>
+                              {% if wishlist.get_quantity %}
+                              <span class="action-item-number">{{wishlist.get_quantity}}</span></a>
+                              {% else %}
+                              <span class="action-item-number">0</span></a>
+                              {% endif %}
                         </div>
                      </div>
                   </div>
                </div>
                <div class="offset-widget offset_searchbar mb-30">
                   <form action="#" class="filter-search-input">
-                     <input type="text" placeholder="Search keyword">
+                     <input type="text" placeholder="Search keyword" onkeyup="showSearchItems(this.value)">
                      <button><i class="fal fa-search"></i></button>
                   </form>
                </div>
@@ -729,7 +738,7 @@
             },
             success: function(response) {
                 if (response){
-                  console.log(response);
+                  //console.log(response);
                   $('.suggestProduct').empty()
                   
                   if (response.length > 0){
@@ -745,7 +754,7 @@
                           <p style="font-size:14px;">`+response[index].name+`</p>
                         </div>
                         <div class="align-self-center">
-                          <div class="product_pirce "><span class="pro_mrp" style="font-size:14px;">₹`+response[index].max_retail_price+`</span></div>
+                          <div class="product_pirce "><span class="pro_mrp" style="font-size:14px;">₹`+response[index].discounted_price+`</span></div>
                           <!-- <a href="#" class="btn btn-style1 btn-padding">ADD</a> -->
                         </div>
                       </div>

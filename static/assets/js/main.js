@@ -838,3 +838,66 @@ $(document).on('submit', '#submit-review-form', function (e) {
 		}
 	})
 })
+
+
+
+function showPassword() {
+	const passwordInput = document.getElementById("password");
+	//const showPasswordToggle = document.getElementById("show-password-toggle");
+	if (passwordInput.type === "password") {
+		passwordInput.type = "text";
+	} else {
+		passwordInput.type = "password";
+	}
+};
+
+function plusBtnClick(element_id) {
+	text = parseInt($("#" + element_id).text())
+	val = text + 1
+	if (val > 0) {
+		$("#pro-qty").empty(val)
+		$("#pro-qty").append(val)
+	}
+}
+function minusBtnClick(element_id) {
+	text = parseInt($("#" + element_id).text())
+	val = text - 1
+	if (val > 0) {
+		$("#pro-qty").empty(val)
+		$("#pro-qty").append(val)
+	}
+}
+
+$(document).on("submiadat", "#add-to-cart-form", function (e) {
+	e.preventDefault();
+	const parentDiv = document.getElementById('choose-size');
+	var qty = document.getElementById('pro-qty').value;
+	console.log(qty);
+	const size = parentDiv.querySelector('input[type="radio"]:checked').value;
+	console.log(size);
+	const productid = document.getElementById('get-single-product-id').value;
+	console.log(productid);
+	domain = window.location.origin;
+	console.log(domain);
+	var token = getCookie('token');
+	console.log(token);
+	var csrftoken = getCookie('csrftoken');
+
+	$.ajax({
+		url: domain + '/api/v1/customer/order/add/',
+		type: 'POST',
+		headers: { 'Authorization': 'Token ' + token, 'X-CSRFTOKEN': csrftoken },
+		body: {
+			product: productid,
+			size: size,
+			quantity: qty,
+		},
+		success: function (response) {
+			console.log(response);
+		},
+		error: function (response) {
+			console.log(response);
+		}
+	});
+
+})

@@ -109,9 +109,7 @@ def productDetailsPageView(request, pk):
     rating = ProductReviewAndRatings.objects.filter(
         product=product).aggregate(Avg('ratings'))
     reviews = ProductReviewAndRatings.objects.filter(product=product,is_approved=True)
-    print(product.category)
     related_products = Products.objects.filter(category__contains = [product.category[0]])
-    print(related_products)
 
     # for greyed stars
     nonrating = 5 - int(rating['ratings__avg']

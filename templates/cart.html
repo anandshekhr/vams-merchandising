@@ -61,13 +61,13 @@
                         <tr>
                            <td class="product-thumbnail"><a href="{% url 'productdetail' obj.item.id %}"><img
                                     src="/media/{{obj.item.image1}}" alt="img"></a></td>
-                           <td class="product-name"><a href="shop-details.html">{{obj.item.name}}</a></td>
-                           <td class="product-size"><a href="#">{{obj.size}}</a></td>
+                           <td class="product-name"><a href="{% url 'productdetail' obj.item.id %}">{{obj.item.name}}</a></td>
+                           <td class="product-size"><a href="{% url 'productdetail' obj.item.id %}">{{obj.size}}</a></td>
                            <td class="product-price"><span class="amount">₹{{obj.item.list_price|floatformat:2}}</span></td>
                            <td class="product-quantity text-center">
                               <div class="product-quantity mt-10 mb-10">
                                  <div class="product-quantity-form">
-                                    <form action="#">
+                                    <form action="">
                                        <button class="cart-minus cart-minus-ck far fa-minus" id="{{obj.item.id}}-cart-minus-btn:{{obj.size}}"></button>
                                        <input class="cart-input cart-input-ck" type="text" id="{{obj.item.id}}-name-value:{{obj.size}}" value="{{obj.quantity}}">
                                        <button class="cart-plus cart-plus-ck far fa-plus" id="{{obj.item.id}}-cart-plus-btn:{{obj.size}}"></button>
