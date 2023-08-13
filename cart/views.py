@@ -519,12 +519,12 @@ def addToCartWithSizeQuantity(request,pk):
     current_site = get_current_site(request)
     domain_name = request.get_host()
     
+    previous_page = request.META.get('HTTP_REFERER')
     if request.method == "POST":
         size = request.POST.get('choose-size')
         qty = request.POST.get('pro-qty')
 
         if size == None:
-            previous_page = request.META.get('HTTP_REFERER')
             messages.info(request,"Please select the item size")
             return redirect(previous_page)
 
@@ -537,5 +537,5 @@ def addToCartWithSizeQuantity(request,pk):
     response = requests.post(url=api_url,data=data,headers=headers)
     # print(response.json())
         
-    
-    return redirect("cartview")
+    messages.info(request, "Item Added to Cart Successfully!")
+    return redirect(previous_page)
