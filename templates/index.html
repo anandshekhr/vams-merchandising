@@ -4,6 +4,19 @@
 {% block body %}
    <!-- Add your site or application content here -->
    <main>
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} auto-dismiss">
+                  {{ message }}
+            </div>
+         {% endfor %}
+         <script>
+            setTimeout(function() {
+                  $('.auto-dismiss').fadeOut('slow');
+            }, 3000);
+         </script> 
+      {% endif %}
+
       <!-- side toggle start -->
       {% comment %} <div class="fix">
          <div class="side-info">

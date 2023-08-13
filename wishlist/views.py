@@ -48,7 +48,7 @@ def deleteItemFromWishlist(request,pk):
 
 @login_required(login_url="login-user")
 def addToWishlist(request, pk):
-
+    previous_page = request.META.get('HTTP_REFERER')
     item = get_object_or_404(Products, id=pk)
     order_item, created = WishlistItems.objects.get_or_create(
         item=item,
@@ -74,8 +74,8 @@ def addToWishlist(request, pk):
         order = Wishlist.objects.create(
             user=request.user)
         order.items.add(order_item)
-        messages.info(request, "This item was added to your cart.")
-        return redirect("wishlist-view")
+        messages.info(request, "This item was added to your Wishlist!")
+        return redirect(previous_page)
 
 
 class AddToWishlistAPI(APIView):
