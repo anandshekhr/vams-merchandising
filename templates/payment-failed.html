@@ -15,7 +15,9 @@
                   <div class="text-center">
                      <h1>OOPS Payment Failed !</h1>
                      <p>Your order has not been placed. Please Retry Payment</p>
-                     <a href="{% url 'paymentcheckout' order.get_total|floatformat:2 %}" class="btn btn-outline-danger">Continue Shopping</a>
+                     <a href="{% url 'paymentcheckout' order.get_total|floatformat:2 %}" class="btn btn-outline-danger">Retry Payment</a><br><br>
+
+                     <a href="{% url 'home' %}" style="text-decoration:underline;">continue shopping</a>  
                   </div>
                </div>
          </div>
