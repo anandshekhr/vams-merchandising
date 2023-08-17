@@ -5,11 +5,20 @@ from .models import *
 
 
 class ProductsAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        # Filter products based on the logged-in user
+        if not request.user.is_superuser:
+            vendor = VendorDetail.objects.filter(owner=request.user)
+            qs = qs.filter(vendor__in=vendor)
+
+        return qs
     list_display: list = ('name', 'unit', 'max_retail_price',
-                          'created_at', 'modified_at')
-    ordering: list = ['-modified_at']
+                          'created_at', 'modified_at','vendor')
+    ordering: list = ['-modified_at','-vendor','-name','-max_retail_price','-created_at']
     search_fields: list = ('name', 'material_feature',
-                           'max_retail_price', 'category')
+                           'max_retail_price', 'category','vendor')
 
 
 admin.site.register(Products, ProductsAdmin)
@@ -50,3 +59,22 @@ admin.site.register(Banners, BannersAdmin)
 #     search_fields: list = ('categoriesproduct_id',)
 
 admin.site.register(CategoriesProducts)
+
+
+class VendorDetailAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        # Filter products based on the logged-in user
+        if not request.user.is_superuser:
+            qs = qs.filter(owner=request.user)
+
+        return qs
+    list_display: list = ('storeName', 'owner', 'email',
+                          'phone_number', 'address')
+    ordering: list = ['-storeName', '-email', '-owner']
+    search_fields: list = ('storeName', 'owner', 'email',
+                           'phone_number', 'address')
+
+
+admin.site.register(VendorDetail, VendorDetailAdmin)

@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from datetime import datetime
 from django.contrib.postgres.fields import ArrayField
 
+
 # Create your models here.
 RATINGS = ((1,1),(2,2),(3,3),(4,4),(5,5),)
 
@@ -69,4 +70,8 @@ class FAQ(models.Model):
     def get_absolute_url(self):
         return reverse("FAQ_detail", kwargs={"pk": self.pk})
 
+
+
+
+    
 

@@ -276,6 +276,7 @@ def user_orders(request):
     if request.user:
         # fetching all post objects from database
         orders = Order.objects.filter(user=request.user.id)
+        print(len(orders))
     
         if len(orders) > 5:
             p = Paginator(orders, 5)  # creating a paginator object
@@ -292,7 +293,7 @@ def user_orders(request):
             except Exception as e:
                 return HttpResponse(e)
             context = {'page_orders': page_obj}
-    # sending the page object to index.html
+
         else:
             context = {'page_orders': orders}
 

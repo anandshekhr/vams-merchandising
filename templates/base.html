@@ -185,7 +185,7 @@ what is lifestyle store,
 ">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <!-- Place favicon.ico in the root directory -->
-   <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+   <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
    <!-- CSS here -->
    <link rel="stylesheet" href="{% static 'assets/css/preloader.css' %}">
    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
@@ -267,22 +267,35 @@ what is lifestyle store,
                         <div class="action-list d-none d-md-flex action-list-header4">
                            <div class="action-item action-item-cart">
                               <a href="javascript:void(0)" class="view-cart-button">
-                                 <i class="fal fa-shopping-bag"></i>
+                                 <i class="fal fa-bell"></i>
                                  {% if cart.get_quantity %}
-                                 <span class="action-item-number">{{cart.get_quantity}}</span></a>
+                                 <span class="action-item-number">{{cart.get_quantity}}</span>
 
                                  {% else %}
-                                 <span class="action-item-number">0</span></a>
+                                 <span class="action-item-number">0</span>
                                  {% endif %}
+                              </a>
+                           </div>
+                           <div class="action-item action-item-cart">
+                              <a href="javascript:void(0)" class="view-cart-button">
+                                 <i class="fal fa-shopping-bag"></i>
+                                 {% if cart.get_quantity %}
+                                 <span class="action-item-number">{{cart.get_quantity}}</span>
+
+                                 {% else %}
+                                 <span class="action-item-number">0</span>
+                                 {% endif %}
+                              </a>
                            </div>
                            <div class="action-item action-item-wishlist">
                               <a href="javascript:void(0)" class="view-wishlist-button">
                                  <i class="fal fa-heart"></i>
                                  {% if wishlist.get_quantity %}
-                                 <span class="action-item-number">{{wishlist.get_quantity}}</span></a>
+                                 <span class="action-item-number">{{wishlist.get_quantity}}</span>
                                  {% else %}
-                                 <span class="action-item-number">0</span></a>
+                                 <span class="action-item-number">0</span>
                                  {% endif %}
+                              </a>
                            </div>
                            {% if request.user.is_authenticated %}
                            <div class="user-btn">
@@ -341,6 +354,17 @@ what is lifestyle store,
                <div class="offset-profile-action d-xl-none">
                   <div class="offset-widget mb-40">
                      <div class="action-list action-list-header1">
+                        <div class="action-item action-item-cart">
+                           <a href="javascript:void(0)" class="view-cart-button">
+                              <i class="fal fa-bell"></i>
+                              {% if cart.get_quantity %}
+                              <span class="action-item-number">{{cart.get_quantity}}</span>
+
+                              {% else %}
+                              <span class="action-item-number">0</span>
+                              {% endif %}
+                           </a>
+                        </div>
                         <div class="action-item action-item-cart">
                            <a href="javascript:void(0)" class="view-cart-button">
                               <i class="fal fa-shopping-bag"></i>

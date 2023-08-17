@@ -35,3 +35,5 @@ admin.site.register(StoreDetail,StoreDetailsAdmin)
 
 admin.site.register(PoliciesDetails)
 admin.site.register(FAQ)
+
+

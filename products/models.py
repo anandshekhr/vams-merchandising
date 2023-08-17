@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from .storage import ProductFileStorage
@@ -8,6 +9,8 @@ from django.contrib.postgres.fields import ArrayField
 from django_quill.fields import QuillField
 from django.db.models import Avg, Sum
 from datetime import datetime
+from django.contrib.auth import get_user_model
+User = get_user_model()
 import os
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -28,6 +31,7 @@ def user_directory_path(instance, filename):
 # MultiArrayChoiceFields
 
 
+
 class ModifiedArrayField(ArrayField):
     def formfield(self, **kwargs):
         defaults = {
@@ -40,6 +44,28 @@ class ModifiedArrayField(ArrayField):
 
 # Create your models here.
 
+
+class VendorDetail(models.Model):
+    owner = models.ForeignKey(User, verbose_name=_(
+        "Owner"), on_delete=models.CASCADE)
+    storeName = models.CharField(
+        _("Store Name"), max_length=100, null=True, blank=True)
+    email = models.EmailField(
+        _("Store Email ID"), max_length=254, null=True, blank=True)
+    phone_number = models.CharField(
+        _("Store Phone No."), max_length=100, null=True, blank=True)
+    address = models.TextField(
+        _("Store Address"), max_length=1000, null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("VendorDetail")
+        verbose_name_plural = _("VendorDetails")
+
+    def __str__(self):
+        return self.storeName
+
+    def get_absolute_url(self):
+        return reverse("VendorDetail_detail", kwargs={"pk": self.pk})
 
 class Products(models.Model):
     id = models.AutoField(primary_key=True)
@@ -61,8 +87,8 @@ class Products(models.Model):
     brand = models.CharField(_("Brand"), max_length=50, null=True, blank=True)
     available_sizes = ModifiedArrayField(models.CharField(
         _("Product Available"), max_length=255, choices=SIZES, null=True, blank=True), null=True)
-    vendor = models.CharField(
-        _("Vendor"), max_length=50, null=True, blank=True)
+    vendor = models.ForeignKey(VendorDetail,
+                               related_name="Vendor", on_delete=models.CASCADE, max_length=50, null=True, blank=True)
     tags = ModifiedArrayField(models.CharField(
         _("Tags"), max_length=50, choices=TAGS, null=True, blank=True), null=True)
     discount = models.DecimalField(

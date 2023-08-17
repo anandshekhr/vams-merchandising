@@ -135,7 +135,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "ekart.vamsmechatronica",
+            "NAME": "vamscentral",
             "USER": "postgres",
             "PASSWORD": "Shekhar123#",
             "HOST": "127.0.0.1",
