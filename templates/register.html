@@ -44,7 +44,7 @@
          <div class="container container-small">
             <div class="row justify-content-center">
                <div class="col-lg-8">
-                  <form method="post" action="{% url 'register-user' %}">{% csrf_token %}
+                  <form method="post" action="{% url 'register' %}">{% csrf_token %}
                      <div class="signup-form-wrapper">
                         <div class="row">
                            <div class="col-md-6">
@@ -94,7 +94,7 @@
                            <button class="sing-btn">Register now</button>
                         </div>
                         <div class="acount-login text-center">
-                           <span>Already have an account? <a href="{% url 'login-user' %}">Log in</a></span>
+                           <span>Already have an account? <a href="{% url 'login' %}">Log in</a></span>
                         </div>
                         {% comment %} <div class="sign-social text-center">
                            <span>Or Sign- in with</span>

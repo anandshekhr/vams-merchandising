@@ -226,7 +226,7 @@ what is lifestyle store,
                   {% if request.user.is_authenticated %}
                      <a href="{% url 'profile-dashboard' %}" class="text-btn">My account</a>
                   {% else %}
-                     <a href="{% url 'login-user' %}" class="text-btn">My account</a>
+                     <a href="{% url 'login' %}" class="text-btn">My account</a>
                   {% endif %}
                   </div>
                </div>
@@ -299,7 +299,7 @@ what is lifestyle store,
                            </div>
                            {% if request.user.is_authenticated %}
                            <div class="user-btn">
-                              <a href="{% url 'logout-user' %}">
+                              <a href="{% url 'logout' %}">
                                  <div class="user-icon">
                                     <i class="flaticon-avatar"></i>
                                  </div>
@@ -308,7 +308,7 @@ what is lifestyle store,
                            </div>
                            {% else %}
                            <div class="user-btn">
-                              <a href="{% url 'login-user' %}">
+                              <a href="{% url 'login' %}">
                                  <div class="user-icon">
                                     <i class="flaticon-avatar"></i>
                                  </div>
@@ -509,8 +509,8 @@ what is lifestyle store,
                         <h4>Pages</h4>
                      </div>
                      <ul>
-                        <li><a href="{% url 'login-user' %}">Login</a></li>
-                        <li><a href="{% url 'register-user' %}">Register</a></li>
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Register</a></li>
                         <li><a href="{% url 'profile-dashboard' %}">My Account</a></li>
                         <li><a href="{% url 'cartview' %}">Cart</a></li>
                         <li><a href="{% url 'wishlist-view' %}">Wishlist</a></li>

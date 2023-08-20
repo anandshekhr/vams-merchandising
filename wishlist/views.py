@@ -19,13 +19,16 @@ api = Instamojo(api_key=settings.API_KEY,
 
 User = get_user_model()
 # Create your views here.
-@login_required(login_url="login-user")
+
+
+@login_required(login_url="login")
 def wishlistView(request):
     items = Wishlist.objects.get(user=request.user)
-    context = {'items':items}
-    return render(request,"wishlist.html",context)
+    context = {'items': items}
+    return render(request, "wishlist.html", context)
 
-def deleteItemFromWishlist(request,pk):
+
+def deleteItemFromWishlist(request, pk):
     """Delete Items from Wishlist
 
     Args:
@@ -35,18 +38,19 @@ def deleteItemFromWishlist(request,pk):
     Returns:
         _type_: _description_
     """
-    
-    #delete from wishlistItems models
-    item = WishlistItems.objects.filter(item = pk)[0]
+
+    # delete from wishlistItems models
+    item = WishlistItems.objects.filter(item=pk)[0]
     item.delete()
 
     # delete from Wishlist models
-    wishlist_item = Wishlist.objects.filter(user =request.user)[0]
+    wishlist_item = Wishlist.objects.filter(user=request.user)[0]
     wishlist_item.items.remove(item)
-    
+
     return redirect('home')
 
-@login_required(login_url="login-user")
+
+@login_required(login_url="login")
 def addToWishlist(request, pk):
     previous_page = request.META.get('HTTP_REFERER')
     item = get_object_or_404(Products, id=pk)

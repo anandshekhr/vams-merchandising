@@ -187,7 +187,7 @@
          <div class="row justify-content-center">
             <div class="col-lg-8">
                <div class="signup-form-wrapper">
-                  <form method="post" action="{% url 'login-user' %}">{% csrf_token %}
+                  <form method="post" action="{% url 'login' %}">{% csrf_token %}
                      <div class="signup-wrapper">
                         <input type="text" name="phone_number" id="phone_number" placeholder="Enter Your Phone Number">
                      </div>
@@ -207,10 +207,10 @@
                   </form>
                   <div class="registered wrapper">
                      <div class="not-register">
-                        <span>Not registered?</span><span><a href="{% url 'register-user' %}">Sign up</a></span>
+                        <span>Not registered?</span><span><a href="{% url 'register' %}">Sign up</a></span>
                      </div>
                      <div class="forget-password">
-                        <a href="{% url 'password-forgot-user' %}">Forgot password?</a>
+                        <a href="{% url 'reset_password' %}">Forgot password?</a>
                      </div>
                   </div>
                   {% comment %} <div class="sign-social text-center">
