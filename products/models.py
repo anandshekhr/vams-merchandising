@@ -22,6 +22,7 @@ CATEGORIES = (('new-arrival', 'New Arrival'), ('best-seller', 'Best Seller'), ('
 TAGS = (('cotton', 'Cotton'), ('synthetic',
                                'Synthetic'), ('woolen', 'Woolen'), ('polyster', 'Polyster'),)
 SIZES = (('XS','XS'),('S','S'),('M','M'),('L','L'),('XL','XL'),('XXL','XXL'),('XXL','XXL'))
+SUBCATEGORIES = (('t-shirt-men','Tshirt Men'),('t-shirt-women','Tshirt Women'),('trouser','Trouser'),('night-wear-men','Night Wear Men'),('night-wear-women','Night Wear Women'),('belts-gents','Belts Men'),('belts-women','Belts Women'),('kurta','Kurta'),('kurti','Kurti'),('format-shirt-men','Formatshirt Men'),('format-shirt-women','Formatshirt Women'),('formal-pants-men','Formal Pants Men'),('formal-pants-women','Formal Pants Women'),('wrist-watches','Wrist Watches'),('shoes-men','Shoes Men'),('shoes-women','Shoes Women'),('sandels-men','Sandels Men'),('sandels-women','Sandels Women'),('beauty-products','Beauty Products'),('tops','Top'),('crop-tops','Crop Tops'),('long-skirts','Long Skirt'),('anarkali-suit','Anarkali Suit'))
 
 
 def user_directory_path(instance, filename):
@@ -76,6 +77,7 @@ class Products(models.Model):
     unit = models.CharField(max_length=50, blank=True)
     category = ModifiedArrayField(models.CharField(
         _("Product Category"), max_length=255, choices=CATEGORIES, null=True, blank=True), null=True)
+    subcategory = models.CharField(_("Product Sub-Category"), max_length=50, choices=SUBCATEGORIES,null=True,blank=True)
     max_retail_price = models.DecimalField(
         _("MRP (in Rs.)"), max_digits=8, decimal_places=2, null=True)
     image1 = models.ImageField(_("Product Image 1"), upload_to="product/media/mainImage/%Y/%m/%d",
