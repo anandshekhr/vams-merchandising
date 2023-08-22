@@ -1,3 +1,10 @@
+{% load cache %}
+
+<!-- Before -->
+{% cache 300 my_cache_key %}
+    <!-- Cached content here -->
+{% endcache %}
+
 {% load static %}
 <!doctype html>
 <html class="no-js" lang="zxx">
