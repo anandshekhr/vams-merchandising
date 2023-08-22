@@ -31,6 +31,129 @@
 @import "/assets/vendor/icon/themify-icons.css"; */
 @import "/static/assets/vendor/owl-carousel/css/owl.carousel.min.css";
 @import "/static/assets/vendor/owl-carousel/css/owl.theme.default.css";
+
+
+/* refund css */
+.alert {
+  padding: 0px !important;
+  cursor: pointer;
+}
+.custom-select .special-option {
+  font-weight: bold;
+  color: red;
+}
+.custom-item-heading {
+  width: max-content;
+}
+.padding_left {
+  padding-left: 100px;
+}
+.custom-progress-list {
+  display: flex;
+  flex-direction: row;
+}
+.custom-progress {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  right: 80px;
+  margin-top: 30px;
+}
+.custom-progress-step {
+  text-align: center;
+  font-size: 0.8em;
+  position: relative;
+  z-index: 1;
+  padding-left: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.custom-progress-step:before {
+  content: attr(data-step);
+    display: block;
+    background: #0348af;
+    width: 3em;
+    height: 3em;
+    text-align: center;
+    margin-bottom: 0.25em;
+    line-height: 3em;
+    border-radius: 100%;
+    position: relative;
+    z-index: 1000;
+    color: white;
+    font-weight: 600;
+}
+.custom-progress-step:after {
+  content: '';
+  position: absolute;
+  display: block;
+  background: #dfe3e4;
+  width: 100%;
+  height: 0.5em;
+  top: 1.25em;
+  left: 118%;
+  transform: translateX(-50%);
+  z-index: -1;
+}
+.custom-progress-step:last-child:after {
+  display: none;
+}
+.custom-is-complete {
+  color: #2ecc71;
+}
+.custom-is-complete:before,
+.custom-is-complete:after {
+  color: #fff;
+  background: #2ecc71;
+}
+.custom-progress-step.active {
+  color: #3498db;
+}
+.custom-progress-step.completed {
+  color: #2ecc71;
+}
+.custom-is-active {
+  color: #3498db;
+  animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+  50% {
+      opacity: 0;
+  }
+}
+@media (max-width: 500px) {
+  .custom-item-heading {
+    width: 100%;
+    
+  }
+  .custom-progress-list {
+      flex-direction: row;
+      padding-left: 5% !important;
+  }
+  
+  .col-md-6 {
+      flex-basis: 100%; /* Take full width on smaller screens */
+  }
+  .custom-progress-step {
+    text-align: center;
+    font-size: 0.8em;
+    position: relative;
+    z-index: 1;
+    padding-left: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+}
+.overflow_block{
+  overflow: hidden;
+}
+
 .theme-dark {
   background-color: #1a2236;
 }

@@ -35,9 +35,8 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 admin_volt = 'admin_volt.apps.AdminVoltConfig'
 
 # Application definition
-
 INSTALLED_APPS = [
-    admin_volt,
+    admin_volt,  # Make sure 'admin_volt' is a string or variable
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
     'django.contrib.sites',
-
+   
     'django_rest_passwordreset',
 
     # About app
@@ -78,19 +77,18 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'dj_rest_auth',
-    'allauth',  # new
-    'allauth.account',  # new
-    'allauth.socialaccount',  # new
-
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'allauth.socialaccount.providers.apple',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-
 
     'dj_rest_auth.registration',
     'django_quill',
     'django_filters',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -137,9 +135,9 @@ if DEBUG:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "ekart.vamsmechatronica",
             "USER": "postgres",
-            "PASSWORD": "Shekhar123#",
-            "HOST": "127.0.0.1",
-            "PORT": "5432",
+            "PASSWORD": "prune",
+            "HOST": "localhost",
+            "PORT": "5433",
         }
     }
 else:

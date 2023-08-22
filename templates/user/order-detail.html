@@ -47,6 +47,7 @@
                 {% else %}
                 <div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text">Delivered</span> </div>
                 {% endif %}
+                
             </div>
             <hr>
             <ul class="row">
@@ -61,6 +62,23 @@
                 </li>
                 {% endfor %}
             </ul>
+            {% comment %} <div class="container mt-5">
+                <div>
+                    <h2>Refund Status</h2>
+                    <div class="custom-progress custom-progress--medium">
+                        <ol class="custom-progress-list" id="custom-progress-list">
+                            <li class="custom-progress-step completed" data-step="1">
+                                <span class="custom-item-heading">Return request submitted</span>
+                            </li>
+                            <li class="custom-progress-step padding_left active" data-step="2">
+                                <span class="custom-item-heading">Item Received</span>
+                            </li>
+                            <li class="custom-progress-step padding_left" data-step="3">
+                                <span class="custom-item-heading">Refund Sent</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div> {% endcomment %}
             <hr>
             <a href="{% url 'profile-orders' %}" class="btn btn-outline-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
         </div>
