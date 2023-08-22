@@ -236,6 +236,20 @@ def profileDashboard(request):
     try:
         orders = Order.objects.filter(
             user=request.user.id)
+        
+        p = Paginator(orders, 2)  # creating a paginator object
+        # getting the desired page number from url
+        page_number = request.GET.get('page')
+        try:
+            # returns the desired page object
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+
+        except Exception as e:
+            return HttpResponse(e)
 
         pending_orders = Order.objects.filter(
             user=request.user.id, ordered=False)
@@ -244,6 +258,7 @@ def profileDashboard(request):
 
         context = {
             'orders': orders,
+            'page_orders': page_obj,
             'completed_orders': completed_orders_count,
             'pending_orders': pending_orders.count()
         }
@@ -287,24 +302,24 @@ def user_orders(request):
         orders = Order.objects.filter(user=request.user.id)
         print(len(orders))
 
-        if len(orders) > 5:
-            p = Paginator(orders, 5)  # creating a paginator object
-            # getting the desired page number from url
-            page_number = request.GET.get('page')
-            try:
-                # returns the desired page object
-                page_obj = p.get_page(page_number)
-            except PageNotAnInteger:
-                page_obj = p.page(1)
-            except EmptyPage:
-                page_obj = p.page(p.num_pages)
+        # if len(orders) > 2:
+        p = Paginator(orders, 2)  # creating a paginator object
+        # getting the desired page number from url
+        page_number = request.GET.get('page')
+        try:
+            # returns the desired page object
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
 
-            except Exception as e:
-                return HttpResponse(e)
-            context = {'page_orders': page_obj}
+        except Exception as e:
+            return HttpResponse(e)
+        context = {'page_orders': page_obj}
 
-        else:
-            context = {'page_orders': orders}
+        # else:
+        #     context = {'page_orders': orders}
 
     return render(request, "user/orders.html", context)
 

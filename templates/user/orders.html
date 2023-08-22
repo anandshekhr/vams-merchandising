@@ -89,21 +89,22 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-end mt-4">
             {% if page_orders.has_previous %}
-            <li class="page-item active">
+            <li class="page-item">
                 <a class="page-link" href="?page={{page_orders.previous_page_number}}"><i class="feather-chevrons-left"></i></a>
             </li>
             {% else %}
             <li class="page-item disabled">
-                <a class="page-link" href="?page={{page_orders.previous_page_number}}"><i class="feather-chevrons-left"></i></a>
+                <a class="page-link" href="?page=0"><i class="feather-chevrons-left"></i></a>
             </li>
             {% endif %}
-            <li class="page-item active"><a class="page-link" href="#">{% if page_orders.number %}{{page_orders.number}}{% else %}1{% endif %}</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#"><i class="feather-chevrons-right"></i></a>
-            </li>
+            <li class="page-item"><a class="page-link" href="#">{{page_orders.number}}</a></li>
             {% if page_orders.has_next %}
             <li class="page-item">
                 <a class="page-link" href="?page={{page_orders.next_page_number}}"><i class="feather-chevrons-right"></i></a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#"><i class="feather-chevrons-right"></i></a>
             </li>
             {% endif %}
         </ul>

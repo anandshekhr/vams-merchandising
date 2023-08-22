@@ -37,16 +37,7 @@ urlpatterns = (
         path("accounts/register", views.register, name="register"),
         path("accounts/login/", views.login, name="login"),
         path("accounts/logout/", views.logout, name="logout"),
-        path(
-            "accounts/password/reset/",
-            views.forgot_password,
-            name="password-forgot-user",
-        ),
-        path(
-            "accounts/password/reset/",
-            views.password_reset_method,
-            name="password-reset-web-page",
-        ),
+        
         path(
             "accounts/update/user/profile/",
             views.UpdateProfileView.as_view(),
