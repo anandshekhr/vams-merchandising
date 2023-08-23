@@ -69,7 +69,7 @@ def showAllProducts(request):
     products = get_object_or_404(Products)
     paginator = Paginator(products,10)
     context = {'products':products}
-    return render(request,"shop-all-items.html",context)
+    return render(request,"shop.html",context)
 
 
 def filter_by_category(request, category_id):

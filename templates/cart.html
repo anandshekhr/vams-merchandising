@@ -53,6 +53,7 @@
                            <th class="product-price">Unit Price</th>
                            <th class="product-quantity">Quantity</th>
                            <th class="product-subtotal">Total</th>
+                           <th class="product-add-to-cart">Cart</th>
                            <th class="product-remove">Remove</th>
                         </tr>
                      </thead>
@@ -76,6 +77,7 @@
                               </div>
                            </td>
                            <td class="product-subtotal" id="product-subtotal"><span class="amount">₹{{obj.get_final_price|floatformat:2}}</span></td>
+                           
                            <td class="product-remove"><a href="{% url 'delete-from-cart' obj.item.id %}"><i class="fa fa-times"></i></a></td>
                         </tr>
                         {% empty %}
