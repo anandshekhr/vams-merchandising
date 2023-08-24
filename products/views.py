@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib import auth
 from rest_framework import generics, status, authentication, permissions
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authentication import SessionAuthentication,TokenAuthentication
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
@@ -21,7 +21,53 @@ from blogs.models import *
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
+from rest_framework import filters,pagination
+from django_filters import FilterSet
+
+
+class StandardResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+
+class ProductsFilter(FilterSet):
+    def filter_queryset(self, request, queryset, view):
+        category_value = request.query_params.get("category")
+        sizes_value = request.query_params.get("available_sizes")
+        tags_value = request.query_params.get("tags")
+        ratings_value = request.query_params.get("average_rating")
+        brand = request.query_params.get("brand")
+        price_begin = request.query_params.get("price_begin")
+        price_end = request.query_params.get("price_end")
+
+
+
+        if category_value:
+            queryset = queryset.filter(category__contains=category_value.split(','))
+
+        if sizes_value:
+            queryset = queryset.filter(available_sizes__contains=sizes_value.split(','))
+
+        if tags_value:
+            queryset = queryset.filter(tags__contains=tags_value.split(','))
+        
+        if ratings_value:
+            queryset = queryset.filter(average_rating__contains=str(ratings_value))
+        
+        if brand:
+            queryset = queryset.filter(brand__icontains=str(brand))
+        
+        if price_begin or price_end:
+            queryset = queryset.filter(max_retail_price__range=[str(price_begin),str(price_end)])
+
+        return queryset
+
+    class Meta:
+        model = Products
+        fields = (
+            "subcategory",
+        )
 
 
 User = get_user_model()
@@ -34,69 +80,71 @@ def index(request):
 def homePage(request):
     try:
         products_dealoftheday = Products.objects.filter(
-            category__contains=['Deal of the day'])
+            category__contains=["Deal of the day"]
+        )
 
         products_featured = Products.objects.filter(
-            category__contains=['Featured Products'])
-        products_trend = Products.objects.filter(
-            category__contains=['Trend Products'])
-        products_best = Products.objects.filter(
-            category__contains=['Best Products'])
+            category__contains=["Featured Products"]
+        )
+        products_trend = Products.objects.filter(category__contains=["Trend Products"])
+        products_best = Products.objects.filter(category__contains=["Best Products"])
         banners = Banners.objects.all()
         categories = Categories.objects.all()
         blog_post = Blogs.objects.all()[:3]
 
         # cart items for cart notification
 
-        context = ({
-            'banners': banners,
-            'dealoftheday': products_dealoftheday,
-            'featured': products_featured,
-            'best': products_best,
-            'trend': products_trend,
-            'categories': categories,
-            'blogs': blog_post,
-        })
+        context = {
+            "banners": banners,
+            "dealoftheday": products_dealoftheday,
+            "featured": products_featured,
+            "best": products_best,
+            "trend": products_trend,
+            "categories": categories,
+            "blogs": blog_post,
+        }
         return render(request, "g-2.html", context=context)
     except Exception as e:
         print(e)
         return render(request, "g-2.html")
+
 
 # not using for now
 
 
 def showAllProducts(request):
     products = get_object_or_404(Products)
-    paginator = Paginator(products,10)
-    context = {'products':products}
-    return render(request,"shop.html",context)
+    paginator = Paginator(products, 10)
+    context = {"products": products}
+    return render(request, "shop.html", context)
 
 
 def filter_by_category(request, category_id):
     category = Categories.objects.get(id=category_id)
-    products = Products.objects.filter(
-        category__contains=[category.category_name])
+    products = Products.objects.filter(category__contains=[category.category_name])
     data = []
     for product in products:
-        data.append({
-            'name': product.name,
-            'description': product.desc,
-            'image': product.image.url,
-            'ratings': product.average_rating,
-            'price': product.list_price(),
-            'unit': product.unit,
-            'discount': product.discount,
-        })
-    return JsonResponse({'products': data})
+        data.append(
+            {
+                "name": product.name,
+                "description": product.desc,
+                "image": product.image.url,
+                "ratings": product.average_rating,
+                "price": product.list_price(),
+                "unit": product.unit,
+                "discount": product.discount,
+            }
+        )
+    return JsonResponse({"products": data})
+
 
 # for filter products wrt category
 
 
 def seeAllProductsInCategory(request, name):
     category, created = Categories.objects.get_or_create(category_name=name)
-    product = Products.objects.filter(
-        category__contains=[category.category_name])
-    context = {'products': product}
+    product = Products.objects.filter(category__contains=[category.category_name])
+    context = {"products": product}
     return render(request, "shop-list-4.html", context)
 
 
@@ -106,35 +154,43 @@ def productDetailsPageView(request, pk):
 
     # filter product for images, reviews and ratings
     product = Products.objects.get(pk=pk)
-    rating = ProductReviewAndRatings.objects.filter(
-        product=product).aggregate(Avg('ratings'))
-    reviews = ProductReviewAndRatings.objects.filter(product=product,is_approved=True)
-    related_products = Products.objects.filter(category__contains = [product.category[0]])
+    rating = ProductReviewAndRatings.objects.filter(product=product).aggregate(
+        Avg("ratings")
+    )
+    reviews = ProductReviewAndRatings.objects.filter(product=product, is_approved=True)
+    related_products = Products.objects.filter(category__contains=[product.category[0]])
 
     # for greyed stars
-    nonrating = 5 - int(rating['ratings__avg']
-                        if rating['ratings__avg'] is not None else 0)
+    nonrating = 5 - int(
+        rating["ratings__avg"] if rating["ratings__avg"] is not None else 0
+    )
     context = {
-        'total_stars':range(5),
-        'product': product,
-        'rating': int(rating['ratings__avg'] or 0),
-        'ratingr': [*range(int(rating['ratings__avg'] if rating['ratings__avg'] is not None else 0))],
-        'nonratingr': [*range(nonrating)],
-        'reviews': reviews,
-        'related_products': related_products,
+        "total_stars": range(5),
+        "product": product,
+        "rating": int(rating["ratings__avg"] or 0),
+        "ratingr": [
+            *range(
+                int(rating["ratings__avg"] if rating["ratings__avg"] is not None else 0)
+            )
+        ],
+        "nonratingr": [*range(nonrating)],
+        "reviews": reviews,
+        "related_products": related_products,
     }
 
     return render(request, "shop-details.html", context)
 
+
 class ProductAPI(generics.ListAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
-    filter_backends = [DjangoFilterBackend,filters.SearchFilter]
-    search_fields = ['id','name','longname','desc','brand','tags','discount']
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, ProductsFilter]
+    search_fields = ["id", "name", "longname", "desc", "brand", "tags", "discount"]
     permission_classes = (AllowAny,)
+    # pagination_class = [StandardResultsSetPagination]
     # authentication_classes = (AllowAny,)
 
-    def list(self, request,*args, **kwargs):
+    def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
@@ -143,7 +199,8 @@ class ProductAPI(generics.ListAPIView):
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class ProductDetailsAPI(APIView):
     permission_classes = (AllowAny,)
@@ -155,29 +212,52 @@ class ProductDetailsAPI(APIView):
         # filter product for images, reviews and ratings
         product = get_object_or_404(Products, id=product_id)
         images = ProductImages.objects.filter(product=product)
-        rating = ProductReviewAndRatings.objects.filter(
-            product=product).aggregate(Avg('ratings'))
+        rating = ProductReviewAndRatings.objects.filter(product=product).aggregate(
+            Avg("ratings")
+        )
         listprice = product.list_price()
         review = ProductReviewAndRatings.objects.filter(product=product)
 
         product_serializer = ProductsSerializer(instance=product)
         images_serializer = ProductImagesSerializer(instance=images, many=True)
         review_serializer = ProductReviewAndRatingsSerializer(
-            instance=review, many=True)
+            instance=review, many=True
+        )
 
-        nonrating = 5 - int(rating['ratings__avg']
-                            if rating['ratings__avg'] is not None else 0)
+        nonrating = 5 - int(
+            rating["ratings__avg"] if rating["ratings__avg"] is not None else 0
+        )
 
         context = {
-            'product': product,
-            'primage': images,
-            'rating': int(rating['ratings__avg'] if rating['ratings__avg'] is not None else 0),
-            'ratingr': [*range(int(rating['ratings__avg'] if rating['ratings__avg'] is not None else 0))],
-            'nonratingr': [*range(nonrating)],
+            "product": product,
+            "primage": images,
+            "rating": int(
+                rating["ratings__avg"] if rating["ratings__avg"] is not None else 0
+            ),
+            "ratingr": [
+                *range(
+                    int(
+                        rating["ratings__avg"]
+                        if rating["ratings__avg"] is not None
+                        else 0
+                    )
+                )
+            ],
+            "nonratingr": [*range(nonrating)],
         }
 
-        product_html = render_to_string('product-details-modal.html', context)
-        return Response({'data': product_serializer.data, 'images': images_serializer.data, 'review': review_serializer.data, 'rating': rating, 'discounted_price': listprice, 'product_html': product_html}, status=status.HTTP_200_OK)
+        product_html = render_to_string("product-details-modal.html", context)
+        return Response(
+            {
+                "data": product_serializer.data,
+                "images": images_serializer.data,
+                "review": review_serializer.data,
+                "rating": rating,
+                "discounted_price": listprice,
+                "product_html": product_html,
+            },
+            status=status.HTTP_200_OK,
+        )
 
     def post(self, request, format=None):
         pass
@@ -185,59 +265,66 @@ class ProductDetailsAPI(APIView):
 
 def searchHomePageProducts(request):
     if request.method == "GET":  # write your form name here
-        product_name = request.GET.get('search')
+        product_name = request.GET.get("search")
         try:
             status = StoreProductsDetails.objects.filter(
-                products__product_name__icontains=product_name)
+                products__product_name__icontains=product_name
+            )
             return render(request, "search.html", {"products": status})
         except StoreProductsDetails.DoesNotExist:
-            return render(request, "search.html", {'products': status})
+            return render(request, "search.html", {"products": status})
     else:
-        return render(request, 'search.html', {'products': status})
+        return render(request, "search.html", {"products": status})
 
 
 def searchProductsInsideCategoryPage(request, pk):
     if request.method == "GET":
-        product_name = request.GET.get('search')
+        product_name = request.GET.get("search")
         categorydetails = Categories.objects.get(pk=pk)
         try:
             if request.user.id != None:
                 user_details = UserAddresses.objects.get(user=request.user.id)
-                productdetail = StoreProductsDetails.objects.filter(products__pro_category__icontains=[
-                                                                    categorydetails.category_name], products__product_name__icontains=product_name, store__storeServicablePinCodes__contains=[user_details.pincode])
-                cartitems = Order.objects.get(
-                    user=request.user.id, ordered=False)
-                context = {'category': categorydetails,
-                           'catproducts': productdetail,
-                           'totalcartitem': cartitems.get_total_items_in_order() + 1,
-                           'totalamount': round(cartitems.get_total(), 2),
-                           'totalquantity': cartitems.get_quantity(),
-                           }
+                productdetail = StoreProductsDetails.objects.filter(
+                    products__pro_category__icontains=[categorydetails.category_name],
+                    products__product_name__icontains=product_name,
+                    store__storeServicablePinCodes__contains=[user_details.pincode],
+                )
+                cartitems = Order.objects.get(user=request.user.id, ordered=False)
+                context = {
+                    "category": categorydetails,
+                    "catproducts": productdetail,
+                    "totalcartitem": cartitems.get_total_items_in_order() + 1,
+                    "totalamount": round(cartitems.get_total(), 2),
+                    "totalquantity": cartitems.get_quantity(),
+                }
             else:
                 productdetail = StoreProductsDetails.objects.filter(
-                    products__pro_category__icontains=[categorydetails.category_name], products__product_name__icontains=product_name)
+                    products__pro_category__icontains=[categorydetails.category_name],
+                    products__product_name__icontains=product_name,
+                )
 
-                context = {'category': categorydetails,
-                           'catproducts': productdetail,
-                           'totalcartitem': 0,
-                           'totalamount': 0,
-                           'totalquantity': 0,
-                           }
+                context = {
+                    "category": categorydetails,
+                    "catproducts": productdetail,
+                    "totalcartitem": 0,
+                    "totalamount": 0,
+                    "totalquantity": 0,
+                }
         except Order.DoesNotExist:
             context = {
-                'category': categorydetails,
-                'catproducts': productdetail,
-                'totalcartitem': 0,
-                'totalamount': 0,
-                'totalquantity': 0,
+                "category": categorydetails,
+                "catproducts": productdetail,
+                "totalcartitem": 0,
+                "totalamount": 0,
+                "totalquantity": 0,
             }
 
     return render(request, "list.html", context)
 
 
 def autocompleteModel(request):
-    if request.method == 'GET':
-        q = request.GET.get('term', '').capitalize()
+    if request.method == "GET":
+        q = request.GET.get("term", "").capitalize()
         search_qs = Products.objects.filter(product_name__startswith=q)
         results = []
         # printq
@@ -245,23 +332,25 @@ def autocompleteModel(request):
             results.append(r.product_name)
         data = json.dumps(results)
     else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return JsonResponse({'data': data, 'application': mimetype})
+        data = "fail"
+    mimetype = "application/json"
+    return JsonResponse({"data": data, "application": mimetype})
 
 
 def product_detail(request, id):
     try:
         product = Products.objects.get(id=id)
         related_products = Products.objects.filter(
-            category__icontains=[product.category]).exclude(id=id)[:10]
+            category__icontains=[product.category]
+        ).exclude(id=id)[:10]
 
         # reviewForm = ReviewAdd()
 
         # Check
         canAdd = True
         reviewCheck = ProductReviewAndRatings.objects.filter(
-            user=request.user, product=product).count()
+            user=request.user, product=product
+        ).count()
         if request.user.is_authenticated:
             if reviewCheck > 0:
                 canAdd = False
@@ -272,16 +361,18 @@ def product_detail(request, id):
         # End
 
         # Fetch avg rating for reviews
-        avg_reviews = ProductReviewAndRatings.objects.filter(
-            product=product).aggregate(avg_rating=Avg('ratings'))
+        avg_reviews = ProductReviewAndRatings.objects.filter(product=product).aggregate(
+            avg_rating=Avg("ratings")
+        )
         # End
-        context = {'data': product,
-                   'related': related_products,
-                   'canAdd': canAdd,
-                   'reviews': reviews,
-                   'avg_reviews': avg_reviews
-                   }
-        return render(request, 'product_detail.html', context)
+        context = {
+            "data": product,
+            "related": related_products,
+            "canAdd": canAdd,
+            "reviews": reviews,
+            "avg_reviews": avg_reviews,
+        }
+        return render(request, "product_detail.html", context)
     except:
         pass
 
@@ -303,6 +394,7 @@ class CategoriesAPI(APIView):
         serializer = CategoriesSerializer(instance=categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 # class CategoryProductsAPI(APIView):
 #     permission_classes = (AllowAny,)
 
@@ -319,23 +411,22 @@ class CategoryProductsAPI(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Products.objects.all()
-        category_id = self.request.query_params.get('pk')
+        category_id = self.request.query_params.get("pk")
         if category_id is not None:
             category = Categories.objects.get(pk=category_id)
-            queryset = queryset.filter(
-                category__contains=[category.category_name])
+            queryset = queryset.filter(category__contains=[category.category_name])
         return queryset
 
-class ProductReviewsAPI(APIView):
 
-    permission_classes =(IsAuthenticated,)
-    authentication_classes = (SessionAuthentication,TokenAuthentication)
+class ProductReviewsAPI(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
 
     def get(self, request, *args, **kwargs):
         queryset = ProductReviewAndRatings.objects.all()
-        serializer = ProductReviewAndRatingsSerializer(queryset,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
-    
+        serializer = ProductReviewAndRatingsSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         print(request.data)
         # data ={}
@@ -348,5 +439,5 @@ class ProductReviewsAPI(APIView):
         serializer = ProductReviewAndRatingsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data,status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
