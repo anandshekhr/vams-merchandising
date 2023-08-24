@@ -1,3 +1,10 @@
+{% load cache %}
+
+<!-- Before -->
+{% cache 300 my_cache_key %}
+    <!-- Cached content here -->
+{% endcache %}
+
 {% load static %}
 <!doctype html>
 <html class="no-js" lang="zxx">
@@ -5,11 +12,187 @@
 <head>
    <meta charset="utf-8">
    <meta http-equiv="x-ua-compatible" content="ie=edge">
-   <title>{% block title %}{% endblock title %} | VAMS-in</title>
-   <meta name="description" content="">
+   <title>{% block title %}{% endblock title %} - vamscentral</title>
+   <meta name="description" content="Online Shopping Site for Fashion & Lifestyle in India. India's Fashion Expert brings you a variety of footwear, Clothing, Accessories and lifestyle products for women & men. Best Online Fashion Store *Easy returns and exchanges.">
+   <meta name="Keywords" content="5 disadvantages of online shopping,
+arvind lifestyle brands ltd online shopping,
+bell lifestyle online shopping,
+bmw lifestyle online shop south africa,
+brand studio lifestyle online shopping,
+can lifestyle gift card be used online,
+chaudhari lifestyle nagpur online shopping,
+chaudhary lifestyle online shopping,
+city lifestyle palani online shopping,
+code by lifestyle dresses online shopping india,
+discount on lifestyle,
+essay about online shopping pros and cons,
+example of lifestyle news,
+future lifestyle online shopping,
+ginger by lifestyle online shopping india,
+ginger shoes lifestyle online shopping,
+healthy lifestyle online shopping,
+how do online shopping,
+how lifestyle affect consumer behaviour,
+how many lifestyle stores in india,
+how many online shoppers in india,
+how many lifestyle stores in india,
+how many online shoppers in india,
+how many online shopping apps,
+how many online shopping in india,
+how many online shopping sites in india,
+how much do online wills cost,
+how much online shopping in india,
+how often do you buy clothes online,
+how online shopping,
+how online shopping is useful,
+how successful are online stores,
+how to online shopping,
+how to open a lifestyle store,
+how to sell on lifestyle store,
+how to shop online on dmart,
+hustle lifestyle online shopping,
+is ajio good for online shopping,
+is lifestyle online shopping safe,
+is lifestyle sale on,
+is there any sale in lifestyle store,
+keyaar lifestyle online shopping,
+khimji lifestyle online shopping,
+kitex lifestyle online shopping,
+kitty's lifestyle online shopping,
+lachus lifestyle online shopping,
+lifestyle abu dhabi online shopping,
+lifestyle advantages and disadvantages,
+lifestyle ahmedabad online shopping,
+lifestyle bahrain online shopping,
+lifestyle chennai online,
+lifestyle clothes online shopping,
+lifestyle clothing near me,
+lifestyle collection online shopping,
+lifestyle comparison,
+lifestyle delhi stores,
+lifestyle dresses online shopping,
+lifestyle dubai online shopping,
+lifestyle fabrics online shopping,
+lifestyle fashion near me,
+lifestyle fashion online shopping,
+lifestyle fine jewellery online shopping,
+lifestyle footwear online shopping,
+lifestyle garden centre online shopping,
+lifestyle gift card online shopping,
+lifestyle gurgaon online shopping,
+lifestyle health issues,
+lifestyle home centre online shopping,
+lifestyle home decor online shopping,
+lifestyle home online shopping,
+lifestyle jaipur online shopping,
+lifestyle jewelry online shopping,
+lifestyle kochi online shopping,
+lifestyle kurtis online shopping,
+lifestyle landmark group online shopping,
+lifestyle lucknow online shopping,
+lifestyle ludhiana online shopping,
+lifestyle mangalore online shopping,
+lifestyle oman online shopping,
+lifestyle online app,
+lifestyle online contact number,
+lifestyle online customer care,
+lifestyle online exchange policy,
+lifestyle online gift card,
+lifestyle online gift voucher,
+lifestyle online reviews,
+lifestyle online shop monika gruber,
+lifestyle online shopping app,
+lifestyle online shopping app download,
+lifestyle online shopping bangalore,
+lifestyle online shopping chennai,
+lifestyle online shopping coupons,
+lifestyle online shopping customer care number,
+lifestyle online shopping for,
+lifestyle online shopping for men's,
+lifestyle online shopping for women's,
+lifestyle online shopping for women's india,
+lifestyle online shopping hedensted,
+lifestyle online shopping hyderabad,
+lifestyle online shopping in india,
+lifestyle online shopping india,
+lifestyle online shopping offers today,
+lifestyle online shopping qatar,
+lifestyle online shopping return policy,
+lifestyle online shopping review,
+lifestyle online shopping uae,
+lifestyle online store india,
+lifestyle pune online shopping,
+lifestyle retail stores,
+lifestyle sale online shopping,
+lifestyle sandals online shopping india,
+lifestyle shirts online shopping,
+lifestyle shoes online shopping,
+lifestyle shopping near me,
+lifestyle similarities and differences,
+lifestyle sports online shopping,
+lifestyle store contact,
+lifestyle store helpline,
+lifestyle store near me,
+lifestyle store online offers,
+lifestyle store online sale india,
+lifestyle store online shopping in india,
+lifestyle store online womens,
+lifestyle stores in india,
+lifestyle trends online shopping,
+lifestyle trends online shopping review,
+lifestyle vijayawada online shopping,
+lifestyle vs max,
+lifestyle vs shoppers stop,
+lifestyle zero review,
+lifestyle.online shopping,
+list of lifestyle stores in india,
+list of online stores in india,
+madura fashion & lifestyle online shopping,
+melange kurtas lifestyle online shopping,
+melange lifestyle online shopping,
+metro lifestyle online shopping,
+mi lifestyle online shopping,
+mi lifestyle products online shopping,
+moksha lifestyle online shopping,
+my lifestyle online shopping,
+nila lifestyle online shopping,
+nila lifestyle products online shopping,
+ntozinhle lifestyle online shopping,
+online lifestyle shopping,
+online lifestyle shopping sites in india,
+online lifestyle store,
+online shopping at lifestyle,
+online shopping lifestyle,
+online shopping of lifestyle store,
+panda lifestyle online shopping,
+pari lifestyle online shopping,
+proactive lifestyle online shopping,
+queens lifestyle online shopping,
+sara lifestyle online shopping,
+shesha lifestyle online shopping,
+shilpa lifestyle online shopping,
+shop lifestyle online,
+shop lifestyle reviews,
+shoppers stop or lifestyle which is better,
+shopping lifestyle,
+shopping online disadvantages,
+shree lifestyle online shopping,
+steel lifestyle online shopping,
+stellar lifestyle online shopping,
+suumaya lifestyle online shopping,
+thesis lifestyle online shopping,
+top lifestyle,
+west pack lifestyle online shopping,
+what are some advantages of shopping online,
+what are the dangers of online shopping,
+what are the positives of online shopping,
+what is a lifestyle store,
+what is lifestyle store,
+
+">
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <!-- Place favicon.ico in the root directory -->
-   <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+   <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
    <!-- CSS here -->
    <link rel="stylesheet" href="{% static 'assets/css/preloader.css' %}">
    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
@@ -50,235 +233,18 @@
                   {% if request.user.is_authenticated %}
                      <a href="{% url 'profile-dashboard' %}" class="text-btn">My account</a>
                   {% else %}
-                     <a href="{% url 'login-user' %}" class="text-btn">My account</a>
+                     <a href="{% url 'login' %}" class="text-btn">My account</a>
                   {% endif %}
                   </div>
                </div>
                <div class="col-xl-6 col-lg-6 col-md-6">
                   <div class="header-top-right">
                      <a href="{% url 'profile-orders' %}" class="text-btn">Track Order</a>
-                     {% comment %} <select name="lan-select" id="lan-select" class="language-select border-left">
-                        <option value="1">English</option>
-                        <option value="2">Hindi</option>
-                        <option value="3">Arabic</option>   
-                        <option value="3">Bengali</option>
-                        <option value="3">French</option>
-                     </select>
-                     <select name="currency-select" id="currency-select" class="currency-select border-left">
-                        <option value="1">USD</option>
-                        <option value="2">EUR</option>
-                        <option value="3">JPY</option>
-                        <option value="4">GBP</option>
-                     </select> {% endcomment %}
                   </div>
                </div>
             </div>
          </div>
       </div>
-      {% comment %} <div id="header-sticky" class="header-main header-main1">
-         <div class="container">
-            <div class="row align-items-center">
-               <div class="col-xl-12 col-lg-12">
-                  <div class="header-main-content-wrapper">
-                     <div class="header-main-left header-main-left-header1">
-                        <div class="header-logo header1-logo">
-                           <a href="index.html" class="px-3 logo-bl"><img src="{% static 'assets/img/logo/My project-1.png' %}"
-                                 alt="logo-img" height="60px"></a>
-                        </div>
-                        <div class="main-menu main-menu2 d-none d-lg-block">
-                           <nav id="mobile-menu">
-                              <ul>
-                                 <li><a href="{% url 'home' %}">Home</a>
-                                     <ul class="sub-menu">
-                                       <li><a href="index.html">Home Style 01</a></li>
-                                       <li><a href="index-2.html">Home Style 02</a></li>
-                                       <li><a href="index-3.html">Home Style 03</a></li>
-                                    </ul> 
-                                 </li>
-                                 <li class="menu-item-has-children"><a href="shop.html">Shop</a>
-                                    <ul class="sub-menu">
-                                       <li class="menu-item-has-children"><a href="shop.html">Shop</a>
-                                          <ul class="sub-menu">
-                                             <li><a href="shop-sidebar-5-column.html">Shop Sidebar 5 Column</a></li>
-                                             <li><a href="shop-sidebar-4-column.html">Shop Sidebar 4 Column</a></li>
-                                             <li><a href="shop-sidebar-3-column.html">Shop Sidebar 3 Column</a></li>
-                                             <li><a href="shop-full-6-column.html">Shop Full 6 Column</a></li>
-                                             <li><a href="shop-full-5-column.html">Shop Full 5 Column</a></li>
-                                             <li><a href="shop-full-4-column.html">Shop Full 4 Column</a></li>
-                                          </ul>
-                                       </li>
-                                       <li><a href="shop-details.html">Shop Details</a></li>
-                                       <li><a href="wishlist.html">Wishlist</a></li>
-                                       <li><a href="{% url 'cartview' %}">Cart</a></li>
-                                       <li><a href="checkout.html">Checkout</a></li>
-                                    </ul>
-                                 </li>
-                                 <li class="menu-item-has-children"><a href="#">Pages</a>
-                                    <ul class="sub-menu">
-                                       <li><a href="{% url 'about-us' %}">About</a></li>
-                                       <li><a href="register.html">Register</a></li>
-                                       <li><a href="login.html">Login</a></li>
-                                       <li><a href="faq.html">FAQ</a></li>
-                                       <li><a href="error-404.html">404 page</a></li>
-                                    </ul>
-                                 </li>
-                                 <li class="menu-item-has-children"><a href="blog.html">Blog</a>
-                                    <ul class="sub-menu">
-                                       <li><a href="blog.html">Blog</a></li>
-                                       <li><a href="blog-details.html">Blog Details</a></li>
-                                    </ul>
-                                 </li> 
-                                 <li><a href="contact.html">Contact</a></li> 
-                              </ul>
-                           </nav>
-                        </div>
-                     </div>
-                     <div class="header-main-right header-main-right-header1">
-                        <div class="action-list d-none d-xl-flex action-list-header2">
-                           <div class="action-item action-item-cart">
-                              <a href="javascript:void(0)" class="view-cart-button">
-                                 <i class="fal fa-shopping-bag"></i>
-                                 {% if cart.get_quantity %}
-                                 <span class="action-item-number">{{cart.get_quantity}}</span></a>
-                                 {% else %}
-                                 <span class="action-item-number">0</span></a>
-                                 {% endif %}
-                              {% if cart.get_total %}
-                              <a href="#" class="cart-items-price">₹{{cart.get_total|floatformat:2}}</a>
-                              {% else %}
-                              <a href="#" class="cart-items-price">₹0.00</a>
-                              {% endif %}
-                           </div>
-                           <div class="action-item action-item-wishlist">
-                              <a href="javascript:void(0)" class="view-wishlist-button">
-                                 <i class="fal fa-heart"></i>
-                                 {% if wishlist.get_quantity %}
-                                 <span class="action-item-number">{{wishlist.get_quantity}}</span></a>
-                                 {% else %}
-                                 <span class="action-item-number">0</span></a>
-                                 {% endif %}
-                           </div>
-                           {% if request.user.is_authenticated %}
-                           <div class="user-btn">
-                              <a href="{% url 'logout-user' %}">
-                                 <div class="user-icon">
-                                    <i class="flaticon-avatar"></i>
-                                 </div>
-                                 <span><span>Sign Out</span>Account</span>
-                              </a>
-                           </div>
-                           {% else %}
-                           <div class="user-btn">
-                              <a href="{% url 'login-user' %}">
-                                 <div class="user-icon">
-                                    <i class="flaticon-avatar"></i>
-                                 </div>
-                                 <span><span>Sign In</span>Account</span>
-                              </a>
-                           </div>
-                           {% endif %}
-                        </div>
-                        <div class="menu-bar d-xl-none ml-20">
-                           <a class="side-toggle" href="javascript:void(0)">
-                              <div class="bar-icon">
-                                 <span></span>
-                                 <span></span>
-                                 <span></span>
-                              </div>
-                           </a>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div class="header-bottom d-none d-lg-block">
-         <div class="container">
-            <div class="header-bottom-inner">
-               <div class="category-menu pos-rel">
-                  {% comment %} <div class="category-click">
-                     <div class="bar-icon bar-icon-2">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                     </div>
-                     <span>Category</span>
-                  </div>
-                  <div class="category-items">
-                     <a href="shop.html" class="category-item">
-                        <div class="category-name">Shirts</div> <span class="category-items-number">8</span>
-                     </a>
-                     <a href="shop.html" class="category-item">
-                        <div class="category-name">Pants</div> <span class="category-items-number">12</span>
-                     </a>
-                     <a href="shop.html" class="category-item">
-                        <div class="category-name">Jackets</div> <span class="category-items-number">17</span>
-                     </a>
-                     <a href="shop.html" class="category-item">
-                        <div class="category-name">Leggings</div> <span class="category-items-number">6</span>
-                     </a>
-                     <a href="shop.html" class="category-item">
-                        <div class="category-name">Beachware</div> <span class="category-items-number">25</span>
-                     </a>
-                     <a href="shop.html" class="category-item">
-                        <div class="category-name">Underwear</div> <span class="category-items-number">17</span>
-                     </a>
-                     <a href="shop.html" class="category-item">
-
-                     </a>
-                     <a href="shop.html" class="category-item">
-                        <div class="category-name">Belt</div> <span class="category-items-number">9</span>
-                     </a>
-                  </div> 
-               </div>
-               <form action="#" class="filter-search-input header-search-2 d-none d-xl-inline-block">
-                  <input type="text" placeholder="Search Products.....">
-                  <button><i class="fal fa-search"></i></button>
-               </form>
-               <div class="header-support-social">
-                  <div class="irc-item footer-support header-bottom-support">
-                     <div class="irc-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="43.051" height="42.064"
-                           viewBox="0 0 43.051 42.064">
-                           <g id="customer-support2" transform="translate(-0.643 -1.361)">
-                              <path id="Path_251" data-name="Path 51"
-                                 d="M41.05,19.581a18.893,18.893,0,0,0-37.763,0A4.444,4.444,0,0,0,.643,23.639v4.985a4.445,4.445,0,0,0,4.44,4.44,2.876,2.876,0,0,0,2.873-2.873v-8.12a2.867,2.867,0,0,0-2.591-2.845,16.834,16.834,0,0,1,33.605,0,2.867,2.867,0,0,0-2.588,2.844V30.19a2.866,2.866,0,0,0,2.626,2.847V35.09a4.2,4.2,0,0,1-4.191,4.19h-3.1a3.085,3.085,0,0,0-2.929-2.085h-3.2a3.071,3.071,0,0,0-1.3.286,3.122,3.122,0,0,0-1.812,2.83,3.12,3.12,0,0,0,3.116,3.116h3.2a3.128,3.128,0,0,0,2.931-2.086h3.1a6.257,6.257,0,0,0,6.25-6.25V32.671a4.443,4.443,0,0,0,2.626-4.049V23.637a4.444,4.444,0,0,0-2.644-4.056ZM5.9,22.071V30.19A.814.814,0,0,1,5.082,31,2.384,2.384,0,0,1,2.7,28.623V23.638a2.383,2.383,0,0,1,2.381-2.381A.814.814,0,0,1,5.9,22.071ZM29.818,40.53a1.061,1.061,0,0,1-1.034.837h-3.2a1.056,1.056,0,0,1-.438-2.017,1.023,1.023,0,0,1,.438-.1h3.2a1.061,1.061,0,0,1,1.034,1.275ZM41.634,28.623A2.384,2.384,0,0,1,39.254,31a.814.814,0,0,1-.813-.813V22.071a.814.814,0,0,1,.813-.813,2.384,2.384,0,0,1,2.381,2.381Z"
-                                 transform="translate(0 0)" fill="#171717"></path>
-                              <path id="Path_252" data-name="Path 52"
-                                 d="M33.629,33.546a4.368,4.368,0,0,0,4.363-4.363v-8.89a4.369,4.369,0,0,0-4.363-4.363H20.294a4.368,4.368,0,0,0-4.363,4.363v8.89a4.368,4.368,0,0,0,4.363,4.363h.082v2.3a2.139,2.139,0,0,0,2.136,2.145,2.094,2.094,0,0,0,1.507-.636l3.833-3.812ZM26.7,31.786l-4.148,4.125a.052.052,0,0,1-.071.016.069.069,0,0,1-.047-.078V32.516a1.03,1.03,0,0,0-1.03-1.03H20.295a2.306,2.306,0,0,1-2.3-2.3v-8.89a2.306,2.306,0,0,1,2.3-2.3H33.63a2.309,2.309,0,0,1,2.3,2.3v8.89a2.306,2.306,0,0,1-2.3,2.3h-6.2a1.031,1.031,0,0,0-.726.3Z"
-                                 transform="translate(-4.793 -4.568)" fill="#171717"></path>
-                              <path id="Path_253" data-name="Path 53"
-                                 d="M24.019,26.787a1.519,1.519,0,1,0,1.521,1.519A1.522,1.522,0,0,0,24.019,26.787Z"
-                                 transform="translate(-6.853 -7.972)" fill="#171717"></path>
-                              <path id="Path_254" data-name="Path 54"
-                                 d="M31.305,26.787a1.519,1.519,0,1,0,1.521,1.519A1.522,1.522,0,0,0,31.305,26.787Z"
-                                 transform="translate(-9.137 -7.972)" fill="#171717"></path>
-                              <path id="Path_255" data-name="Path 55"
-                                 d="M38.591,26.787a1.519,1.519,0,1,0,1.521,1.519A1.522,1.522,0,0,0,38.591,26.787Z"
-                                 transform="translate(-11.422 -7.972)" fill="#171717"></path>
-                           </g>
-                        </svg>
-
-                     </div>
-                     <div class="irc-item-content">
-                        <div class="support-number"><a href="tel:555-900-888">555 - 900 - 888</a></div>
-                        <p>24/7 Support Center</p>
-                     </div>
-
-                  </div>
-                  <div class="social__links header-bottom-social">
-                     <ul>
-                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                        <li><a href="#"><i class="fab fa-pinterest-p"></i></a></li>
-                     </ul>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div> {% endcomment %}
       <div id="header-sticky" class="header-main header-main1">
          <div class="container" style="min-width:100%">
             <div class="row align-items-center">
@@ -293,8 +259,6 @@
                            <nav id="mobile-menu">
                               <ul>
                                  <li><a href="{% url 'home' %}">Home</a></li>
-                                 {% comment %} <li><a href="#">Best Seller</a></li>
-                                 <li><a href="#">Today's Deal</a></li> {% endcomment %}
                               </ul>
                            </nav>
                         </div>
@@ -310,31 +274,39 @@
                         <div class="action-list d-none d-md-flex action-list-header4">
                            <div class="action-item action-item-cart">
                               <a href="javascript:void(0)" class="view-cart-button">
-                                 <i class="fal fa-shopping-bag"></i>
+                                 <i class="fal fa-bell"></i>
                                  {% if cart.get_quantity %}
-                                 <span class="action-item-number">{{cart.get_quantity}}</span></a>
+                                 <span class="action-item-number">{{cart.get_quantity}}</span>
 
                                  {% else %}
-                                 <span class="action-item-number">0</span></a>
+                                 <span class="action-item-number">0</span>
                                  {% endif %}
-                              {% comment %} {% if cart.get_total %}
-                              <a href="#" class="cart-items-price">₹{{cart.get_total|floatformat:2}}</a>
-                              {% else %}
-                              <a href="#" class="cart-items-price">₹0.00</a> 
-                              {% endif %}{% endcomment %}
+                              </a>
+                           </div>
+                           <div class="action-item action-item-cart">
+                              <a href="javascript:void(0)" class="view-cart-button">
+                                 <i class="fal fa-shopping-bag"></i>
+                                 {% if cart.get_quantity %}
+                                 <span class="action-item-number">{{cart.get_quantity}}</span>
+
+                                 {% else %}
+                                 <span class="action-item-number">0</span>
+                                 {% endif %}
+                              </a>
                            </div>
                            <div class="action-item action-item-wishlist">
                               <a href="javascript:void(0)" class="view-wishlist-button">
                                  <i class="fal fa-heart"></i>
                                  {% if wishlist.get_quantity %}
-                                 <span class="action-item-number">{{wishlist.get_quantity}}</span></a>
+                                 <span class="action-item-number">{{wishlist.get_quantity}}</span>
                                  {% else %}
-                                 <span class="action-item-number">0</span></a>
+                                 <span class="action-item-number">0</span>
                                  {% endif %}
+                              </a>
                            </div>
                            {% if request.user.is_authenticated %}
                            <div class="user-btn">
-                              <a href="{% url 'logout-user' %}">
+                              <a href="{% url 'logout' %}">
                                  <div class="user-icon">
                                     <i class="flaticon-avatar"></i>
                                  </div>
@@ -343,7 +315,7 @@
                            </div>
                            {% else %}
                            <div class="user-btn">
-                              <a href="{% url 'login-user' %}">
+                              <a href="{% url 'login' %}">
                                  <div class="user-icon">
                                     <i class="flaticon-avatar"></i>
                                  </div>
@@ -377,7 +349,7 @@
                <div class="offset-widget offset-logo mb-40">
                   <div class="row align-items-center">
                      <div class="col-9">
-                        <a href="index.html">
+                        <a href="{% url 'home' %}">
                            <img src="{% static 'assets/img/logo/logo-bl.png' %}" alt="Logo">
                         </a>
                      </div>
@@ -389,6 +361,17 @@
                <div class="offset-profile-action d-xl-none">
                   <div class="offset-widget mb-40">
                      <div class="action-list action-list-header1">
+                        <div class="action-item action-item-cart">
+                           <a href="javascript:void(0)" class="view-cart-button">
+                              <i class="fal fa-bell"></i>
+                              {% if cart.get_quantity %}
+                              <span class="action-item-number">{{cart.get_quantity}}</span>
+
+                              {% else %}
+                              <span class="action-item-number">0</span>
+                              {% endif %}
+                           </a>
+                        </div>
                         <div class="action-item action-item-cart">
                            <a href="javascript:void(0)" class="view-cart-button">
                               <i class="fal fa-shopping-bag"></i>
@@ -533,8 +516,8 @@
                         <h4>Pages</h4>
                      </div>
                      <ul>
-                        <li><a href="{% url 'login-user' %}">Login</a></li>
-                        <li><a href="{% url 'register-user' %}">Register</a></li>
+                        <li><a href="{% url 'login' %}">Login</a></li>
+                        <li><a href="{% url 'register' %}">Register</a></li>
                         <li><a href="{% url 'profile-dashboard' %}">My Account</a></li>
                         <li><a href="{% url 'cartview' %}">Cart</a></li>
                         <li><a href="{% url 'wishlist-view' %}">Wishlist</a></li>

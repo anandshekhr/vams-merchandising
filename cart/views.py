@@ -4,7 +4,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect, HttpResponse, get_list_or_404, get_object_or_404
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib import auth, messages
-from rest_framework import generics, status,authentication
+from rest_framework import generics, status, authentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -25,7 +25,7 @@ api = Instamojo(api_key=settings.API_KEY,
 User = get_user_model()
 
 
-@login_required(login_url="login-user")
+@login_required(login_url="login")
 def cartCheckoutPageView(request):
     counter = 0
     a = 0
@@ -60,8 +60,9 @@ def cartCheckoutPageView(request):
         }
     return render(request, "cart.html", context)
 
-@login_required(login_url="login-user")
-def addToCart(request, pk,size):
+
+@login_required(login_url="login")
+def addToCart(request, pk, size):
 
     item = get_object_or_404(Products, id=pk)
     order_item, created = Cart.objects.get_or_create(
@@ -81,18 +82,18 @@ def addToCart(request, pk,size):
             order_item.save()
             messages.info(request, "This item quantity was updated.")
             return redirect("cartview")
-        
+
         elif item.stock > 0:
             order.items.add(order_item)
             item.stock = item.stock - 1
             item.save()
             messages.info(request, "This item was added to your cart.")
             return redirect("cartview")
-        
+
         else:
             messages.info(request, "Item Out of Stock")
             return redirect("/")
-    
+
     else:
         ordered_date = timezone.now()
         order = Order.objects.create(
@@ -101,9 +102,10 @@ def addToCart(request, pk,size):
         messages.info(request, "This item was added to your cart.")
         return redirect("cartview")
 
-@login_required(login_url="login-user")
+
+@login_required(login_url="login")
 def moveToCart(request, pk):
-    #delete from wishlistItems models
+    # delete from wishlistItems models
     # iitem = WishlistItems.objects.filter(item=pk)
     # for ir in iitem:
     #     ir.item.delete()
@@ -161,18 +163,18 @@ def deleteItemFromCart(request, pk):
         _type_: _description_
     """
 
-    #delete from wishlistItems models
-    item = Cart.objects.filter(item=pk,user=request.user,ordered=False)[0]
+    # delete from wishlistItems models
+    item = Cart.objects.filter(item=pk, user=request.user, ordered=False)[0]
     item.delete()
 
     # delete from Wishlist models
-    wishlist_item = Order.objects.filter(user=request.user,ordered=False)[0]
+    wishlist_item = Order.objects.filter(user=request.user, ordered=False)[0]
     wishlist_item.items.remove(item)
 
     return redirect('cartview')
 
 
-@login_required(login_url="login-user")
+@login_required(login_url="login")
 def removeSingleItemFromCart(request, pk):
     if request.user:
         user_details = UserAddresses.objects.get(user=request.user.id)
@@ -211,16 +213,17 @@ def removeSingleItemFromCart(request, pk):
         return redirect("/")
 
 
-@login_required(login_url="login-user")
+@login_required(login_url="login")
 def orderPaymentRequest(request, amount):
     if request.user.is_authenticated:
         user = User.objects.get(pk=request.user.id)
         order = Order.objects.get(user=request.user.id, ordered=False)
-    
+
         if request.method == "POST":
             firstName = request.POST.get('first_name')
             lastName = request.POST.get('last_name')
-            area = request.POST.get('address_line_1')+","+request.POST.get('address_line_2')
+            area = request.POST.get('address_line_1') + \
+                ","+request.POST.get('address_line_2')
             country = request.POST.get('country')
             city = request.POST.get('city')
             state = request.POST.get('state')
@@ -230,12 +233,12 @@ def orderPaymentRequest(request, amount):
 
             ifSaveAddress = request.POST.get('save-address')
             ifShipToDifferentAddress = request.POST.get('ship-box')
-            
+
             BillingAddress = "Name: "+firstName+" "+lastName+",\n Address: "+area+", "+city+", "+state + \
                 ", "+country+",\n Pincode: "+pincode+",\n Email: " + \
                 email+",\n Ph: "+phoneNumber or None
-            
-            if pincode!=None or area!=None or country!=None or city!=None or state!=None:
+
+            if pincode != None or area != None or country != None or city != None or state != None:
                 order.billing_address = BillingAddress
                 if ifShipToDifferentAddress is not None:
                     firstNameShip = request.POST.get('first_nameShip')
@@ -257,7 +260,7 @@ def orderPaymentRequest(request, amount):
                         order.shipping_address = ShippingAddress
                 else:
                     order.shipping_address = BillingAddress
-                
+
                 if ifSaveAddress:
                     s_address = UserAddresses(user=request.user, name=firstName+" "+lastName, address=area, state=state, city=city,
                                               pincode=pincode, addPhoneNumber=phoneNumber, set_default=True, email=email, country=country, address_type="Home")
@@ -265,20 +268,19 @@ def orderPaymentRequest(request, amount):
 
             else:
                 try:
-                    user_saved_address = UserAddresses.objects.get(user=request.user,set_default=True)
+                    user_saved_address = UserAddresses.objects.get(
+                        user=request.user, set_default=True)
                     BillingAddress_model = "Name: "+user_saved_address.name+",\n Address: "+user_saved_address.address+", "+user_saved_address.city+", "+user_saved_address.state + \
                         ", "+user_saved_address.country+",\n Pincode: "+user_saved_address.pincode+",\n Email: " + \
                         user_saved_address.email+",\n Ph: "+user_saved_address.addPhoneNumber or None
                     order.billing_address = BillingAddress_model
                     order.shipping_address = BillingAddress_model
                 except UserAddresses.DoesNotExist:
-                    messages.info(request,"Please Fill the delivery address")
+                    messages.info(request, "Please Fill the delivery address")
                     return redirect('payment-checkout')
 
             orderNotes = request.POST.get('checkout-mess') or None
-        
-        
-        
+
             if orderNotes:
                 order.orderNote = orderNotes
         domain_name = request.get_host()
@@ -305,9 +307,10 @@ def orderPaymentRequest(request, amount):
         else:
             return redirect("cartview")
     else:
-        return redirect("login-user")
+        return redirect("login")
 
-@login_required(login_url="login-user")
+
+@login_required(login_url="login")
 def paymentStatusAndOrderStatusUpdate(request):
     if request.user:
         user = User.objects.get(pk=request.user.id)
@@ -372,40 +375,45 @@ def paymentStatusAndOrderStatusUpdate(request):
                     pending_payment.save()
                     return redirect("pending-payment", pk=order.id)
 
-@login_required(login_url="login-user")
+
+@login_required(login_url="login")
 def checkoutPage(request):
-    Items = Order.objects.get(user= request.user,ordered=False)
+    Items = Order.objects.get(user=request.user, ordered=False)
     totalAmount = round(Items.get_total(), 2)
     ShippingCharges = 40
-    if totalAmount > 599 :
+    if totalAmount > 599:
         ShippingCharges = 0
     totalAmount += ShippingCharges
-    context = {'orderItems':Items,'totalAmount':totalAmount,'shippingCharges':ShippingCharges}
-    return render(request,"checkout.html",context)
+    context = {'orderItems': Items, 'totalAmount': totalAmount,
+               'shippingCharges': ShippingCharges}
+    return render(request, "checkout.html", context)
+
 
 class CartAddView(APIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (authentication.BasicAuthentication,authentication.SessionAuthentication,authentication.TokenAuthentication)
+    authentication_classes = (authentication.BasicAuthentication,
+                              authentication.SessionAuthentication, authentication.TokenAuthentication)
 
-    def get(self,request,format=None):
+    def get(self, request, format=None):
         try:
             itemsForCartPage = Order.objects.get(
                 user=request.user.id, ordered=False)
             serializer = OrderSerializer(instance=itemsForCartPage)
-            return Response(serializer.data,status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            return Response({'data':'No items in cart'},status=status.HTTP_204_NO_CONTENT)
-    
-    def post(self,request,format = None):
+            return Response({'data': 'No items in cart'}, status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, format=None):
         data = request.POST
         print(data)
         product_pk = data.get('product')
         quantity = int(data.get('quantity'))
         req_size = data.get('size')
-        item = get_object_or_404(Products, pk=product_pk,available_sizes__contains=[req_size])
+        item = get_object_or_404(
+            Products, pk=product_pk, available_sizes__contains=[req_size])
         order_item, created = Cart.objects.get_or_create(
             item=item,
-            size = req_size,
+            size=req_size,
             quantity=quantity,
             user=request.user,
             ordered=False
@@ -414,7 +422,7 @@ class CartAddView(APIView):
         if order_qs.exists():
             order = order_qs[0]
             # check if the order item is in the order
-            if order.items.filter(item__id=item.id,size = req_size).exists() and item.stock > 0:
+            if order.items.filter(item__id=item.id, size=req_size).exists() and item.stock > 0:
                 order_item.quantity += quantity
                 item.stock = item.stock - quantity
                 item.save()
@@ -424,14 +432,14 @@ class CartAddView(APIView):
                 item.stock = item.stock - quantity
                 item.save()
             else:
-                return Response({'data':'Item out of Stock'}, status=status.HTTP_200_OK)
+                return Response({'data': 'Item out of Stock'}, status=status.HTTP_200_OK)
         else:
             ordered_date = timezone.now()
             order = Order.objects.create(
                 user=request.user, ordered_date=ordered_date)
-            
+
             order.items.add(order_item)
-        serializer = OrderSerializer(instance=order_qs,many=True)
+        serializer = OrderSerializer(instance=order_qs, many=True)
         return Response({'cart': serializer.data, 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": order_item.get_amount_saved()}, status=status.HTTP_200_OK)
 
 
@@ -446,10 +454,9 @@ class CartRemoveView(APIView):
         quantity = int(data.get('quantity'))
         req_size = data.get('size')
 
-        
         item = get_object_or_404(
             Products, pk=product_pk, available_sizes__contains=[req_size])
-        
+
         order_qs = Order.objects.filter(
             user=request.user,
             ordered=False
@@ -482,8 +489,7 @@ class CartRemoveView(APIView):
             return Response({'cart': 'No Active Orders'}, status=status.HTTP_201_OK)
 
 
-
-@login_required(login_url="login-user")
+@login_required(login_url="login")
 def order_summary(request, pk):
     if request.user:
         order = Order.objects.get(user=request.user.id, pk=pk)
@@ -513,29 +519,29 @@ def failed_payment_page(request, pk):
     }
     return render(request, "payment-failed.html", context)
 
-@login_required(login_url="login-user")
-def addToCartWithSizeQuantity(request,pk):
+
+@login_required(login_url="login")
+def addToCartWithSizeQuantity(request, pk):
 
     current_site = get_current_site(request)
     domain_name = request.get_host()
-    
+
     previous_page = request.META.get('HTTP_REFERER')
     if request.method == "POST":
         size = request.POST.get('choose-size')
         qty = request.POST.get('pro-qty')
 
         if size == None:
-            messages.info(request,"Please select the item size")
+            messages.info(request, "Please select the item size")
             return redirect(previous_page)
-
 
     user = Token.objects.get(user=request.user)
     api_url = "http://"+domain_name+"/api/v1/customer/order/add/"
-    headers ={'Authorization':f'Token {user}'}
-    data = {'product':pk,'quantity':qty,'size':size}
+    headers = {'Authorization': f'Token {user}'}
+    data = {'product': pk, 'quantity': qty, 'size': size}
     # print(data)
-    response = requests.post(url=api_url,data=data,headers=headers)
+    response = requests.post(url=api_url, data=data, headers=headers)
     # print(response.json())
-        
+
     messages.info(request, "Item Added to Cart Successfully!")
     return redirect(previous_page)

@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from .storage import ProductFileStorage
@@ -8,6 +9,8 @@ from django.contrib.postgres.fields import ArrayField
 from django_quill.fields import QuillField
 from django.db.models import Avg, Sum
 from datetime import datetime
+from django.contrib.auth import get_user_model
+User = get_user_model()
 import os
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -19,6 +22,7 @@ CATEGORIES = (('new-arrival', 'New Arrival'), ('best-seller', 'Best Seller'), ('
 TAGS = (('cotton', 'Cotton'), ('synthetic',
                                'Synthetic'), ('woolen', 'Woolen'), ('polyster', 'Polyster'),)
 SIZES = (('XS','XS'),('S','S'),('M','M'),('L','L'),('XL','XL'),('XXL','XXL'),('XXL','XXL'))
+SUBCATEGORIES = (('t-shirt-men','Tshirt Men'),('t-shirt-women','Tshirt Women'),('trouser','Trouser'),('night-wear-men','Night Wear Men'),('night-wear-women','Night Wear Women'),('belts-gents','Belts Men'),('belts-women','Belts Women'),('kurta','Kurta'),('kurti','Kurti'),('format-shirt-men','Formatshirt Men'),('format-shirt-women','Formatshirt Women'),('formal-pants-men','Formal Pants Men'),('formal-pants-women','Formal Pants Women'),('wrist-watches','Wrist Watches'),('shoes-men','Shoes Men'),('shoes-women','Shoes Women'),('sandels-men','Sandels Men'),('sandels-women','Sandels Women'),('beauty-products','Beauty Products'),('tops','Top'),('crop-tops','Crop Tops'),('long-skirts','Long Skirt'),('anarkali-suit','Anarkali Suit'))
 
 
 def user_directory_path(instance, filename):
@@ -26,6 +30,7 @@ def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.user.id, filename)
 
 # MultiArrayChoiceFields
+
 
 
 class ModifiedArrayField(ArrayField):
@@ -41,6 +46,28 @@ class ModifiedArrayField(ArrayField):
 # Create your models here.
 
 
+class VendorDetail(models.Model):
+    owner = models.ForeignKey(User, verbose_name=_(
+        "Owner"), on_delete=models.CASCADE)
+    storeName = models.CharField(
+        _("Store Name"), max_length=100, null=True, blank=True)
+    email = models.EmailField(
+        _("Store Email ID"), max_length=254, null=True, blank=True)
+    phone_number = models.CharField(
+        _("Store Phone No."), max_length=100, null=True, blank=True)
+    address = models.TextField(
+        _("Store Address"), max_length=1000, null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("VendorDetail")
+        verbose_name_plural = _("VendorDetails")
+
+    def __str__(self):
+        return self.storeName
+
+    def get_absolute_url(self):
+        return reverse("VendorDetail_detail", kwargs={"pk": self.pk})
+
 class Products(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150)
@@ -50,6 +77,7 @@ class Products(models.Model):
     unit = models.CharField(max_length=50, blank=True)
     category = ModifiedArrayField(models.CharField(
         _("Product Category"), max_length=255, choices=CATEGORIES, null=True, blank=True), null=True)
+    subcategory = models.CharField(_("Product Sub-Category"), max_length=50, choices=SUBCATEGORIES,null=True,blank=True)
     max_retail_price = models.DecimalField(
         _("MRP (in Rs.)"), max_digits=8, decimal_places=2, null=True)
     image1 = models.ImageField(_("Product Image 1"), upload_to="product/media/mainImage/%Y/%m/%d",
@@ -61,8 +89,8 @@ class Products(models.Model):
     brand = models.CharField(_("Brand"), max_length=50, null=True, blank=True)
     available_sizes = ModifiedArrayField(models.CharField(
         _("Product Available"), max_length=255, choices=SIZES, null=True, blank=True), null=True)
-    vendor = models.CharField(
-        _("Vendor"), max_length=50, null=True, blank=True)
+    vendor = models.ForeignKey(VendorDetail,
+                               related_name="Vendor", on_delete=models.CASCADE, max_length=50, null=True, blank=True)
     tags = ModifiedArrayField(models.CharField(
         _("Tags"), max_length=50, choices=TAGS, null=True, blank=True), null=True)
     discount = models.DecimalField(

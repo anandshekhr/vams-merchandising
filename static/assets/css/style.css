@@ -4846,7 +4846,7 @@ input.radio-box[type=radio]:checked::before {
 }
 
 .product-details-nav .nav-tabs>li {
-  width: calc((100% - 60px) / 4);
+  width: calc((100% - 330px) / 4);
 }
 
 .product-details-nav .nav-tabs>li img {
@@ -5218,7 +5218,7 @@ only screen and (min-width: 768px) and (max-width: 991px),
 }
 
 .cart-area td.product-thumbnail img {
-  width: 125px;
+  width: 60px;
 }
 
 .cart-area .product-quantity-form {

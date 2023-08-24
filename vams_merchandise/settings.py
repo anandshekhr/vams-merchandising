@@ -133,7 +133,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "ekart.vamsmechatronica",
+            "NAME": "vamscentral",
             "USER": "postgres",
             "PASSWORD": "prune",
             "HOST": "localhost",
@@ -250,3 +250,13 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 
 ]
+
+# Email server for reset password
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'vamscentral@hotmail.com'
+EMAIL_HOST_PASSWORD = '1$Onemanarmy$2023'
+EMAIL_USE_TLS = True
+
+DEFAULT_FROM_EMAIL = 'www.vamscentral.com <vamscentral@hotmail.com>'

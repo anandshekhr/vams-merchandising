@@ -1,8 +1,9 @@
+from datetime import date, datetime, timedelta
 import http.cookies
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib import auth,messages
+from django.contrib import auth, messages
 from .serializers import UpdateUserSerializer
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
@@ -22,6 +23,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 import requests
 
 User = get_user_model()
@@ -39,37 +41,39 @@ def register(request):
         password = request.POST.get('password1')
         confirm_password = request.POST.get('password2')
         sign_up = request.POST.get('sing-up')
-        
+
         if password == confirm_password:
             if User.objects.filter(mobileno=phone_number).exists():
-                messages.info(request,"mobile number already exist")
-                return redirect('register-user')
+                messages.info(request, "mobile number already exist")
+                return redirect('register')
             elif sign_up is None:
-                messages.info(request,"Please accept Terms & Conditions")
-                return redirect('register-user')
+                messages.info(request, "Please accept Terms & Conditions")
+                return redirect('register')
             else:
                 if User.objects.filter(email=email).exists():
-                    messages.info(request,"Email already exists")
-                    return redirect('register-user')
+                    messages.info(request, "Email already exists")
+                    return redirect('register')
                 else:
                     user = User.objects.create_user(
-                        first_name=first_name,last_name=last_name,mobile=phone_number, email=email,username=username, password=password)
+                        first_name=first_name, last_name=last_name, mobile=phone_number, email=email, username=username, password=password)
                     user.save()
                     token, created = Token.objects.get_or_create(user=user)
-                    messages.success(request,f"Account Registered, Please Login Again!")
-                    return redirect('login-user')
+                    messages.success(
+                        request, f"Account Registered, Please Login Again!")
+                    return redirect('login')
         else:
-            messages.info(request,"Password didn;t matched!")
-            return redirect('register-user')
+            messages.info(request, "Password didn;t matched!")
+            return redirect('register')
     else:
         return render(request, 'register.html')
+
 
 def set_token_cookie(response, token):
 
     cookie = http.cookies.SimpleCookie()
-    cookie['token']=token
+    cookie['token'] = token
     cookie['token']['expires'] = 60*60*24*30
-    response.set_cookie(key='token',value=token,expires=3600*24*30)
+    response.set_cookie(key='token', value=token, expires=3600*24*30)
 
 
 def login(request):
@@ -82,17 +86,18 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            try: 
+            try:
                 token = Token.objects.get(user=user)
             except Token.DoesNotExist:
-                messages.info(request,'Token not generated')
+                messages.info(request, 'Token not generated')
             response = redirect('home')
-            set_token_cookie(response,token)
+            set_token_cookie(response, token)
             return response
         else:
-            return redirect('login-user')
+            return redirect('login')
     else:
-        return render(request, 'login.html') 
+        return render(request, 'login.html')
+
 
 def logout(request):
     auth.logout(request)
@@ -102,7 +107,8 @@ def logout(request):
 def forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        password_reset_request = requests.post('http://127.0.0.1:8000/api/v1/account/password/reset/', {'email': email})
+        password_reset_request = requests.post(
+            'http://127.0.0.1:8000/api/v1/account/password/reset/', {'email': email})
         # print(password_reset_request.text)
         if password_reset_request.status_code == 200:
             print("200 aaya,, redirecting !!!")
@@ -111,11 +117,12 @@ def forgot_password(request):
             print(password_reset_request.text)
     return render(request, 'forgot-password.html')
 
+
 def password_reset_method(request):
     print("yaha aaya")
     # if request.method == 'POST':
     #     password = request.POST.get('password')
-    
+
     return render(request, 'reset-password.html')
 
 
@@ -156,7 +163,6 @@ def userOrderDetail(request):
         }
     return render(request, "user-order-detail.html", context)
 
-from datetime import date,datetime,timedelta
 
 def userOrderDetailExpanded(request, pk):
     if request.user:
@@ -165,7 +171,7 @@ def userOrderDetailExpanded(request, pk):
             str(order_detail.ordered_date), '%Y-%m-%d %H:%M:%S.%f%z')+timedelta(days=6)
     context = {
         'orders': order_detail,
-        'expected_delivery_date':expected_delivery
+        'expected_delivery_date': expected_delivery
     }
     return render(request, "user/order-detail.html", context)
 
@@ -230,14 +236,31 @@ def profileDashboard(request):
     try:
         orders = Order.objects.filter(
             user=request.user.id)
+        
+        p = Paginator(orders, 2)  # creating a paginator object
+        # getting the desired page number from url
+        page_number = request.GET.get('page')
+        try:
+            # returns the desired page object
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
 
-        pending_orders = Order.objects.filter(user=request.user.id,ordered = False)
-        completed_orders_count = Order.objects.filter(user=request.user.id,ordered=True).count()
+        except Exception as e:
+            return HttpResponse(e)
+
+        pending_orders = Order.objects.filter(
+            user=request.user.id, ordered=False)
+        completed_orders_count = Order.objects.filter(
+            user=request.user.id, ordered=True).count()
 
         context = {
             'orders': orders,
-            'completed_orders':completed_orders_count,
-            'pending_orders':pending_orders.count()
+            'page_orders': page_obj,
+            'completed_orders': completed_orders_count,
+            'pending_orders': pending_orders.count()
         }
         return render(request, "user/dashboard.html", context)
     except Exception as e:
@@ -271,30 +294,32 @@ def user_address(request):
     context = {'address': address}
     return render(request, "user/address.html", context)
 
-@login_required(login_url="login-user")
+
+@login_required(login_url="login")
 def user_orders(request):
     if request.user:
         # fetching all post objects from database
         orders = Order.objects.filter(user=request.user.id)
-    
-        if len(orders) > 5:
-            p = Paginator(orders, 5)  # creating a paginator object
-            # getting the desired page number from url
-            page_number = request.GET.get('page')
-            try:
-                # returns the desired page object
-                page_obj = p.get_page(page_number)
-            except PageNotAnInteger:
-                page_obj = p.page(1)
-            except EmptyPage:
-                page_obj = p.page(p.num_pages)
+        print(len(orders))
 
-            except Exception as e:
-                return HttpResponse(e)
-            context = {'page_orders': page_obj}
-    # sending the page object to index.html
-        else:
-            context = {'page_orders': orders}
+        # if len(orders) > 2:
+        p = Paginator(orders, 2)  # creating a paginator object
+        # getting the desired page number from url
+        page_number = request.GET.get('page')
+        try:
+            # returns the desired page object
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+
+        except Exception as e:
+            return HttpResponse(e)
+        context = {'page_orders': page_obj}
+
+        # else:
+        #     context = {'page_orders': orders}
 
     return render(request, "user/orders.html", context)
 
@@ -323,7 +348,7 @@ def user_coupon(request):
 
 def user_notification(request):
     notifications = request.user.notifications.filter(is_read=False)
-    return render(request, "user/notification.html",{'notifications': notifications})
+    return render(request, "user/notification.html", {'notifications': notifications})
 
 
 def delete_user_address(request, pk):
@@ -340,5 +365,24 @@ def set_primary_address(request, pk):
         address.save()
     return redirect('profile-address')
 
+
 def userDashboard(request):
-    return render(request,"user/dashboard.html")
+    return render(request, "user/dashboard.html")
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'password_reset_form.html'
+    email_template_name = 'password_reset_email.html'
+    subject_template_name = 'password_reset_subject.txt'
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'password_reset_done.html'
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'password_reset_confirm.html'
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'password_reset_complete.html'
