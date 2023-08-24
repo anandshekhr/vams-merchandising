@@ -135,9 +135,9 @@ if DEBUG:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "vamscentral",
             "USER": "postgres",
-            "PASSWORD": "prune",
+            "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
-            "PORT": "5433",
+            "PORT": "5432",
         }
     }
 else:
