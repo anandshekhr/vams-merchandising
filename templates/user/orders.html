@@ -19,75 +19,70 @@
             </thead>
             <tbody>
                 {% for order in page_orders %}
-                {% if order.items.all|length > 0 %}
-                <tr>
-                    <td>
-                        <div class="form-check mt-1">
-                            <input class="form-check-input" type="checkbox" value="option1" aria-label="">
-                            <label class="text-grey-500 font-xssss"></label>
-                        </div>
-                    </td>
-                    {% for item in order.items.all|slice:":1" %}
-                    <td class="product-thumbnail text-start ps-0">
-                        {% if order.ordered %}
-                        <a href="{% url 'orderhistorydetail' order.id %}"><img src="/media/{{item.item.image1}}" alt="product-image"
-                            class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
-                        {% else %}
-                        <a href="#"><img src="/media/{{item.item.image1}}" alt="product-image"
-                            class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
-                        {% endif %}
-                    </td>
-                    {% endfor %}
-                    <td class="product-p">
-                        <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
-                                class="font-xsssss text-grey-500">₹</span>{{order.get_total|floatformat:2}}</h6>
-                    </td>
-                    <td class="product-quantity">
-                        <span class="money text-grey-500 ls-3 font-xsssss fw-700">{{order.ordered_date|date}}</span>
-                    </td>
-                    <td class="product-total-price">
-                        </span>
-                        {% if order.ordered %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Confirmed</span>
-                        {% else %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-danger d-inline-block text-danger mb-1">Pending</span> 
-                        {% endif %}
-                        {% if order.being_delivered %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Shipped</span> 
-                        {% endif %}
-                        {% if order.received %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Delivered</span> 
-                        {% endif %}
-                        <span
-                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert alert-danger d-inline-block mb-1">Return</span>
-                        {% if order.refund_requested%}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refund Requested</span> 
-                        {% endif %}
-                        {% if order.refund_granted %}
-                        <span
-                            class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refunded</span> 
-                        {% endif %}
-                    </td>
-                    <td class="product-remove text-right">
-                        {% if order.ordered %}
-                        <a href="{% url 'orderhistorydetail' order.id %}"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>
-                        {% else %}
-                        <a href="#"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>
-                        {% endif %}
-                        <a href="#"><i class="ti-trash font-xs text-grey-500"></i></a>
-                    </td>
-                </tr>
-                {% else %}
-                    <tr>
-                        <td colspan='6'>No Orders to display, <a href="{% url 'home' %}" style="text-decoration:underline;color:orange;">Continue Shopping</a></td>
-                    </tr>
-                {% endif %}
-                {% endfor %}
+                            {% comment %} {% if order.items.all|length > 0 %} {% endcomment %}
+                            <tr>
+                                <td>
+                                    <div class="form-check mt-1">
+                                        <input class="form-check-input" type="checkbox" value="option1" aria-label="">
+                                        <label class="text-grey-500 font-xssss"></label>
+                                    </div>
+                                </td>
+                                {% for item in order.items.all|slice:":1" %}
+                                <td class="product-thumbnail text-start ps-0">
+                                    {% if order.ordered %}
+                                    <a href="{% url 'orderhistorydetail' order.id %}"><img src="/media/{{item.item.image1}}" alt="product-image"
+                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
+                                    {% else %}
+                                    <a href="#"><img src="/media/{{item.item.image1}}" alt="product-image"
+                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
+                                    {% endif %}
+                                </td>
+                                {% endfor %}
+                                <td class="product-p">
+                                    <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
+                                            class="font-xsssss text-grey-500">₹</span>{{order.get_total|floatformat:2}}</h6>
+                                </td>
+                                <td class="product-quantity">
+                                    <span class="money text-grey-500 ls-3 font-xsssss fw-700">{{order.ordered_date|date}}</span>
+                                </td>
+                                <td class="product-total-price">
+                                    </span>
+                                    {% if order.ordered %}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Confirmed</span>
+                                    {% else %}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-danger d-inline-block text-danger mb-1">Pending</span> 
+                                    {% endif %}
+                                    {% if order.being_delivered %}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Shipped</span> 
+                                    {% endif %}
+                                    {% if order.received %}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Delivered</span> 
+                                    {% endif %}
+                                    {% if order.refund_requested%}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refund Requested</span> 
+                                    {% endif %}
+                                    {% if order.refund_granted %}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refunded</span> 
+                                    {% endif %}
+                                </td>
+                                <td class="product-remove text-right">
+                                    <a href="#"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>
+                                    <a href="#"><i class="ti-trash font-xs text-grey-500"></i></a>
+                                </td>
+                            </tr>
+                           {% empty %}
+                            {% comment %} {% else %} {% endcomment %}
+                                <tr>
+                                    <td colspan='6'>No Orders to display, <a href="{% url 'home' %}" style="text-decoration:underline;color:orange;">Continue Shopping</a></td>
+                                </tr>
+                            {% comment %} {% endif %} {% endcomment %}
+                            {% endfor %}
             </tbody>
         </table>
     </div>
