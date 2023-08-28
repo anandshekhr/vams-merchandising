@@ -12,23 +12,23 @@ def renderFAQPage(request):
 def refund_policy(request):
     policies = PoliciesDetails.objects.all()
     context = {'policies': policies}
-    return render(request,'refund_policy.html',context)
+    return render(request,'policies/refund_policy.html',context)
 
 
 def return_policy(request):
     policies = PoliciesDetails.objects.all()
     context = {'policies': policies}
-    return render(request, 'return_policy.html', context)
+    return render(request, 'policies/return_policy.html', context)
 
 
 def shipping_and_delivery_policy(request):
     policies = PoliciesDetails.objects.all()
     context = {'policies': policies}
-    return render(request, 'shipping_and_delivery_policy.html', context)
+    return render(request, 'policies/shipping_and_delivery_policy.html', context)
 
 
 def payment_terms_and_conditions_policy(request):
     policies = PoliciesDetails.objects.all()
     context = {'policies': policies}
-    return render(request, 'payment_terms_and_conditions_policy.html', context)
+    return render(request, 'policies/payment_terms_and_conditions_policy.html', context)
 
