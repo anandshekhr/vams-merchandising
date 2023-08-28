@@ -52,7 +52,9 @@ def deleteItemFromWishlist(request, pk):
 
 @login_required(login_url="login")
 def addToWishlist(request, pk):
+    # to return to previous page
     previous_page = request.META.get('HTTP_REFERER')
+    
     item = get_object_or_404(Products, id=pk)
     order_item, created = WishlistItems.objects.get_or_create(
         item=item,

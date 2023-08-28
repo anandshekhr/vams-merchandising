@@ -106,13 +106,13 @@ def addToCart(request, pk, size):
 @login_required(login_url="login")
 def moveToCart(request, pk):
     # delete from wishlistItems models
-    iitem = WishlistItems.objects.filter(item=pk)
-    for ir in iitem:
-        ir.item.delete()
+    iitem = WishlistItems.objects.filter(item=pk)[0]
+    iitem.delete()
+
 
     # delete from Wishlist models
-    # wishlist_item = Wishlist.objects.filter(user=request.user)[0]
-    # wishlist_item.items.remove(iitem)
+    wishlist_item = Wishlist.objects.filter(user=request.user)[0]
+    wishlist_item.items.remove(iitem)
 
     item = get_object_or_404(Products, id=pk)
     order_item, created = Cart.objects.get_or_create(
@@ -168,8 +168,8 @@ def deleteItemFromCart(request, pk):
     item.delete()
 
     # delete from Wishlist models
-    wishlist_item = Order.objects.filter(user=request.user, ordered=False)[0]
-    wishlist_item.items.remove(item)
+    cart_item = Order.objects.filter(user=request.user, ordered=False)[0]
+    cart_item.items.remove(item)
 
     return redirect('cartview')
 
