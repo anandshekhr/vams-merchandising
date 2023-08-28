@@ -1525,7 +1525,7 @@ div.mean-container a.meanmenu-reveal {
     03. banner CSS
 ----------------------------------------*/
 .banner-800 {
-  min-height: 800px;
+  min-height: 400px;
   position: relative;
 }
 
@@ -1541,9 +1541,9 @@ div.mean-container a.meanmenu-reveal {
   }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 500px) {
   .banner-800 {
-    min-height: 500px;
+    min-height: 220px;
   }
 }
 
@@ -1613,9 +1613,9 @@ only screen and (min-width: 576px) and (max-width: 767px) {
 }
 
 .banner-btn .fill-btn {
-  height: 60px;
-  padding: 0 52px;
-  line-height: 58px;
+  height: 50px;
+  padding: 0 20px;
+  line-height: 50px;
 }
 
 .banner-btn .border-btn {

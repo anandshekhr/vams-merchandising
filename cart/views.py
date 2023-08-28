@@ -106,9 +106,9 @@ def addToCart(request, pk, size):
 @login_required(login_url="login")
 def moveToCart(request, pk):
     # delete from wishlistItems models
-    # iitem = WishlistItems.objects.filter(item=pk)
-    # for ir in iitem:
-    #     ir.item.delete()
+    iitem = WishlistItems.objects.filter(item=pk)
+    for ir in iitem:
+        ir.item.delete()
 
     # delete from Wishlist models
     # wishlist_item = Wishlist.objects.filter(user=request.user)[0]
