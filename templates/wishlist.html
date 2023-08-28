@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %} Wishlist {% endblock title %}
 {% block body %}
+<link rel="stylesheet" href="{% static 'wishlist.css' %}">
    <main>
 
       <!-- page title area start  -->
@@ -25,56 +26,64 @@
          </div>
       </section>
       <!-- page title area end  -->
+<style>
 
+</style>
       <!-- cart area start  -->
-      <div class="cart-area pt-100 pb-100">
+      <div class="cart-area ">
          <div class="container container-small">
             <div class="row">
                <div class="col-12">
                   <form action="#">
                      <div class="table-content table-responsive">
-                        <table class="table">
-                           <thead>
-                              <tr>
-                                 <th class="product-thumbnail">Images</th>
-                                 <th class="cart-product-name">Product</th>
-                                 <th class="product-size">Size</th>
-                                 <th class="product-quantity">Quantity</th>
-                                 <th class="product-price">Unit Price</th>
-                                 <th class="product-subtotal">Total</th>
-                                 <th class="product-quantity">Add to cart</th>
-                                 <th class="product-remove">Remove</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {% for item in items.items.all %}
-                              <tr>
-                                 <td class="product-thumbnail"><a href="{% url 'productdetail' pk=item.item.id %}"><img
-                                          src="/media/{{item.item.image1}}" alt="img"></a></td>
-                                 <td class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></td>
-                                 <td class="product-size"><a href="#">{{item.size}}</a></td>
-                                 <td class="product-quantity"> 
-                                    <div class="product-quantity-form">
-                                       <button class="cart-minus" id="wishlist-minus-product" onclick="minusBtnClick('wishlist-minus-product')"><i class="far fa-minus"></i></button>
-                                       <input class="cart-input" id="pro-qty" name="pro-qty" type="text" value="{{item.quantity}}">
-                                       <button class="cart-plus" onclick="plusBtnClick('wishlist-plus-product')" id="wishlist-plus-product"><i class="far fa-plus"></i></button>
+                        <div class="table">
+                           <div>
+                              {% comment %} <tr>
+                                 <span class="product-thumbnail">Images</span>
+                                 <span class="cart-product-name">Product</span>
+                                 <span class="product-size">Size</span>
+                                 <span class="product-quantity">Quantity</span>
+                                 <span class="product-price">Unit Price</span>
+                                 <span class="product-subtotal">Total</span>
+                                 <span class="product-quantity">Add to cart</span>
+                                 <span class="product-remove">Remove</span>
+                              </tr> {% endcomment %}
+                           </div>
+                           <div class="wishlist_products_item">
+
+                              <div class="wishlist_card">
+                                 {% for item in items.items.all %}
+                                 <div class="wishlist_wrap">
+                                    <span class="product-thumbnail"><a class="product-padding" href="{% url 'productdetail' pk=item.item.id %}"><img class="wishlist_image"
+                                             src="/media/{{item.item.image1}}" alt="img"></a></span>
+                                    <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></span>
+                                    <span class="product-size"><a href="#">{{item.size}}</a></span>
+                                    <div class="price_quantity">
+                                       
+                                       <span class="product-quantity"> 
+                                          <div class="product-quantity-form" style="border-radius: 10px;">
+                                             <button class="cart-minus" id="wishlist-minus-product" onclick="minusBtnClick('wishlist-minus-product')"><i class="far fa-minus"></i></button>
+                                             <input class="cart-input" id="pro-qty" name="pro-qty" type="text" value="{{item.quantity}}">
+                                             <button class="cart-plus" onclick="plusBtnClick('wishlist-plus-product')" id="wishlist-plus-product"><i class="far fa-plus"></i></button>
+                                          </div>
+                                       </span>
+                                       <span class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
                                     </div>
-                                 </td>
-                                 <td class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></td>
-                                 <td class="product-subtotal"><span class="amount">₹{{item.get_final_price|floatformat:2}}</span></td>
-                                 <td class="product-quantity">
-                                    <a href="{% url 'move-to-cart' item.item.id %}" class="border-btn">Move to Cart</a>
-                                 </td>
-                                 
-                                 <td class="product-remove"><a href="{% url 'delete-item-from-wishlist' item.item.id %}"><i class="fa fa-times"></i></a></td>
-                              </tr>
-                              {% empty %}
-                                <tr>
-                                    <td colspan='6'>No Items in Wishlist</td>
-                                </tr>
-                              {% endfor %}
-                           </tbody>
-                        </table>
+                                    {% comment %} <span class="product-subtotal"><span class="amount">₹{{item.get_final_price|floatformat:2}}</span></span> {% endcomment %}
+                                    <span class="product-quantity move_btn">
+                                       <a href="{% url 'move-to-cart' item.item.id %}" class="border-btn">Move to Cart</a>
+                                    </span>
+                                    
+                                    <span class="product-remove wishlist_remove"><a href="{% url 'delete-item-from-wishlist' item.item.id %}"><i class="fa fa-times-circle"></i></a></span>
+                                 </div>
+                                 {% empty %}
+                                   <tr>
+                                       <span colspan='6'>No Items in Wishlist</span>
+                                   </tr>
+                                 {% endfor %}
+                              </div>
+                           </div>
+                        </div>
                      </div>
                   </form>
                </div>
