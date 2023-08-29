@@ -3,8 +3,33 @@ from .models import *
 
 # Register your models here.
 
+class ProductItemForm(forms.ModelForm):
+    image1 = forms.FileField(required=False)
+    image2 = forms.FileField(required=False)
+    image3 = forms.FileField(required=False)
+
+    def save(self, commit=True):
+        if self.cleaned_data.get('image1') is not None \
+                and hasattr(self.cleaned_data['image1'], 'file'):
+            data = self.cleaned_data['image1'].file.read()
+            self.instance.image1 = data
+        
+        if self.cleaned_data.get('image2') is not None and hasattr(self.cleaned_data['image2'], 'file'):
+            data = self.cleaned_data['image2'].file.read()
+            self.instance.image2 = data
+        
+        if self.cleaned_data.get('image3') is not None and hasattr(self.cleaned_data['image3'], 'file'):
+            data = self.cleaned_data['image3'].file.read()
+            self.instance.image3 = data
+
+        return self.instance
+
+    def save_m2m(self):
+        # FIXME: this function is required by ModelAdmin, otherwise save process will fail
+        pass
 
 class ProductsAdmin(admin.ModelAdmin):
+    form = ProductItemForm
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 
@@ -15,7 +40,7 @@ class ProductsAdmin(admin.ModelAdmin):
 
         return qs
     list_display: list = ('name', 'unit', 'max_retail_price',
-                          'created_at', 'modified_at','vendor')
+                          'created_at', 'modified_at','vendor','scheme_image_tag')
     ordering: list = ['-modified_at','-vendor','-name','-max_retail_price','-created_at']
     search_fields: list = ('name', 'material_feature',
                            'max_retail_price', 'category','vendor')

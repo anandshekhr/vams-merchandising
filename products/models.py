@@ -10,6 +10,8 @@ from django_quill.fields import QuillField
 from django.db.models import Avg, Sum
 from datetime import datetime
 from django.contrib.auth import get_user_model
+from django.utils.safestring import mark_safe
+from base64 import b64encode
 User = get_user_model()
 import os
 # from dotenv import load_dotenv
@@ -80,12 +82,11 @@ class Products(models.Model):
     subcategory = models.CharField(_("Product Sub-Category"), max_length=50, choices=SUBCATEGORIES,null=True,blank=True)
     max_retail_price = models.DecimalField(
         _("MRP (in Rs.)"), max_digits=8, decimal_places=2, null=True)
-    image1 = models.ImageField(_("Product Image 1"), upload_to="product/media/mainImage/%Y/%m/%d",
-                              height_field=None, width_field=None, max_length=None, null=True, default=None, blank=True)
-    image2 = models.ImageField(_("Product Image 2"), upload_to="product/media/secondaryImage/%Y/%m/%d",
-                              height_field=None, width_field=None, max_length=None, null=True, default=None, blank=True)
-    image3 = models.ImageField(_("Product Image 3"), upload_to="product/media/tertiaryImage/%Y/%m/%d",
-                              height_field=None, width_field=None, max_length=None, null=True, default=None, blank=True)
+    # image1 = models.ImageField(_("Product Image 1"), upload_to="product/media/mainImage/%Y/%m/%d",
+    #                           height_field=None, width_field=None, max_length=None, null=True, default=None, blank=True)
+    image1 = models.BinaryField(_("Product Image 1"), blank=True, null=True,editable=True)
+    image2 = models.BinaryField(_("Product Image 2"), blank=True, null=True,editable=True)
+    image3 = models.BinaryField(_("Product Image 3"), blank=True, null=True,editable=True)
     brand = models.CharField(_("Brand"), max_length=50, null=True, blank=True)
     available_sizes = ModifiedArrayField(models.CharField(
         _("Product Available"), max_length=255, choices=SIZES, null=True, blank=True), null=True)
@@ -138,6 +139,23 @@ class Products(models.Model):
             print(img)
             images.append(img)
         return images
+    
+    def scheme_image_tag(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="200" height="100">'.format(
+            b64encode(self.image1).decode('utf8')
+        ))
+
+    scheme_image_tag.short_description = 'Image'
+    scheme_image_tag.allow_tags = True
+
+    def binaryToStringImage1(self):
+        return b64encode(self.image1).decode('utf-8')
+    
+    def binaryToStringImage2(self):
+        return b64encode(self.image2).decode('utf-8')
+    
+    def binaryToStringImage3(self):
+        return b64encode(self.image3).decode('utf-8')
 
     class Meta:
         db_table = "Products"

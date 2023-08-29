@@ -16,7 +16,7 @@ class CartAdmin(admin.ModelAdmin):
 admin.site.register(Cart,CartAdmin)
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display: list = ('user','ref_code','items_get','ordered','ordered_date','shipping_address','payment','received','refund_requested')
+    list_display: list = ('user','ref_code','items_get','ordered','ordered_date','shipping_address','payment','refund_requested')
     ordering: list = ['user','ref_code','ordered','ordered_date','payment','refund_requested']
     search_fields: list = ('user','red_code','ordered','ordered_date','payment','refund_requested','shipping_address')
 

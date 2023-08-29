@@ -46,16 +46,27 @@
                   <div class="product-details-tab-wrapper mb-30">
                      <div class="product-details-tab">
                         <div class="tab-content" id="productDetailsTab">
+                           {% if product.image1 %}
                            <div class="tab-pane fade active show" id="pro-1" role="tabpanel"
                               aria-labelledby="pro-1-tab">
-                              <img class="active" src="/media/{{product.image1}}" alt="...">
+                              <img class="active" src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="...">
                            </div>
+                           {% else %}
+                           <div class="tab-pane fade active show" id="pro-1" role="tabpanel"
+                              aria-labelledby="pro-1-tab">
+                              <img class="active" src="{% static 'assets/img/product/no-thumb.jpg' %}" alt="...">
+                           </div>
+                           {% endif %}
+                           {% if product.image2 %}
                            <div class="tab-pane fade" id="pro-2" role="tabpanel" aria-labelledby="pro-2-tab">
-                              <img class="active" src="/media/{{product.image2}}" alt="...">
+                              <img class="active" src="data: image/png; base64, {{product.binaryToStringImage2|safe}}" alt="...">
                            </div>
+                           {% endif %}
+                           {% if product.image3 %}
                            <div class="tab-pane fade" id="pro-3" role="tabpanel" aria-labelledby="pro-3-tab">
-                              <img class="active" src="/media/{{product.image3}}" alt="...">
+                              <img class="active" src="data: image/png; base64, {{product.binaryToStringImage3|safe}}" alt="...">
                            </div>
+                           {% endif %}
                         </div>
                      </div>
                      <div class="product-details-nav">
@@ -65,7 +76,7 @@
                               <button class="nav-link active" id="pro-1-tab" data-bs-toggle="tab"
                                  data-bs-target="#pro-1" type="button" role="tab" aria-controls="pro-1"
                                  aria-selected="false">
-                                 <img src="/media/{{product.image1}}" alt="..." width="65px" height="80px" style="width:auto;">
+                                 <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="..." width="65px" height="80px" style="width:auto;">
                               </button>
                            </li>
                            {% else %}
@@ -81,7 +92,7 @@
                            <li class="nav-item" role="presentation">
                               <button class="nav-link" id="pro-2-tab" data-bs-toggle="tab" data-bs-target="#pro-2"
                                  type="button" role="tab" aria-controls="pro-2" aria-selected="true">
-                                 <img src="/media/{{product.image2}}" alt="..." width="65px" height="80px" style="width:auto;">
+                                 <img src="data: image/png; base64, {{product.binaryToStringImage2|safe}}" alt="..." width="65px" height="80px" style="width:auto;">
                               </button>
                            </li>
                            {% endif %}
@@ -89,7 +100,7 @@
                            <li class="nav-item" role="presentation">
                               <button class="nav-link" id="pro-3-tab" data-bs-toggle="tab" data-bs-target="#pro-3"
                                  type="button" role="tab" aria-controls="pro-3" aria-selected="false">
-                                 <img src="/media/{{product.image3}}" alt="..." width="65px" height="80px" style="width:auto;">
+                                 <img src="data: image/png; base64, {{product.binaryToStringImage3|safe}}" alt="..." width="65px" height="80px" style="width:auto;">
                               </button>
                            </li>
                            {% endif %}

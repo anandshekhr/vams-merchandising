@@ -87,16 +87,13 @@ class Order(models.Model):
         auto_now_add=True)
 
     shipping_by = models.ForeignKey(DeliveryPartnerDetails, verbose_name=_("Delivery Partner"), on_delete=models.CASCADE,blank=True,null=True)
-    delivered = models.BooleanField(default=False)
-    delivered_date = models.DateTimeField(
-        auto_now_add=True)
-
+    
     out_for_delivery = models.BooleanField(default=False)
     out_for_delivery_date = models.DateTimeField(
         auto_now_add=True)
-
-    received = models.BooleanField(default=False)
-    received_date = models.DateTimeField(
+    
+    delivered = models.BooleanField(default=False)
+    delivered_date = models.DateTimeField(
         auto_now_add=True)
 
     refund_requested = models.BooleanField(default=False)

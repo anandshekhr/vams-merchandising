@@ -36,7 +36,7 @@ admin_volt = 'admin_volt.apps.AdminVoltConfig'
 
 # Application definition
 INSTALLED_APPS = [
-    admin_volt,  # Make sure 'admin_volt' is a string or variable
+    # admin_volt,  # Make sure 'admin_volt' is a string or variable
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
