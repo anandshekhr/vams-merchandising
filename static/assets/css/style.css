@@ -1991,8 +1991,8 @@ only screen and (min-width: 576px) and (max-width: 767px) {
 
 .product-image {
   overflow: hidden;
-  width: 260px;
-  height: 275px;
+  /* width: 260px;
+  height: 275px; */
 }
 
 .product-image:hover .product-action {
