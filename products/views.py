@@ -25,12 +25,13 @@ from rest_framework import filters,pagination
 from django_filters import FilterSet
 
 
+User = get_user_model()
 class StandardResultsSetPagination(pagination.PageNumberPagination):
     page_size = 100
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
-
+# adding filters to API
 class ProductsFilter(FilterSet):
     def filter_queryset(self, request, queryset, view):
         category_value = request.query_params.get("category")
@@ -69,83 +70,11 @@ class ProductsFilter(FilterSet):
             "subcategory",
         )
 
-
-User = get_user_model()
-
-
-def index(request):
-    return redirect("homepage")
-
-
-def homePage(request):
-    try:
-        products_dealoftheday = Products.objects.filter(
-            category__contains=["Deal of the day"]
-        )
-
-        products_featured = Products.objects.filter(
-            category__contains=["Featured Products"]
-        )
-        products_trend = Products.objects.filter(category__contains=["Trend Products"])
-        products_best = Products.objects.filter(category__contains=["Best Products"])
-        banners = Banners.objects.all()
-        categories = Categories.objects.all()
-        blog_post = Blogs.objects.all()[:3]
-
-        # cart items for cart notification
-
-        context = {
-            "banners": banners,
-            "dealoftheday": products_dealoftheday,
-            "featured": products_featured,
-            "best": products_best,
-            "trend": products_trend,
-            "categories": categories,
-            "blogs": blog_post,
-        }
-        return render(request, "g-2.html", context=context)
-    except Exception as e:
-        print(e)
-        return render(request, "g-2.html")
-
-
-# not using for now
-
-
 def showAllProducts(request):
-    products = get_object_or_404(Products)
-    paginator = Paginator(products, 10)
+    products = Products.objects.all()
+    # paginator = Paginator(products, 10)
     context = {"products": products}
     return render(request, "shop.html", context)
-
-
-def filter_by_category(request, category_id):
-    category = Categories.objects.get(id=category_id)
-    products = Products.objects.filter(category__contains=[category.category_name])
-    data = []
-    for product in products:
-        data.append(
-            {
-                "name": product.name,
-                "description": product.desc,
-                "image": product.image.url,
-                "ratings": product.average_rating,
-                "price": product.list_price(),
-                "unit": product.unit,
-                "discount": product.discount,
-            }
-        )
-    return JsonResponse({"products": data})
-
-
-# for filter products wrt category
-
-
-def seeAllProductsInCategory(request, name):
-    category, created = Categories.objects.get_or_create(category_name=name)
-    product = Products.objects.filter(category__contains=[category.category_name])
-    context = {"products": product}
-    return render(request, "shop-list-4.html", context)
 
 
 def productDetailsPageView(request, pk):
@@ -206,9 +135,7 @@ class ProductDetailsAPI(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, product_id, format=None):
-        # product_pk = request.GET.get('product_id')
-        # print(product_pk)
-
+        
         # filter product for images, reviews and ratings
         product = get_object_or_404(Products, id=product_id)
         images = ProductImages.objects.filter(product=product)
@@ -259,124 +186,6 @@ class ProductDetailsAPI(APIView):
             status=status.HTTP_200_OK,
         )
 
-    def post(self, request, format=None):
-        pass
-
-
-def searchHomePageProducts(request):
-    if request.method == "GET":  # write your form name here
-        product_name = request.GET.get("search")
-        try:
-            status = StoreProductsDetails.objects.filter(
-                products__product_name__icontains=product_name
-            )
-            return render(request, "search.html", {"products": status})
-        except StoreProductsDetails.DoesNotExist:
-            return render(request, "search.html", {"products": status})
-    else:
-        return render(request, "search.html", {"products": status})
-
-
-def searchProductsInsideCategoryPage(request, pk):
-    if request.method == "GET":
-        product_name = request.GET.get("search")
-        categorydetails = Categories.objects.get(pk=pk)
-        try:
-            if request.user.id != None:
-                user_details = UserAddresses.objects.get(user=request.user.id)
-                productdetail = StoreProductsDetails.objects.filter(
-                    products__pro_category__icontains=[categorydetails.category_name],
-                    products__product_name__icontains=product_name,
-                    store__storeServicablePinCodes__contains=[user_details.pincode],
-                )
-                cartitems = Order.objects.get(user=request.user.id, ordered=False)
-                context = {
-                    "category": categorydetails,
-                    "catproducts": productdetail,
-                    "totalcartitem": cartitems.get_total_items_in_order() + 1,
-                    "totalamount": round(cartitems.get_total(), 2),
-                    "totalquantity": cartitems.get_quantity(),
-                }
-            else:
-                productdetail = StoreProductsDetails.objects.filter(
-                    products__pro_category__icontains=[categorydetails.category_name],
-                    products__product_name__icontains=product_name,
-                )
-
-                context = {
-                    "category": categorydetails,
-                    "catproducts": productdetail,
-                    "totalcartitem": 0,
-                    "totalamount": 0,
-                    "totalquantity": 0,
-                }
-        except Order.DoesNotExist:
-            context = {
-                "category": categorydetails,
-                "catproducts": productdetail,
-                "totalcartitem": 0,
-                "totalamount": 0,
-                "totalquantity": 0,
-            }
-
-    return render(request, "list.html", context)
-
-
-def autocompleteModel(request):
-    if request.method == "GET":
-        q = request.GET.get("term", "").capitalize()
-        search_qs = Products.objects.filter(product_name__startswith=q)
-        results = []
-        # printq
-        for r in search_qs:
-            results.append(r.product_name)
-        data = json.dumps(results)
-    else:
-        data = "fail"
-    mimetype = "application/json"
-    return JsonResponse({"data": data, "application": mimetype})
-
-
-def product_detail(request, id):
-    try:
-        product = Products.objects.get(id=id)
-        related_products = Products.objects.filter(
-            category__icontains=[product.category]
-        ).exclude(id=id)[:10]
-
-        # reviewForm = ReviewAdd()
-
-        # Check
-        canAdd = True
-        reviewCheck = ProductReviewAndRatings.objects.filter(
-            user=request.user, product=product
-        ).count()
-        if request.user.is_authenticated:
-            if reviewCheck > 0:
-                canAdd = False
-        # End
-
-        # Fetch reviews
-        reviews = ProductReviewAndRatings.objects.filter(product=product)
-        # End
-
-        # Fetch avg rating for reviews
-        avg_reviews = ProductReviewAndRatings.objects.filter(product=product).aggregate(
-            avg_rating=Avg("ratings")
-        )
-        # End
-        context = {
-            "data": product,
-            "related": related_products,
-            "canAdd": canAdd,
-            "reviews": reviews,
-            "avg_reviews": avg_reviews,
-        }
-        return render(request, "product_detail.html", context)
-    except:
-        pass
-
-
 class BannersAPIView(APIView):
     permission_classes = (AllowAny,)
 
@@ -385,7 +194,6 @@ class BannersAPIView(APIView):
         serializer = BannersSerializer(instance=banners, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class CategoriesAPI(APIView):
     permission_classes = (AllowAny,)
 
@@ -393,18 +201,6 @@ class CategoriesAPI(APIView):
         categories = Categories.objects.all()
         serializer = CategoriesSerializer(instance=categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# class CategoryProductsAPI(APIView):
-#     permission_classes = (AllowAny,)
-
-#     def get(self,request,pk,format =None):
-#         category = Categories.objects.get(pk=pk)
-#         products = Products.objects.filter(
-#             category__contains=[category.category_name])
-#         serializer = ProductsSerializer(instance=products,many=True)
-#         return Response(serializer.data,status=status.HTTP_200_OK)
-
 
 class CategoryProductsAPI(generics.ListAPIView):
     serializer_class = ProductsSerializer
@@ -417,7 +213,6 @@ class CategoryProductsAPI(generics.ListAPIView):
             queryset = queryset.filter(category__contains=[category.category_name])
         return queryset
 
-
 class ProductReviewsAPI(APIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (SessionAuthentication, TokenAuthentication)
@@ -428,14 +223,6 @@ class ProductReviewsAPI(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
-        print(request.data)
-        # data ={}
-        # product_id = request.data.get('product_id')
-        # product = Products.objects.get(id=product_id)
-        # data['product_id'] = product
-        # data['author'] = request.data.get('author')
-        # data['ratings'] = request.data.get('ratings')
-        # data['review'] = request.data.get('review')
         serializer = ProductReviewAndRatingsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

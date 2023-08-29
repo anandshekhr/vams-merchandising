@@ -1799,7 +1799,7 @@ only screen and (min-width: 576px) and (max-width: 767px) {
 }
 
 .product-image img {
-  width: 100%;
+  object-fit: cover;
 }
 
 .product-name {
@@ -1990,6 +1990,8 @@ only screen and (min-width: 576px) and (max-width: 767px) {
 
 .product-image {
   overflow: hidden;
+  width: 260px;
+  height: 275px;
 }
 
 .product-image:hover .product-action {
@@ -4127,6 +4129,14 @@ only screen and (min-width: 576px) and (max-width: 767px),
   display: flex;
   justify-content: center;
   gap: 25px;
+}
+.breadcrumb-menu ol {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+.breadcrumb-menu-edit {
+  margin-left:15px;
 }
 
 /*----------------------------------------
