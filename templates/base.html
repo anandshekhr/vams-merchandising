@@ -199,7 +199,8 @@ what is a lifestyle store,
 what is lifestyle store,
 
 ">
-   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   {% comment %} <meta name="viewport" content="width=device-width, initial-scale=1"> {% endcomment %}
    <!-- Place favicon.ico in the root directory -->
    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
    <!-- CSS here -->
@@ -219,7 +220,26 @@ what is lifestyle store,
    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
    
    {% block head %}{% endblock head %}
-   
+   <style>
+      body{
+         font-family: "Jost", sans-serif;
+       font-size: 16px;
+       font-weight: normal;
+       color: var(--clr-common-text);
+       line-height: 26px;
+       scroll-behavior: smooth;
+       overflow-x: auto;
+      }
+      @media screen and (max-width: 667px) {
+         body {
+             overflow-x: auto !important;
+         }
+         .container {
+             max-width: 100% !important;
+             overflow-x: auto !important;
+         }
+     }
+   </style>
 </head>
 
 <body>
