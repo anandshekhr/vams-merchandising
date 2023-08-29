@@ -1799,6 +1799,7 @@ only screen and (min-width: 576px) and (max-width: 767px) {
 }
 
 .product-image img {
+  width: 100%;
   object-fit: cover;
 }
 
@@ -4130,13 +4131,15 @@ only screen and (min-width: 576px) and (max-width: 767px),
   justify-content: center;
   gap: 25px;
 }
+
 .breadcrumb-menu ol {
   display: flex;
   justify-content: center;
   gap: 25px;
 }
+
 .breadcrumb-menu-edit {
-  margin-left:15px;
+  margin-left: 15px;
 }
 
 /*----------------------------------------
