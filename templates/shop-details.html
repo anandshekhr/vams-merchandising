@@ -263,7 +263,7 @@
                         {% comment %} {% if 'best-seller' in product.category %} {% endcomment %}
                         <div class="single-product">
                            <div class="product-image pos-rel">
-                              <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="/media/{{product.image1}}" alt="img"  width="265px" height="390px"></a>
+                              <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"  width="265px" height="390px"></a>
                               {% comment %} <div class="product-action">
                                  <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                  <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
