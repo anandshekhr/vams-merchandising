@@ -162,6 +162,10 @@ def deleteItemFromCart(request, pk):
     Returns:
         _type_: _description_
     """
+    current_site = get_current_site(request)
+    domain_name = request.get_host()
+
+    previous_page = request.META.get('HTTP_REFERER')
 
     # delete from wishlistItems models
     item = Cart.objects.filter(item=pk, user=request.user, ordered=False)[0]
@@ -171,7 +175,7 @@ def deleteItemFromCart(request, pk):
     cart_item = Order.objects.filter(user=request.user, ordered=False)[0]
     cart_item.items.remove(item)
 
-    return redirect('cartview')
+    return redirect(previous_page)
 
 
 @login_required(login_url="login")
@@ -405,7 +409,6 @@ class CartAddView(APIView):
 
     def post(self, request, format=None):
         data = request.POST
-        print(data)
         product_pk = data.get('product')
         quantity = int(data.get('quantity'))
         req_size = data.get('size')
@@ -414,10 +417,17 @@ class CartAddView(APIView):
         order_item, created = Cart.objects.get_or_create(
             item=item,
             size=req_size,
-            quantity=quantity,
             user=request.user,
             ordered=False
         )
+        if created:
+
+            if quantity == None:
+                quantity = 0
+
+            order_item.quantity = quantity
+            order_item.save()
+
         order_qs = Order.objects.filter(user=request.user, ordered=False)
         if order_qs.exists():
             order = order_qs[0]

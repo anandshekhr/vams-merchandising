@@ -456,15 +456,15 @@ what is lifestyle store,
                      <div class="product-pricing">
                         <span class="item-number">{{cart_items.quantity}} &times;</span>
                         <span class="price-now">₹{{cart_items.get_final_price|floatformat:2}}</span>
-                        <span class="price-old" style="color:#17171766;">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                        <span class="price-old" style="color:#17171766;">₹{{cart_items.get_total_item_price|floatformat:2}}</span>
                      </div>
                      <a href="{% url 'delete-from-cart' cart_items.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
                </div>
                {% empty %}
-                                <tr>
-                                    <td colspan='6'>Your cart is empty</td>
-                                </tr>
+               <tr>
+                  <td colspan='6'>Your cart is empty</td>
+               </tr>
                {% endfor %}
             </div>
             <div class="product-price-total">
