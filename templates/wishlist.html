@@ -55,7 +55,7 @@
                                  {% for item in items.items.all %}
                                  <div class="wishlist_wrap">
                                     <span class="product-thumbnail"><a class="product-padding" href="{% url 'productdetail' pk=item.item.id %}"><img class="wishlist_image"
-                                             src="/media/{{item.item.image1}}" alt="img"></a></span>
+                                             src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a></span>
                                     <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></span>
                                     <span class="product-size"><a href="#">{{item.size}}</a></span>
                                     <div class="price_quantity">
