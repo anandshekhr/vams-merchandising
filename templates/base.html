@@ -396,7 +396,7 @@ what is lifestyle store,
                <div class="offset-profile-action d-xl-none">
                   <div class="offset-widget mb-40">
                      <div class="action-list action-list-header1">
-                        <div class="action-item action-item-cart">
+                        {% comment %} <div class="action-item action-item-cart">
                            <a href="javascript:void(0)" class="view-cart-button">
                               <i class="fal fa-bell"></i>
                               {% if cart.get_quantity %}
@@ -406,7 +406,7 @@ what is lifestyle store,
                               <span class="action-item-number">0</span>
                               {% endif %}
                            </a>
-                        </div>
+                        </div> {% endcomment %}
                         <div class="action-item action-item-cart">
                            <a href="javascript:void(0)" class="view-cart-button">
                               <i class="fal fa-shopping-bag"></i>
@@ -425,15 +425,34 @@ what is lifestyle store,
                               <span class="action-item-number">0</span></a>
                               {% endif %}
                         </div>
+                        {% if request.user.is_authenticated %}
+                           <div class="user-btn">
+                              <a href="{% url 'logout' %}">
+                                 <div class="user-icon">
+                                    <i class="flaticon-avatar"></i>
+                                 </div>
+                                 <span>Sign Out</span>
+                              </a>
+                           </div>
+                           {% else %}
+                           <div class="user-btn">
+                              <a href="{% url 'login' %}">
+                                 <div class="user-icon">
+                                    <i class="flaticon-avatar"></i>
+                                 </div>
+                                 <span>Sign In</span>
+                              </a>
+                           </div>
+                           {% endif %}
                      </div>
                   </div>
                </div>
-               <div class="offset-widget offset_searchbar mb-30">
+               {% comment %} <div class="offset-widget offset_searchbar mb-30">
                   <form action="#" class="filter-search-input">
                      <input type="text" placeholder="Search keyword" onkeyup="showSearchItems(this.value)">
                      <button><i class="fal fa-search"></i></button>
                   </form>
-               </div>
+               </div> {% endcomment %}
             </div>
          </div>
       </div>
