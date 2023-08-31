@@ -307,7 +307,7 @@ what is lifestyle store,
                         <div class="suggestProduct" style="display: none;"></div>
                         </div>
                         <div class="action-list d-none d-md-flex action-list-header4">
-                           <div class="action-item action-item-cart">
+                           {% comment %} <div class="action-item action-item-cart">
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-bell"></i>
                                  {% if cart.get_quantity %}
@@ -317,7 +317,7 @@ what is lifestyle store,
                                  <span class="action-item-number">0</span>
                                  {% endif %}
                               </a>
-                           </div>
+                           </div> {% endcomment %}
                            <div class="action-item action-item-cart">
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-shopping-bag"></i>
@@ -456,6 +456,7 @@ what is lifestyle store,
                      <div class="product-pricing">
                         <span class="item-number">{{cart_items.quantity}} &times;</span>
                         <span class="price-now">₹{{cart_items.get_final_price|floatformat:2}}</span>
+                        <span class="price-old" style="color:#17171766;">₹{{item.item.max_retail_price|floatformat:2}}</span>
                      </div>
                      <a href="{% url 'delete-from-cart' cart_items.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
@@ -496,7 +497,7 @@ what is lifestyle store,
                      <div class="product-quantity">Quantity: {{item.quantity}}</div>
                      <div class="product-pricing">
                         <span class="price-now">₹{{item.item.list_price|floatformat:2}}</span>
-                        <span class="price-old">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                        <span class="price-old" style="color:#17171766;">₹{{item.item.max_retail_price|floatformat:2}}</span>
                      </div>
                      <a href="{% url 'delete-item-from-wishlist' item.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>

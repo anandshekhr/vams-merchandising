@@ -536,7 +536,7 @@ def addToCartWithSizeQuantity(request, pk):
             return redirect(previous_page)
 
     user = Token.objects.get(user=request.user)
-    api_url = "http://"+domain_name+"/api/v1/customer/order/add/"
+    api_url = "http://"+domain_name+"/api/v1/cart/customer/order/add/"
     headers = {'Authorization': f'Token {user}'}
     data = {'product': pk, 'quantity': qty, 'size': size}
     # print(data)

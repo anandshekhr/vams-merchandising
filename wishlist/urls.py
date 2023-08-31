@@ -8,10 +8,10 @@ from cart.utils import FloatConverter
 register_converter(FloatConverter, 'float')
 
 urlpatterns = [
-        path("wishlist/<int:pk>/",addToWishlist,name="add-to-wishlist"),
-        path("wishlist/",wishlistView,name="wishlist-view"),
-        path("wishlist/delete/item/<int:pk>",deleteItemFromWishlist,name="delete-item-from-wishlist"),
-        path("wishlist/add/",AddToWishlistAPI.as_view()),
+        path("<int:pk>/",addToWishlist,name="add-to-wishlist"),
+        path("",wishlistView,name="wishlist-view"),
+        path("delete/item/<int:pk>",deleteItemFromWishlist,name="delete-item-from-wishlist"),
+        path("add/",AddToWishlistAPI.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,
                                                                              document_root=settings.MEDIA_ROOT)
 
