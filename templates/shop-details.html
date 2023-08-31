@@ -6,7 +6,7 @@
    <main>
       {% if messages %}
          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} auto-dismiss">
+            <div class="alert alert-{{ message.tags }} auto-dismiss" id="err-message">
                   {{ message }}
             </div>
          {% endfor %}

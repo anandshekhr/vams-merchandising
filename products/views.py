@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib import auth
+from django.contrib import auth,messages
 from rest_framework import generics, status, authentication, permissions
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -76,6 +76,19 @@ def showAllProducts(request):
     context = {"products": products}
     return render(request, "shop.html", context)
 
+def handle_messages(request):
+    message_type = request.GET.get('type')
+    print(message_type)
+    message = request.GET.get('message')
+    print(message)
+
+    if message_type and message:
+        if message_type == 'success':
+            messages.success(request, message)
+        elif message_type == 'error':
+            messages.error(request, message)
+
+    return JsonResponse({'status': 'ok'})
 
 def productDetailsPageView(request, pk):
     counter = 0

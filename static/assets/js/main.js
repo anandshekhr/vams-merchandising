@@ -687,6 +687,19 @@
 	});
 })(jQuery);
 
+function showMessage(type, message) {
+	domain = window.location.origin;
+	$.ajax({
+
+		url: domain +'/api/v1/products/handle-messages/',  // Replace with your message handling URL
+		method: 'GET',  // Use GET to send a message to the server
+		data: {
+			type: type,
+			message: message
+		}
+	});
+}
+
 function onClickAddToCartQuantity(product_id) {
 	// console.log('printCall')
 	var qty = document.getElementById('pro-qty').value;
@@ -805,6 +818,7 @@ stars.forEach(star => {
 
 
 $(document).on('submit', '#submit-review-form', function (e) {
+	e.preventDefault();
 	// const stars = document.querySelectorAll('.star');
 	// stars.forEach((star, index) => {
 	// 	star.addEventListener('click', () => {
@@ -830,14 +844,21 @@ $(document).on('submit', '#submit-review-form', function (e) {
 		},
 		success: function (response) {
 			console.log('Data submitted successfully:', response);
+			showMessage('success', 'Data submitted successfully!, Wait for the approval process to finish');
+			setTimeout(function () {
+				window.location.reload();
+			}, 1000);
 			// Handle successful response
 		},
 		error: function (error) {
 			console.error('Error submitting data:', error);
+			showMessage('error', 'An error occurred. Please try again later.');
+			window.location.reload();
 			// Handle error
 		}
 	})
 })
+
 
 
 

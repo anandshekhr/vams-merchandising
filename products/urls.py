@@ -8,6 +8,7 @@ api = settings.API_VERSION
 urlpatterns = [
     path("show-all/",showAllProducts,name="show-all-products"),
     path("details/<int:pk>/",productDetailsPageView,name="productdetail"),
+    path('handle-messages/', handle_messages, name='handle_messages'),
 
     #APIs
     path("all",ProductAPI.as_view(),name="allProducts"),
@@ -16,7 +17,7 @@ urlpatterns = [
     path("categories/", CategoriesAPI.as_view(), name="categories"),
     re_path('^category/items/(?P<pk>.+)/$',
          CategoryProductsAPI.as_view(), name="category-products-api"),
-     path("products/reviews",ProductReviewsAPI.as_view()),
+     path("reviews",ProductReviewsAPI.as_view()),
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,
