@@ -3,8 +3,137 @@
 {% block title %} Wishlist {% endblock title %}
 {% block body %}
 <link rel="stylesheet" href="{% static 'wishlist.css' %}">
-   <main>
+<style>
+.popup-overlay {
+   display: none;
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: rgba(0, 0, 0, 0.7);
+   z-index: 1000;
+}
 
+.popup-content {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   background-color: #fff;
+   padding: 20px;
+   border-radius: 10px;
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+   width: max-content;
+}
+
+.product-quantity-form {
+   display: flex;
+   align-items: center;
+}
+
+.cart-minus, .cart-plus {
+   background-color: #f0f0f0;
+   border: none;
+   cursor: pointer;
+   padding: 5px 10px;
+   font-size: 16px;
+   outline: none;
+}
+
+.cart-input {
+   width: 50px;
+   text-align: center;
+   border: 1px solid #ccc;
+   margin: 0 10px;
+}
+
+.product-available-sizes {
+   margin-right: 5px;
+}
+
+.available-sizes .btn-check:checked + .btn {
+   background-color: #007bff;
+   color: #fff;
+}
+
+.close-icon {
+   position: absolute;
+   top: 10px;
+   right: 15px;
+   font-size: 24px;
+   cursor: pointer;
+   color: #999;
+}
+.popup-image-desc{
+   display: flex;
+   flex-direction: row;
+   border-bottom: 1px solid grey;
+   margin-bottom: 30px;
+   padding-bottom: 24px;
+}
+.wishlist_image_popup{
+   width: 100px;
+   height: 100px;
+   object-fit: cover;
+   margin-right: 20px;
+}
+.price_quantity_popup{
+   display: flex;
+   align-items: center;
+   flex-direction: row;
+   gap: 8px;
+   margin-bottom: 10px;
+}
+.popup_price_list{
+   display: flex;
+    flex-direction: row;
+
+}
+.product-available-sizes-pop {
+   margin-right: 5px;
+   height: 40px;
+   width: 40px;
+   border-radius: 50%;
+}
+.border-btn_pop{
+   width: max-content;
+   text-align: center;
+   border: 1px solid;
+   border-radius: 10px;
+   position: relative;
+   left: 32%;
+   font-size: 16px;
+   color: var(--clr-common-heading);
+   border: 1px solid var(--clr-common-heading);
+   padding: 0 40px;
+   height: 50px;
+   border-radius: 5px;
+   display: inline-block;
+   line-height: 48px;
+   font-weight: 600;
+}
+.border-btn_pop:hover {
+   color: var(--clr-common-white);
+   background: var(--clr-common-heading);
+}
+@media (max-width: 400px) {
+   .popup-content {
+      width: 85%;
+   }
+   .price_quantity_popup{
+      flex-direction: unset;
+      flex-wrap: wrap;
+   }
+   .cart-area .product-quantity-form {
+      width: max-content !important;
+      height: 51px;
+  }
+
+}
+
+</style>
+   <main>
       <!-- page title area start  -->
       <section class="page-title-area" data-background="assets/img/bg/page-title-bg.jpg">
          <div class="container">
@@ -26,9 +155,6 @@
          </div>
       </section>
       <!-- page title area end  -->
-<style>
-
-</style>
       <!-- cart area start  -->
       <div class="cart-area ">
          <div class="container container-small">
@@ -59,21 +185,61 @@
                                     <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></span>
                                     <span class="product-size"><a href="#">{{item.size}}</a></span>
                                     <div class="price_quantity">
-                                       
-                                       <span class="product-quantity"> 
-                                          <div class="product-quantity-form" style="border-radius: 10px;">
-                                             <button class="cart-minus" id="wishlist-minus-product" onclick="minusBtnClick('wishlist-minus-product')"><i class="far fa-minus"></i></button>
-                                             <input class="cart-input" id="pro-qty" name="pro-qty" type="text" value="{{item.quantity}}">
-                                             <button class="cart-plus" onclick="plusBtnClick('wishlist-plus-product')" id="wishlist-plus-product"><i class="far fa-plus"></i></button>
-                                          </div>
-                                       </span>
+                                      
                                        <span class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
+                                       <span class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.max_retail_price|floatformat:2}}</span>
                                     </div>
                                     {% comment %} <span class="product-subtotal"><span class="amount">₹{{item.get_final_price|floatformat:2}}</span></span> {% endcomment %}
                                     <span class="product-quantity move_btn">
-                                       <a href="{% url 'move-to-cart' item.item.id %}" class="border-btn">Move to Cart</a>
+                                       {% comment %} <a href="{% url 'move-to-cart' item.item.id %}" class="border-btn" onclick="openPopup()">Move to Cart</a> {% endcomment %}
+                                       <span class="border-btn" onclick="openPopup()">Move to Cart</span>
                                     </span>
-                                    
+                                    <div id="popup-overlay" class="popup-overlay">
+                                       <div class="popup-content">
+                                          <span class="close-icon" onclick="closePopup()">&times;</span> 
+                                          <div class="popup-image-desc">
+                                             <span class=""><a class="product-padding" href="{% url 'productdetail' pk=item.item.id %}"><img class="wishlist_image_popup"
+                                                src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a>
+                                             </span>
+                                             <span>
+                                                <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></span>
+                                                {% comment %} <span class="product-size"><a href="#">{{item.size}}</a></span> {% endcomment %}
+                                                <div>
+
+                                                   <span class="popup_price_list">
+                                                      <div class="price_quantity_popup">
+                                                         <span style="color: #282c3f; font-weight: 700;" class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
+                                                         <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                                                         <div class="">
+                                                            <span style=" color: #ff905a; padding: 0 3px; font-size: 16px; font-weight: 700;" class="">({{item.item.discount|floatformat:0}}% OFF)</span>
+                                                         </div>
+                                                      </div>
+                                                   </span>
+                                                   <span class="product-quantity"> 
+                                                      <div class="product-quantity-form" style="border-radius: 10px; margin: inherit;">
+                                                         <button class="cart-minus" id="wishlist-minus-product" onclick="minusBtnClick('wishlist-minus-product')"><i class="far fa-minus"></i></button>
+                                                         <input style="width: 120px;" class="cart-input" id="pro-qty" name="pro-qty" type="text" value="{{item.quantity}}">
+                                                         <button class="cart-plus" onclick="plusBtnClick('wishlist-plus-product')" id="wishlist-plus-product"><i class="far fa-plus"></i></button>
+                                                      </div>
+                                                   </span>
+                                                </div>
+                                             </span>
+
+                                          </div>
+                                          
+                                          <input type="hidden" value="{{item.item.id}}" id="get-single-product-id">
+                                          <div style="display: flex; flex-direction: column;" class="available-sizes btn-group-toggle" role="group" name="choose-size" id="choose-size">
+                                             <span style="color: #282c3f; font-weight: 700; text-align: left;">Select Sizes : </span>
+                                             <span>
+                                                {% for size in item.item.available_sizes %}
+                                                <input type="radio" class="btn-check" name="choose-size" id="size-{{size}}" value="{{size}}">
+                                                <label for="size-{{size}}" class="product-available-sizes-pop btn btn-outline-dark">{{size}}</label>
+                                                {% endfor %}
+                                             </span>
+                                          </div>
+                                          <a href="{% url 'move-to-cart' item.item.id %}" class="border-btn_pop" onclick="openPopup()">Done</a>
+                                       </div>
+                                    </div>
                                     <span class="product-remove wishlist_remove"><a href="{% url 'delete-item-from-wishlist' item.item.id %}"><i class="fa fa-times-circle"></i></a></span>
                                  </div>
                                  {% empty %}
@@ -86,11 +252,22 @@
                         </div>
                      </div>
                   </form>
+                  
                </div>
             </div>
          </div>
       </div>
       <!-- cart area end  -->
-
    </main>
+   <script>
+      function openPopup() {
+         var overlay = document.getElementById("popup-overlay");
+         overlay.style.display = "block";
+      }
+   
+      function closePopup() {
+         var overlay = document.getElementById("popup-overlay");
+         overlay.style.display = "none";
+      }
+   </script>
    {% endblock body %}
