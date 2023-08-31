@@ -448,7 +448,7 @@ what is lifestyle store,
                {% for cart_items in cart.items.all %}
                <div class="sidebar-list-item">
                   <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=cart_items.item.id %}" class=""><img src="/media/{{cart_items.item.image1}}" alt="img"></a>
+                     <a href="{% url 'productdetail' pk=cart_items.item.id %}" class=""><img src="data: image/png; base64, {{cart_items.item.binaryToStringImage1|safe}}" alt="img"></a>
                   </div>
                   <div class="product-desc">
                      <div class="product-name"><a href="{% url 'productdetail' pk=cart_items.item.id %}">{{cart_items.item.name}}</a></div>
@@ -488,14 +488,15 @@ what is lifestyle store,
                {% for item in wishlist.items.all %}
                <div class="sidebar-list-item">
                   <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=item.item.id %}" class=""><img src="/media/{{item.item.image1}}" alt="img"></a>
+                     <a href="{% url 'productdetail' pk=item.item.id %}" class=""><img src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a>
                   </div>
                   <div class="product-desc">
                      <div class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></div>
-                     <div class="product-size">Size: {{item.size}}</div>
+                     {% comment %} <div class="product-size">Size: {{item.size}}</div> {% endcomment %}
                      <div class="product-quantity">Quantity: {{item.quantity}}</div>
                      <div class="product-pricing">
                         <span class="price-now">₹{{item.item.list_price|floatformat:2}}</span>
+                        <span class="price-old">₹{{item.item.max_retail_price|floatformat:2}}</span>
                      </div>
                      <a href="{% url 'delete-item-from-wishlist' item.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
