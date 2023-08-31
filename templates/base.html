@@ -742,7 +742,7 @@ what is lifestyle store,
       //var csrftoken = Cookies.get('csrftoken');
       console.log(value);
       domain = window.location.origin
-      path_name = '/api/v1/products/show-all' //change-this url
+      path_name = '/api/v1/products/all' //change-this url
       if(value.length < 3){
         $('.suggestProduct').empty()
         $('.suggestProduct').hide()
@@ -768,7 +768,7 @@ what is lifestyle store,
                       $('.suggestProduct').append(`
                       <div class="suggest-product d-flex col-12" onclick='window.location.href="/api/v1/details/`+response[index].id+`"' >
                         <div class="col-2 ">
-                          <img src="`+response[index].image1+`" alt=""  >
+                          <img src="data: image/png; base64, `+response[index].image+`" alt=""  >
                         </div>
                         <div class="product_name col-8 align-self-center">
                           <p style="font-size:14px;">`+response[index].name+`</p>

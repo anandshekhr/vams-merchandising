@@ -29,11 +29,15 @@ class ProductsSerializer(serializers.ModelSerializer):
 
     desc = serializers.SerializerMethodField()
     discounted_price = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     def get_desc(self,instance):
         return str(instance.desc.html)
     def get_discounted_price(self,instance):
         return instance.list_price()
+    
+    def get_image(self,instance):
+        return instance.binaryToStringImage1()
     class Meta:
         model = Products
         fields = "__all__"
