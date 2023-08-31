@@ -18,7 +18,7 @@
          </script> 
       {% endif %}
       <!-- page title area start  -->
-      <section class="page-title-area" data-background="assets/img/bg/page-title-bg.jpg">
+      {% comment %} <section class="page-title-area" data-background="assets/img/bg/page-title-bg.jpg">
          <div class="container">
             <div class="row">
                <div class="col-lg-12">
@@ -36,10 +36,19 @@
                </div>
             </div>
          </div>
-      </section>
+      </section> {% endcomment %}
+      <div class="breadcrumb-menu-edit">
+      <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
+         <li class="breadcrumb-item active"><span>Register</span></li>
+      </ol>
+   </div>
       <!-- page title area end  -->
 
       <!-- register area start  -->
+      <div class="page-title-wrapper text-center">
+   <h1 class="page-title mb-10">Register</h1>
+   </div>
       <div class="register-area pt-120 pb-120">
          <div class="container container-small">
             <div class="row justify-content-center">

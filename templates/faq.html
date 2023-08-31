@@ -6,7 +6,7 @@
    <main>
 
       <!-- page title area start  -->
-      <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
+      {% comment %} <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
          <div class="container">
             <div class="row">
                <div class="col-lg-12">
@@ -15,7 +15,7 @@
                      <div class="breadcrumb-menu">
                         <nav aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs">
                            <ul class="trail-items">
-                              <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span>Home</span></a></li>
+                              <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
                               <li class="trail-item trail-end"><span>FAQ</span></li>
                            </ul>
                         </nav>
@@ -24,7 +24,13 @@
                </div>
             </div>
          </div>
-      </section>
+      </section> {% endcomment %}
+      <div class="breadcrumb-menu-edit">
+      <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
+         <li class="breadcrumb-item active"><span>FAQ</span></li>
+      </ol>
+   </div>
       <!-- page title area end  -->
 
       <!-- faq area start -->
