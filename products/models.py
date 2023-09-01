@@ -65,10 +65,28 @@ class VendorDetail(models.Model):
         verbose_name_plural = _("VendorDetails")
 
     def __str__(self):
-        return self.storeName
+        return "Owner:{} Store: {}".format(self.owner,self.storeName)
 
     def get_absolute_url(self):
         return reverse("VendorDetail_detail", kwargs={"pk": self.pk})
+
+class VendorBankAccountDetail(models.Model):
+    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
+    bank_name = models.CharField(_("Bank Name"), max_length=50)
+    bank_account_number = models.CharField(_("Account No."), max_length=50)
+    confirm_bank_account_number = models.CharField(_("Confirm Account No."), max_length=50)
+    ifsc_code = models.CharField(_("IFSC Code"), max_length=50)
+
+    class Meta:
+        verbose_name = _("VendorBankAccountDetail")
+        verbose_name_plural = _("VendorBankAccountDetails")
+
+    def __str__(self):
+        return "Owner: {} Acc. No.{}".format(self.vendor,self.confirm_bank_account_number)
+
+    def get_absolute_url(self):
+        return reverse("VendorBankAccountDetail_detail", kwargs={"pk": self.pk})
+
 
 class Products(models.Model):
     id = models.AutoField(primary_key=True)

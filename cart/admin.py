@@ -29,3 +29,42 @@ class PaymentAdmin(admin.ModelAdmin):
 
 admin.site.register(Payment,PaymentAdmin)
 admin.site.register(DeliveryPartnerDetails)
+
+
+@admin.register(VendorOrderDetail)
+class VendorOrderDetailAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        # Filter products based on the logged-in user
+        if not request.user.is_superuser:
+            vendor = VendorDetail.objects.filter(owner=request.user)
+            qs = qs.filter(vendor__in=vendor)
+
+        return qs
+    list_display: list = ('vendor', 'order_id', 'order_item',
+                          'order_item_size','order_item_qty','order_amount','payment_status','order_packed','order_shipped')
+    ordering: list = ['vendor', 'order_id', 'order_item',
+                          'order_item_size','order_item_qty','order_amount','payment_status','order_packed','order_shipped']
+    search_fields: list = ('vendor', 'order_id', 'order_item',
+                          'order_item_size','order_item_qty','order_amount','payment_status','order_packed','order_shipped')
+    
+@admin.register(VendorTransactionDetail)
+class VendorTransactionDetailAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        # Filter products based on the logged-in user
+        if not request.user.is_superuser:
+            vendor = VendorDetail.objects.filter(owner=request.user)
+            qs = qs.filter(vendor__in=vendor)
+
+        return qs
+    list_display: list = ('vendor', 'order_id', 'order_receiving_date',
+                          'total_order_amount','order_completed_date','payment_status','payment_transfer_date')
+    ordering: list = ['vendor', 'order_id', 'order_receiving_date',
+                          'total_order_amount','order_completed_date','payment_status','payment_transfer_date']
+    search_fields: list = ('vendor', 'order_id', 'order_receiving_date',
+                          'total_order_amount','order_completed_date','payment_status','payment_transfer_date')
+    
+

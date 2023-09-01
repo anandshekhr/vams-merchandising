@@ -97,9 +97,30 @@ class VendorDetailAdmin(admin.ModelAdmin):
         return qs
     list_display: list = ('storeName', 'owner', 'email',
                           'phone_number', 'address')
-    ordering: list = ['-storeName', '-email', '-owner']
+    ordering: list = ['-storeName', '-email', '-owner','-phone_number']
     search_fields: list = ('storeName', 'owner', 'email',
                            'phone_number', 'address')
 
 
 admin.site.register(VendorDetail, VendorDetailAdmin)
+
+@admin.register(VendorBankAccountDetail)
+class VendorBankAccountDetailAdmin(admin.ModelAdmin):
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        # Filter products based on the logged-in user
+        if not request.user.is_superuser:
+            vendor = VendorDetail.objects.filter(owner=request.user)
+            qs = qs.filter(vendor__in=vendor)
+
+        return qs
+    list_display: list = ('vendor', 'bank_name', 'bank_account_number',
+                          'ifsc_code')
+    ordering: list = ['-vendor', '-bank_name', '-bank_account_number',
+                          '-ifsc_code']
+    search_fields: list = ('vendor', 'bank_name', 'bank_account_number',
+                          'ifsc_code')
+
+    
+

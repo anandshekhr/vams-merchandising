@@ -30,7 +30,7 @@ TAGS = (('Home', 'Home'), ('Office',
 class CustomUser(AbstractUser):
     first_name = models.CharField(null=True, blank=True, max_length=100)
     last_name = models.CharField(null=True, blank=True, max_length=100)
-    email = models.EmailField(null=True)
+    email = models.EmailField(null=True,unique=True)
     mobileno = models.CharField(verbose_name="Mobile Number",
                               null=False, max_length=10, default="", unique=True)
     username = models.CharField(null=True, max_length=50, unique=True)
@@ -46,7 +46,7 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self) -> str:
-        return self.mobileno
+        return self.email
 
     def user_full_name(self):
         return self.first_name + " " + self.last_name

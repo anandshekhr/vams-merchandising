@@ -21,7 +21,7 @@ class StoreDetail(models.Model):
     storeStatus = models.BooleanField(_("Store Status"),default=True)
 
     def __str__(self) -> str:
-        return self.storeName
+        return "{} Ph:{}".format(self.storeName,self.storePhoneNo)
     
     def fullStoreAddress(self):
         addr = self.storeAddress + ", " +self.storeLocality +", " + str(self.storeLocalityPinCode)

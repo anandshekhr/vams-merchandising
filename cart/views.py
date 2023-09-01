@@ -340,6 +340,24 @@ def paymentStatusAndOrderStatusUpdate(request):
 
                 order.payment = payment
                 order.save()
+
+                
+                for item in order_items:
+                    # Vendor Order Details
+                    vender_order = VendorOrderDetail()
+                    vender_order.vendor = item.item.vendor
+
+                    vender_order.order_id = order.id
+                    product_id = Products.objects.get(id = item.item.id)
+                    vender_order.order_item = product_id
+                    vender_order.order_item_size = item.size
+                    vender_order.order_item_qty = item.quantity
+                    vender_order.order_amount = item.get_final_price()
+                    vender_order.delivery_address = order.shipping_address
+                    vender_order.payment_status = 'Paid'
+                    vender_order.save()
+
+
                 messages.success(request, "Your order was successful!")
                 return redirect("ordersummary", pk=order.id)
 

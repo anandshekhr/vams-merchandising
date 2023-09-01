@@ -66,7 +66,7 @@
                         {% for obj in object.items.all %}
                         <tr>
                            <td class="product-thumbnail"><a href="{% url 'productdetail' obj.item.id %}"><img
-                                    src="/media/{{obj.item.image1}}" alt="img"></a></td>
+                                    src="data: image/png; base64, {{obj.item.binaryToStringImage1|safe}}" alt="img"></a></td>
                            <td class="product-name"><a href="{% url 'productdetail' obj.item.id %}">{{obj.item.name}}</a></td>
                            <td class="product-size"><a href="{% url 'productdetail' obj.item.id %}">{{obj.size}}</a></td>
                            <td class="product-price"><span class="amount">₹{{obj.item.list_price|floatformat:2}}</span></td>

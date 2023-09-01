@@ -209,3 +209,45 @@ class PendingPayment(models.Model):
     def __str__(self):
         return self.order_id
 
+
+class VendorOrderDetail(models.Model):
+    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
+    order_id = models.CharField(_("Order ID"), max_length=50)
+    order_item = models.ForeignKey(Products, verbose_name=_("Order Item"), on_delete=models.CASCADE)
+    order_item_size = models.CharField(_("Order Item Size"), max_length=50)
+    order_item_qty = models.IntegerField(_("Order Item Qty"))
+    order_amount = models.CharField(_("Order Amount"), max_length=50)
+    payment_status = models.CharField(_("Payment Status"), max_length=50)
+    delivery_address = models.TextField(_("Delivery Address"))
+    order_packed = models.CharField(_("Order Status: Packed"), max_length=50,null=True,blank=True)
+    order_shipped = models.CharField(_("Order Status: Shipped"), max_length=50,null=True,blank=True)
+    
+    class Meta:
+        verbose_name = _("VendorOrderDetail")
+        verbose_name_plural = _("VendorOrderDetails")
+
+    def __str__(self):
+        return "Vendor Id:{} Order Id:{}".format(self.vendor, self.order_id)
+
+    def get_absolute_url(self):
+        return reverse("VendorOrderDetail_detail", kwargs={"pk": self.pk})
+
+PAYMENT_STATUS = (('Pending', 'Pending'),('Approved', 'Approved'),('Cancelled', 'Cancelled'),('Transferred', 'Transferred'))
+class VendorTransactionDetail(models.Model):
+    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
+    order_id = models.CharField(_("Order ID"), max_length=50)
+    order_receiving_date = models.DateField(_("Order Received on"), auto_now=True, auto_now_add=False)
+    order_completed_date = models.DateField(_("Order Completed on"), auto_now=False, auto_now_add=False)
+    total_order_amount = models.FloatField(_("Total Order Amount"),null=True,blank=True)
+    payment_status = models.CharField(_("Payment Status"), max_length=50,choices=PAYMENT_STATUS,default='Pending')
+    payment_transfer_date = models.DateField(_("Payment Transfer Date"),null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("VendorTransactionDetail")
+        verbose_name_plural = _("VendorTransactionDetails")
+
+    def __str__(self):
+        return self.vendor
+
+    def get_absolute_url(self):
+        return reverse("VendorTransactionDetail_detail", kwargs={"pk": self.pk})
