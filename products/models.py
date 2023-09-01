@@ -76,6 +76,7 @@ class VendorBankAccountDetail(models.Model):
     bank_account_number = models.CharField(_("Account No."), max_length=50)
     confirm_bank_account_number = models.CharField(_("Confirm Account No."), max_length=50)
     ifsc_code = models.CharField(_("IFSC Code"), max_length=50)
+    upi_id = models.CharField(_("UPI Id"), max_length=50,null=True,blank=True)
 
     class Meta:
         verbose_name = _("VendorBankAccountDetail")

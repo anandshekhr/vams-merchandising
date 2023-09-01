@@ -55,6 +55,7 @@
                             <tr>
                                 <th class="border-0 p-3">&nbsp;</th>
                                 <th class="border-0 p-3">&nbsp;</th>
+                                <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Order Id</th>
                                 <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Price</th>
                                 <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Date</th>
                                 <th class="border-0 p-3 fw-600 font-xsss mb-2 white-text">Status</th>
@@ -74,14 +75,18 @@
                                 {% for item in order.items.all|slice:":1" %}
                                 <td class="product-thumbnail text-start ps-0">
                                     {% if order.ordered %}
-                                    <a href="{% url 'orderhistorydetail' order.id %}"><img src="/media/{{item.item.image1}}" alt="product-image"
+                                    <a href="{% url 'orderhistorydetail' order.id %}"><img src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="product-image"
                                         class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
                                     {% else %}
-                                    <a href="#"><img src="/media/{{item.item.image1}}" alt="product-image"
+                                    <a href="#"><img src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="product-image"
                                         class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
                                     {% endif %}
                                 </td>
                                 {% endfor %}
+                                <td class="product-p">
+                                    <span
+                                            class="money text-grey-500 ls-3 font-xsssss fw-700">{{order.sid}}</span>
+                                </td>
                                 <td class="product-p">
                                     <h6 class="font-xs ls-3 fw-700 text-current mt-1"><span
                                             class="font-xsssss text-grey-500">₹</span>{{order.get_total|floatformat:2}}</h6>
@@ -115,10 +120,10 @@
                                         class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refunded</span> 
                                     {% endif %}
                                 </td>
-                                <td class="product-remove text-right">
+                                {% comment %} <td class="product-remove text-right">
                                     <a href="#"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>
                                     <a href="#"><i class="ti-trash font-xs text-grey-500"></i></a>
-                                </td>
+                                </td> {% endcomment %}
                             </tr>
                            {% empty %}
                             {% comment %} {% else %} {% endcomment %}

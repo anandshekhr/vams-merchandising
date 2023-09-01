@@ -18310,7 +18310,8 @@ select.sort {
 .img-sm {
   width: 80px;
   height: 80px;
-  padding: 7px
+  padding: 7px;
+  object-fit: fill;
 }
 
 ul.row,
@@ -18361,7 +18362,8 @@ p {
   outline: auto;
 
 }
-.order-return-btn:hover{
+
+.order-return-btn:hover {
   background-color: #076107db;
   color: white;
   outline: auto;

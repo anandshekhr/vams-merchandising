@@ -236,8 +236,8 @@ PAYMENT_STATUS = (('Pending', 'Pending'),('Approved', 'Approved'),('Cancelled', 
 class VendorTransactionDetail(models.Model):
     vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
     order_id = models.CharField(_("Order ID"), max_length=50)
-    order_receiving_date = models.DateField(_("Order Received on"), auto_now=True, auto_now_add=False)
-    order_completed_date = models.DateField(_("Order Completed on"), auto_now=False, auto_now_add=False)
+    order_receiving_date = models.DateTimeField(_("Order Received on"), auto_now=True, auto_now_add=False,null=True,blank=True)
+    order_completed_date = models.DateTimeField(_("Order Completed on"), auto_now=False, auto_now_add=False,null=True, blank=True)
     total_order_amount = models.FloatField(_("Total Order Amount"),null=True,blank=True)
     payment_status = models.CharField(_("Payment Status"), max_length=50,choices=PAYMENT_STATUS,default='Pending')
     payment_transfer_date = models.DateField(_("Payment Transfer Date"),null=True, blank=True)
@@ -247,7 +247,7 @@ class VendorTransactionDetail(models.Model):
         verbose_name_plural = _("VendorTransactionDetails")
 
     def __str__(self):
-        return self.vendor
+        return "Vendor: {}, order Id: {}, Amount: {}, Payment: {}".format(self.vendor,self.order_id,self.total_order_amount,self.payment_status)
 
     def get_absolute_url(self):
         return reverse("VendorTransactionDetail_detail", kwargs={"pk": self.pk})

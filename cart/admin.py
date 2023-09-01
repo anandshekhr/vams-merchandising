@@ -46,7 +46,7 @@ class VendorOrderDetailAdmin(admin.ModelAdmin):
                           'order_item_size','order_item_qty','order_amount','payment_status','order_packed','order_shipped')
     ordering: list = ['vendor', 'order_id', 'order_item',
                           'order_item_size','order_item_qty','order_amount','payment_status','order_packed','order_shipped']
-    search_fields: list = ('vendor', 'order_id', 'order_item',
+    search_fields: list = ('vendor__storeName','order_id', 'order_item__name',
                           'order_item_size','order_item_qty','order_amount','payment_status','order_packed','order_shipped')
     
 @admin.register(VendorTransactionDetail)
@@ -64,7 +64,7 @@ class VendorTransactionDetailAdmin(admin.ModelAdmin):
                           'total_order_amount','order_completed_date','payment_status','payment_transfer_date')
     ordering: list = ['vendor', 'order_id', 'order_receiving_date',
                           'total_order_amount','order_completed_date','payment_status','payment_transfer_date']
-    search_fields: list = ('vendor', 'order_id', 'order_receiving_date',
+    search_fields: list = ('vendor__storeName', 'order_id', 'order_receiving_date',
                           'total_order_amount','order_completed_date','payment_status','payment_transfer_date')
     
 

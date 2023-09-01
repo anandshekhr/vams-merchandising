@@ -19,6 +19,7 @@ from wishlist.models import *
 from user.models import UserAddresses
 from instamojo_wrapper import Instamojo
 import requests
+
 api = Instamojo(api_key=settings.API_KEY,
                 auth_token=settings.AUTH_TOKEN, endpoint='https://test.instamojo.com/api/1.1/')
 
@@ -347,7 +348,7 @@ def paymentStatusAndOrderStatusUpdate(request):
                     vender_order = VendorOrderDetail()
                     vender_order.vendor = item.item.vendor
 
-                    vender_order.order_id = order.id
+                    vender_order.order_id = order.sid
                     product_id = Products.objects.get(id = item.item.id)
                     vender_order.order_item = product_id
                     vender_order.order_item_size = item.size
@@ -356,6 +357,20 @@ def paymentStatusAndOrderStatusUpdate(request):
                     vender_order.delivery_address = order.shipping_address
                     vender_order.payment_status = 'Paid'
                     vender_order.save()
+
+                    # vendor transaction detail
+                    vender_transaction,created = VendorTransactionDetail.objects.get_or_create(
+                        vendor = item.item.vendor,
+                        order_id = order.sid,
+                    )
+                    if created:
+                        vender_transaction.total_order_amount = item.get_final_price()
+                        vender_transaction.order_receiving_date = datetime.now()
+                        vender_transaction.save()
+                    
+                    else:
+                        vender_transaction.total_order_amount += item.get_final_price()
+                        vender_transaction.save()
 
 
                 messages.success(request, "Your order was successful!")
