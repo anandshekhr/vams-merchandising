@@ -16,7 +16,9 @@
 .product-thumbnail {
    width: 100%;
 }
-
+.cart-area .product-quantity-form{
+   border-radius: 10px;
+}
 .wishlist_wrap {
    display: flex;
    flex-direction: column;
@@ -29,8 +31,8 @@
 .wishlist_remove {
    position: relative;
    left: 40.5%;
-   top: -360px;
-   color: #d4d5d9;
+   top: -333px;
+   color: #8b8e9a;
    font-size: 18px;
 }
 
