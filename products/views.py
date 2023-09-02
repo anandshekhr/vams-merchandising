@@ -147,7 +147,8 @@ class ProductAPI(generics.ListAPIView):
 class ProductDetailsAPI(APIView):
     permission_classes = (AllowAny,)
 
-    def get(self, request, product_id, format=None):
+    def get(self, request, format=None):
+        product_id = request.data.get('id')
         
         # filter product for images, reviews and ratings
         product = get_object_or_404(Products, id=product_id)
@@ -186,7 +187,7 @@ class ProductDetailsAPI(APIView):
             "nonratingr": [*range(nonrating)],
         }
 
-        product_html = render_to_string("product-details-modal.html", context)
+        # product_html = render_to_string("product-details-modal.html", context)
         return Response(
             {
                 "data": product_serializer.data,
@@ -194,7 +195,7 @@ class ProductDetailsAPI(APIView):
                 "review": review_serializer.data,
                 "rating": rating,
                 "discounted_price": listprice,
-                "product_html": product_html,
+                # "product_html": product_html,
             },
             status=status.HTTP_200_OK,
         )
