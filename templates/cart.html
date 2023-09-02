@@ -2,6 +2,8 @@
 {% load static %}
 {% block title %}Cart{% endblock title %}
 {% block body %}
+<link rel="stylesheet" href="{% static 'wishlist.css' %}">
+
 <main>
    {% if messages %}
       {% for message in messages %}
@@ -51,46 +53,66 @@
             <div class="col-12">
                <div class="table-content table-responsive">
                   <table class="table">
-                     <thead>
-                        <tr>
-                           <th class="product-thumbnail">Images</th>
-                           <th class="cart-product-name">Product</th>
-                           <th class="product-size">Size</th>
-                           <th class="product-price">Unit Price</th>
-                           <th class="product-quantity">Quantity</th>
-                           <th class="product-subtotal">Total</th>
-                           <th class="product-remove">Remove</th>
-                        </tr>
-                     </thead>
-                     <tbody>
+                     <div>
+                        <div>
+                           {% comment %} <span class="product-thumbnail">Images</span>
+                           <span class="cart-product-name">Product</span>
+                           <span class="product-size">Size</span>
+                           <span class="product-price">Unit Price</span>
+                           <span class="product-quantity">Quantity</span>
+                           <span class="product-subtotal">Total</span>
+                           <span class="product-remove">Remove</span> {% endcomment %}
+                        </div>
+                     </div>
+                     <div class="wishlist_card">
                         {% for obj in object.items.all %}
-                        <tr>
-                           <td class="product-thumbnail"><a href="{% url 'productdetail' obj.item.id %}"><img
-                                    src="data: image/png; base64, {{obj.item.binaryToStringImage1|safe}}" alt="img"></a></td>
-                           <td class="product-name"><a href="{% url 'productdetail' obj.item.id %}">{{obj.item.name}}</a></td>
-                           <td class="product-size"><a href="{% url 'productdetail' obj.item.id %}">{{obj.size}}</a></td>
-                           <td class="product-price"><span class="amount">₹{{obj.item.list_price|floatformat:2}}</span></td>
-                           <td class="product-quantity text-center">
-                              <div class="product-quantity mt-10 mb-10">
-                                 <div class="product-quantity-form">
-                                    <form action="">
-                                       <button class="cart-minus cart-minus-ck far fa-minus" id="{{obj.item.id}}-cart-minus-btn:{{obj.size}}"></button>
-                                       <input class="cart-input cart-input-ck" type="text" id="{{obj.item.id}}-name-value:{{obj.size}}" value="{{obj.quantity}}">
-                                       <button class="cart-plus cart-plus-ck far fa-plus" id="{{obj.item.id}}-cart-plus-btn:{{obj.size}}"></button>
-                                    </form>
-                                 </div>
+                        <div class="wishlist_wrap">
+                           <span class="product-thumbnail"><a href="{% url 'productdetail' obj.item.id %}"><img class="wishlist_image"
+                              src="data: image/png; base64, {{obj.item.binaryToStringImage1|safe}}" alt="img"></a></span>
+                           <span class="product-name"><a href="{% url 'productdetail' obj.item.id %}">{{obj.item.name}}</a></span>
+                           <div>
+
+                              <div style="border-bottom: 1px solid #d9d9d9; padding-bottom: 10px;">
+                                 <span style="color: #282c3f; font-weight: 700; text-align: left;">Selected Sizes : </span>
+                                 <span class="product-size"><a href="{% url 'productdetail' obj.item.id %}">{{obj.size}}</a></span>
                               </div>
-                           </td>
-                           <td class="product-subtotal" id="product-subtotal"><span class="amount">₹{{obj.get_final_price|floatformat:2}}</span></td>
+                              <div style="border-bottom: 1px solid #d9d9d9; padding: 16px 0px;">
+                                 <span style="color: #282c3f; font-weight: 700; text-align: left;">Price : </span>
+   
+                                 <span class="product-price"><span class="amount">₹{{obj.item.list_price|floatformat:2}}</span></span>
+                                 <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{obj.item.max_retail_price|floatformat:2}}</span>
+                              </div>
+                              <div class="price_quantity">
+                                 <span class="product-quantity text-center">
+                                    <div class="product-quantity">
+                                       <div style="border-bottom: 1px solid #d9d9d9; padding-bottom: 10px; display: flex; align-items: center; gap: 20px; margin-top: 10px;">
+                                          <span style="color: #282c3f; font-weight: 700; text-align: left;">Quantity : </span>
+                                          <div class="product-quantity-form">
+                                             <form action="">
+                                                <button class="cart-minus cart-minus-ck far fa-minus" id="{{obj.item.id}}-cart-minus-btn:{{obj.size}}"></button>
+                                                <input class="cart-input cart-input-ck" type="text" id="{{obj.item.id}}-name-value:{{obj.size}}" value="{{obj.quantity}}">
+                                                <button class="cart-plus cart-plus-ck far fa-plus" id="{{obj.item.id}}-cart-plus-btn:{{obj.size}}"></button>
+                                             </form>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </span>
+                                 
+                              </div>
+                              <div>
+                                 <span style="color: #282c3f; font-weight: 700; text-align: left;">Total : </span>
+                                 <span class="product-subtotal" id="product-subtotal"><span class="amount">₹{{obj.get_final_price|floatformat:2}}</span></span>
+                              </div>
+                           </div>
                            
-                           <td class="product-remove"><a href="{% url 'delete-from-cart' obj.item.id %}"><i class="fa fa-times"></i></a></td>
-                        </tr>
+                           <span class="product-remove wishlist_remove" style="top: -475px;"><a href="{% url 'delete-from-cart' obj.item.id %}"><i class="fa fa-times-circle"></i></a></span>
+                        </div>
                         {% empty %}
-                                <tr>
-                                    <td colspan='6'>Your cart is empty</td>
-                                </tr>
+                                <div>
+                                    <span colspan='6'>Your cart is empty</span>
+                                </div>
                         {% endfor %}
-                     </tbody>
+                     </div>
                   </table>
                </div>
                <div class="row">
