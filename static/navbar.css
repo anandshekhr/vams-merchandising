@@ -1,0 +1,244 @@
+.m>ul> :nth-child(1) {
+    color: #ee5f73;
+    font-weight: bold;
+}
+
+.w>ul> :nth-child(1) {
+    color: #fb56c1;
+    font-weight: bold;
+}
+
+.h>ul> :nth-child(1) {
+    color: #f2c210;
+    font-weight: bold;
+}
+
+.b>ul> :nth-child(1) {
+    color: #0db7af;
+    font-weight: bold;
+}
+
+
+
+.a1 ul {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+}
+
+.a1 .nextul {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+}
+
+.a2 ul {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+}
+
+.a2 .nextul {
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+}
+
+.dropdown .dropdown-content {
+    display: none;
+    width: max-content;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    overflow-y: scroll;
+    transition: 0.4s;
+}
+
+.dropdown .men-dropdown {
+    transform: translate(-15%, 12%);
+}
+
+.dropdown .women-dropdown {
+    transform: translate(-24%, 12%);
+}
+
+.dropdown .kid-dropdown {
+    transform: translate(-32%, 12%);
+}
+
+.dropdown .life-dropdown {
+    transform: translate(-36%, 10%);
+}
+
+.dropdown .beauty-dropdown {
+    transform: translate(-50%, 12%);
+}
+
+.dropdown:hover .dropdown-content {
+    display: flex;
+}
+
+.main-menu ul li .men_drop {
+    font-size: 14px;
+    color: var(--clr-common-heading);
+    text-transform: inherit;
+    display: inline-block;
+    padding: 35px 0;
+    line-height: 20px;
+    font-weight: 400;
+}
+
+.main-menu ul li:hover>.men_drop {
+    color: black !important;
+}
+
+.a1>ul> :nth-child(1) {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 0px 10px 0px;
+}
+
+.a1>ul> :nth-child(1):hover {
+    font-size: 14px;
+    font-weight: 700 !important;
+    padding: 12px 0px 10px 0px;
+}
+
+.a2>ul> :nth-child(1):hover {
+    font-size: 14x;
+    font-weight: 700 !important;
+    padding: 12px 0px 10px 0px;
+}
+
+
+.k>ul>:nth-child(1) {
+    color: #f26a10;
+    font-weight: bold;
+}
+
+.a2>ul> :nth-child(1) {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 0px 10px 0px;
+}
+
+
+li {
+    cursor: pointer;
+}
+
+.a1 ul li:hover {
+    font-weight: 700;
+}
+
+.a2 ul li:hover {
+    font-weight: 700;
+}
+
+ul {
+    list-style-type: none;
+
+}
+
+.flex {
+    display: flex;
+}
+
+.a1>ul> :nth-child(1) {
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 0px 10px 0px;
+    width: max-content;
+}
+
+.k>ul> :nth-child(1) {
+    color: #f26a10;
+    font-weight: bold;
+}
+
+.a2>ul> :nth-child(1) {
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 0px 10px 0px;
+    width: max-content;
+
+}
+
+.a1 {
+    width: 100%;
+}
+
+.a2 {
+    width: 100%;
+}
+
+@media (max-width: 981px) {
+    .dropdown .dropdown-content {
+        position: static;
+        transform: none;
+        display: none;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .dropdown .dropdown-content a {
+        display: block;
+        padding: 15px;
+        color: var(--clr-common-heading);
+        text-transform: inherit;
+        font-size: 14px;
+        font-weight: 400;
+        text-decoration: none;
+    }
+    .dropdown-content .a1 ul{
+        display: block !important;
+    }
+    .dropdown-content .a2 ul{
+        display: block !important;
+    }
+   .men_drop .dropdown-content .flex {
+        display: block !important;
+    }
+    .dropdown:hover .dropdown-content {
+        display: none;
+        flex-direction: column;
+    }
+    .dropdown > a {
+        cursor: pointer;
+    }
+    .dropdown .dropdown-content {
+        display: none;
+    }
+  
+
+    .dropdown .dropdown-content a:hover {
+        color: black !important;
+    }
+    .a1>ul> :nth-child(1) {
+        font-size: 14px;
+        font-weight: 500;
+        padding: 0px;
+        width: max-content;
+    }
+    
+    .k>ul> :nth-child(1) {
+        color: #f26a10;
+        font-weight: bold;
+    }
+    
+    .a2>ul> :nth-child(1) {
+        font-size: 16px;
+        font-weight: 500;
+        padding: 0px;
+        width: max-content;
+    
+    }
+
+}
