@@ -3,17 +3,35 @@
 {% block title %}Product Detail{% endblock title %}
 {% block body %}
 <!-- Add your site or application content here -->
+<style>
+   .alert {
+      position: absolute;
+      padding: 1rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid transparent;
+      border-radius: 0.25rem;
+      z-index: 10;
+      left: 72%;
+      top: 27%;
+  }
+</style>
    <main>
       {% if messages %}
          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} auto-dismiss" id="err-message">
+         <div class="alert alert-{{ message.tags }} auto-dismiss" id="err-message">
+               <span>
+                  <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="..." width="65px" height="80px" style="width:auto;">
+               </span>
+               <span>
+
                   {{ message }}
-            </div>
+               </span>
+          </div>
          {% endfor %}
          <script>
             setTimeout(function() {
                   $('.auto-dismiss').fadeOut('slow');
-            }, 3000);
+            }, 6000);
          </script> 
       {% endif %}
       <!-- page title area start  -->
