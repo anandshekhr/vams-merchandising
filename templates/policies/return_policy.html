@@ -37,9 +37,9 @@
       <section class="faq-area pt-120 pb-40 bg-grey fix">
          <div class="container container-small">
             <div class="row">
-              {% for policy in policies %}
-               <p>{{policy.return_policy|safe}}</p>
-               {% endfor %}
+              {% comment %} {% for policy in policies %} {% endcomment %}
+               <p>{{policy.return_policy.html|safe}}</p>
+               {% comment %} {% endfor %} {% endcomment %}
             </div>
          </div>
       </section>

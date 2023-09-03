@@ -36,11 +36,10 @@ class StoreProductsDetails(models.Model):
         return "StoreName: {} ProductName: {} AvailableStock: {}".format(self.store,self.products,self.available_stock)
     
 class PoliciesDetails(models.Model):
-    store = models.ForeignKey(StoreDetail, verbose_name=_("Store"), on_delete=models.CASCADE)
-    refund_policy = QuillField()
-    return_policy = QuillField()
-    shipping_and_delivery_policy = QuillField()
-    payment_type = QuillField()
+    refund_policy = QuillField(null=True,blank=True)
+    return_policy = QuillField(null=True,blank=True)
+    shipping_and_delivery_policy = QuillField(null=True,blank=True)
+    payment_type = QuillField(null=True,blank=True)
 
     
     class Meta:
@@ -48,7 +47,7 @@ class PoliciesDetails(models.Model):
         verbose_name_plural = _("PoliciesDetailss")
 
     def __str__(self):
-        return self.store.storeName
+        return "Policies Details"
 
     def get_absolute_url(self):
         return reverse("PoliciesDetails_detail", kwargs={"pk": self.pk})

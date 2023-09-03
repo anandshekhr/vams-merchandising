@@ -10,25 +10,25 @@ def renderFAQPage(request):
     return render(request,'faq.html',context)
 
 def refund_policy(request):
-    policies = PoliciesDetails.objects.all()
-    context = {'policies': policies}
+    policies = PoliciesDetails.objects.get()
+    context = {'policy': policies}
     return render(request,'policies/refund_policy.html',context)
 
 
 def return_policy(request):
-    policies = PoliciesDetails.objects.all()
-    context = {'policies': policies}
+    policies = PoliciesDetails.objects.get()
+    context = {'policy': policies}
     return render(request, 'policies/return_policy.html', context)
 
 
 def shipping_and_delivery_policy(request):
-    policies = PoliciesDetails.objects.all()
-    context = {'policies': policies}
+    policies = PoliciesDetails.objects.get()
+    context = {'policy': policies}
     return render(request, 'policies/shipping_and_delivery_policy.html', context)
 
 
 def payment_terms_and_conditions_policy(request):
-    policies = PoliciesDetails.objects.all()
-    context = {'policies': policies}
+    policies = PoliciesDetails.objects.get()
+    context = {'policy': policies}
     return render(request, 'policies/payment_terms_and_conditions_policy.html', context)
 
