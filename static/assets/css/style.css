@@ -1060,9 +1060,9 @@ only screen and (min-width: 576px) and (max-width: 767px),
   right: 0;
   left: 0;
   width: 100%;
-  transition: 0.4s;
+  /* transition: 0.4s; */
   box-shadow: 0 0 60px 0 rgba(53, 57, 69, 0.15);
-  animation: 300ms ease-in-out 0s normal none 1 running fadeInDown;
+  /* animation: 300ms ease-in-out 0s normal none 1 running fadeInDown; */
   border: none;
 }
 
