@@ -12,7 +12,7 @@ urlpatterns = [
 
     #APIs
     path("all",ProductAPI.as_view(),name="allProducts"),
-    path("details/id=<int:product_id>", ProductDetailsAPI.as_view(), name="allproducts"),
+    path("details/", ProductDetailsAPI.as_view(), name="allproducts"),
     path("banners/", BannersAPIView.as_view(), name="banners"),
     path("categories/", CategoriesAPI.as_view(), name="categories"),
     re_path('^category/items/(?P<pk>.+)/$',

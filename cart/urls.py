@@ -21,9 +21,9 @@ urlpatterns = [
          pending_payment_page, name="pending-payment"),
     path("payment-failed/<int:pk>/",
          failed_payment_page, name="failed-payment"),
-    path("cart/move-to-cart/<int:pk>", moveToCart,name="move-to-cart"),
 
      # api
+     path("move-to-cart/", moveToCart.as_view(),name="move-to-cart"),
      path("customer/order/add/", CartAddView.as_view(),name="order-add-api"),
      path("customer/order/remove/",CartRemoveView.as_view(),name="order-remove-api"),
 

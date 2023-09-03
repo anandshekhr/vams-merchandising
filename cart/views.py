@@ -104,53 +104,61 @@ def addToCart(request, pk, size):
         return redirect("cartview")
 
 
-@login_required(login_url="login")
-def moveToCart(request, pk):
-    # delete from wishlistItems models
-    iitem = WishlistItems.objects.filter(item=pk)[0]
-    iitem.delete()
+
+class moveToCart(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self,request,format=None):
+        pk = request.data.get('id')
+        print(pk)
+        size = request.data.get('size')
+        print(size)
+        # delete from wishlistItems models
+        iitem = WishlistItems.objects.filter(item=pk)[0]
+        iitem.delete()
 
 
-    # delete from Wishlist models
-    wishlist_item = Wishlist.objects.filter(user=request.user)[0]
-    wishlist_item.items.remove(iitem)
+        # delete from Wishlist models
+        wishlist_item = Wishlist.objects.filter(user=request.user)[0]
+        wishlist_item.items.remove(iitem)
 
-    item = get_object_or_404(Products, id=pk)
-    order_item, created = Cart.objects.get_or_create(
-        item=item,
-        user=request.user,
-        ordered=False
-    )
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(item__id=item.id).exists() and item.stock > 0:
-            order_item.quantity += 1
-            item.stock = item.stock - 1
-            item.save()
-            order_item.save()
-            messages.info(request, "This item quantity was updated.")
-            return redirect("cartview")
+        item = get_object_or_404(Products, id=pk)
+        order_item, created = Cart.objects.get_or_create(
+            item=item,
+            size=size,
+            user=request.user,
+            ordered=False
+        )
+        order_qs = Order.objects.filter(user=request.user, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            # check if the order item is in the order
+            if order.items.filter(item__id=item.id).exists() and item.stock > 0:
+                order_item.quantity += 1
+                item.stock = item.stock - 1
+                item.save()
+                order_item.save()
+                messages.info(request, "This item quantity was updated.")
+                return Response({'status': 'Item Updated'},status=status.HTTP_200_OK)
 
-        elif item.stock > 0:
-            order.items.add(order_item)
-            item.stock = item.stock - 1
-            item.save()
-            messages.info(request, "This item was added to your cart.")
-            return redirect("cartview")
+            elif item.stock > 0:
+                order.items.add(order_item)
+                item.stock = item.stock - 1
+                item.save()
+                messages.info(request, "This item was added to your cart.")
+                return Response({'status': 'Item Updated'},status=status.HTTP_200_OK)
+
+            else:
+                messages.info(request, "Item Out of Stock")
+                return redirect("/")
 
         else:
-            messages.info(request, "Item Out of Stock")
-            return redirect("/")
-
-    else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date)
-        order.items.add(order_item)
-        messages.info(request, "This item was added to your cart.")
-        return redirect("cartview")
+            ordered_date = timezone.now()
+            order = Order.objects.create(
+                user=request.user, ordered_date=ordered_date)
+            order.items.add(order_item)
+            messages.info(request, "This item was added to your cart.")
+            return Response({'status': 'Item Out of Stock'},status=status.HTTP_403_FORBIDDEN)
 
 
 def deleteItemFromCart(request, pk):
