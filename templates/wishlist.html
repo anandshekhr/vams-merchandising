@@ -277,12 +277,13 @@
                   id: product_id
               },
               success: function (response) {
-                  console.log("Item added to cart:", response);
-  
+                  
                   var selectedSizeLabel = sizeInput.siblings("label");
                   var selectedSizeText = selectedSizeLabel.text();
                   var sizeDisplayElement = document.getElementById("selected-size-display-" + counter);
                   sizeDisplayElement.textContent = "Selected Size: " + selectedSizeText;
+
+                  window.location.reload();
                   
                  
               }

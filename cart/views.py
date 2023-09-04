@@ -110,9 +110,9 @@ class moveToCart(APIView):
 
     def post(self,request,format=None):
         pk = request.data.get('id')
-        print(pk)
+        
         size = request.data.get('size')
-        print(size)
+        
         # delete from wishlistItems models
         iitem = WishlistItems.objects.filter(item=pk)[0]
         iitem.delete()
@@ -150,7 +150,7 @@ class moveToCart(APIView):
 
             else:
                 messages.info(request, "Item Out of Stock")
-                return redirect("/")
+                return Response({'status': 'Item Out of Stock'},status=status.HTTP_403_FORBIDDEN)
 
         else:
             ordered_date = timezone.now()
