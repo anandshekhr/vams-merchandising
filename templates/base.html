@@ -911,10 +911,10 @@ what is lifestyle store,
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-shopping-bag"></i>
                                  {% if cart.get_quantity %}
-                                 <span class="action-item-number">{{cart.get_quantity}}</span>
+                                 <span class="action-item-number" id="cart-number">{{cart.get_quantity}}</span>
 
                                  {% else %}
-                                 <span class="action-item-number">0</span>
+                                 <span class="action-item-number" id="cart-number">0</span>
                                  {% endif %}
                               </a>
                            </div>
@@ -922,9 +922,9 @@ what is lifestyle store,
                               <a href="javascript:void(0)" class="view-wishlist-button">
                                  <i class="fal fa-heart"></i>
                                  {% if wishlist.get_quantity %}
-                                 <span class="action-item-number">{{wishlist.get_quantity}}</span>
+                                 <span class="action-item-number" id="wishlist-number">{{wishlist.get_quantity}}</span>
                                  {% else %}
-                                 <span class="action-item-number">0</span>
+                                 <span class="action-item-number" id="wishlist-number">0</span>
                                  {% endif %}
                               </a>
                            </div>

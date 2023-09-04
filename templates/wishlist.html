@@ -272,6 +272,7 @@
               url: domain + "/api/v1/cart/move-to-cart/",
               type: "POST",
               data: {
+                  "csrfmiddlewaretoken":getCookie('csrftoken'),
                   size: size,
                   id: product_id
               },

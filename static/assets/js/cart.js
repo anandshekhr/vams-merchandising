@@ -15,7 +15,7 @@ var getCookie = function (name) {
 };
 
 const g_csrftoken = getCookie('csrftoken');
-
+/*
 jQuery(document).ready(function () {
     $('.cart-plus-ck').click(function (e) {
         //showLoader();
@@ -91,4 +91,4 @@ jQuery(document).ready(function () {
             }
         })
     });
-});
+});*/
