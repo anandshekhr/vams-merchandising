@@ -138,11 +138,12 @@
                      <h4 class="product-name mb-10">{{product.name}}</h4>
                      <span class="product-price">₹{{product.list_price|floatformat:2}}</span>&nbsp;&nbsp;
                      <span class="product-price" style="color: grey;
-    text-decoration: line-through;">₹{{product.max_retail_price|floatformat:2}}</span>
+    text-decoration: line-through;">₹{{product.max_retail_price|floatformat:2}}</span>&nbsp;&nbsp;
+                     <span class="product-price" style="color: green;    font-size: medium;">({{product.discount|floatformat:0}}% off)</span>
                      <div class="course-start-icon">
                         {% for i in total_stars %}
                            {% if i  < rating %}
-                           <i class="fas fa-star"></i>
+                           <i class="fas fa-star" style='color: #f3da35'></i>
                            {% else %}
                            <i class="fal fa-star"></i>
                            {% endif %}
