@@ -168,142 +168,125 @@
                <div class="col-12">
                   <form action="#">
                      <div class="table-content table-responsive">
-                        <div class="table">
-                           <div>
-                              {% comment %} <tr>
-                                 <span class="product-thumbnail">Images</span>
-                                 <span class="cart-product-name">Product</span>
-                                 <span class="product-size">Size</span>
-                                 <span class="product-quantity">Quantity</span>
-                                 <span class="product-price">Unit Price</span>
-                                 <span class="product-subtotal">Total</span>
-                                 <span class="product-quantity">Add to cart</span>
-                                 <span class="product-remove">Remove</span>
-                              </tr> {% endcomment %}
-                           </div>
-                           <div class="wishlist_products_item">
+                         <div class="table">
+                             <div class="wishlist_products_item">
+                                 <div class="wishlist_card">
+                                     {% for item in items.items.all %}
+                                     <div class="wishlist_wrap">
+                                         <span class="product-thumbnail"><a class="product-padding" href="{% url 'productdetail' pk=item.item.id %}"><img class="wishlist_image"
+                                                     src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a></span>
+                                         <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></span>
+                                         <span class="product-size"><a href="#">{{item.size}}</a></span>
+                                         <div class="price_quantity">
+                                             <span class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
+                                             <span class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                                         </div>
+                                         <span class="product-quantity move_btn">
+                                             <span class="border-btn" onclick="openPopup('{{ item.item.id }}', '{{ forloop.counter }}')">Move to Cart</span>
+                                         </span>
+                 
+                                         <div id="popup-overlay-{{ forloop.counter }}" class="popup-overlay">
+                                             <div class="popup-content">
+                                                 <span class="close-icon" onclick="closePopup('{{ forloop.counter }}')">&times;</span>
+                                                 <div class="popup-image-desc">
+                                                     <span class=""><a class="product-padding" href="{% url 'productdetail' 1 %}"><img class="wishlist_image_popup"
+                                                                 src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a>
+                                                     </span>
+                                                     <span>
+                                                         <span class="product-name"><a href="{% url 'productdetail' 1 %}">{{item.item.name}}</a></span>
+                                                         <div>
+                                                             <span class="popup_price_list">
+                                                                 <div class="price_quantity_popup">
+                                                                     <span style="color: #282c3f; font-weight: 700;" class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
+                                                                     <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                                                                     <div class="">
+                                                                         <span style=" color: #ff905a; padding: 0 3px; font-size: 16px; font-weight: 700;" class="">({{item.item.discount|floatformat:0}}% OFF)</span>
+                                                                     </div>
+                                                                 </div>
+                                                             </span>
+                                                         </div>
+                                                     </span>
+                                                 </div>
+                 
+                                                 <input type="hidden" value="{{ item.item.id }}" id="get-single-product-id-{{ forloop.counter }}">
+                                                 <div style="display: flex; flex-direction: column;" class="available-sizes btn-group-toggle" role="group" name="choose-size" id="choose-size-{{ forloop.counter }}">
+                                                   <span style="color: #282c3f; font-weight: 700; text-align: left;">Select Sizes : </span>
+                                                   <span>
+                                                      {% for size in item.item.available_sizes %}
+                                                      <input type="radio" class="btn-check" name="choose-size" id="size-{{ forloop.counter }}-{{ size }}" value="{{ size }}">
+                                                      <label for="size-{{ forloop.counter }}-{{ size }}" class="product-available-sizes-pop btn btn-outline-dark">{{ size }}</label>
 
-                              <div class="wishlist_card">
-                                 {% for item in items.items.all %}
-                                 <div class="wishlist_wrap">
-                                    <span class="product-thumbnail"><a class="product-padding" href="{% url 'productdetail' pk=item.item.id %}"><img class="wishlist_image"
-                                             src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a></span>
-                                    <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></span>
-                                    <span class="product-size"><a href="#">{{item.size}}</a></span>
-                                    <div class="price_quantity">
-                                      
-                                       <span class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
-                                       <span class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.max_retail_price|floatformat:2}}</span>
-                                    </div>
-                                    {% comment %} <span class="product-subtotal"><span class="amount">₹{{item.get_final_price|floatformat:2}}</span></span> {% endcomment %}
-                                    <span class="product-quantity move_btn">
-                                       {% comment %} <a href="{% url 'move-to-cart' item.item.id %}" class="border-btn" onclick="openPopup()">Move to Cart</a> {% endcomment %}
-                                       <span class="border-btn" onclick="openPopup()">Move to Cart</span>
-                                    </span>
-                                    
-                                    <span class="product-remove wishlist_remove"><a href="{% url 'delete-item-from-wishlist' item.item.id %}"><i class="fa fa-times-circle"></i></a></span>
+                                                      {% endfor %}
+                                                   </span>
+                                                 </div>
+                                                 <a href="" class="border-btn_pop" onclick="addToCartAndRemove('{{ forloop.counter }}')">Done</a>                                             </div>
+                                         </div>
+                                         <span class="product-remove wishlist_remove"><a href="{% url 'delete-item-from-wishlist' item.item.id %}"><i class="fa fa-times-circle"></i></a></span>
+                                     </div>
+                                     {% empty %}
+                                     <tr>
+                                         <span colspan='6'>No Items in Wishlist</span>
+                                     </tr>
+                                     {% endfor %}
                                  </div>
-                                 {% empty %}
-                                   <tr>
-                                       <span colspan='6'>No Items in Wishlist</span>
-                                   </tr>
-                                 {% endfor %}
-                              </div>
-                           </div>
-                        </div>
+                             </div>
+                         </div>
                      </div>
-                  </form>
-                  
+                 </form>
                </div>
             </div>
          </div>
       </div>
       <!-- cart area end  -->
    </main>
-      <div id="popup-overlay" class="popup-overlay">
-         <div class="popup-content">
-            <span class="close-icon" onclick="closePopup()">&times;</span> 
-            <div class="popup-image-desc">
-               <span class=""><a class="product-padding" href="{% url 'productdetail' pk=item.item.id %}"><img class="wishlist_image_popup"
-                  src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a>
-               </span>
-               <span>
-                  <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></span>
-                  {% comment %} <span class="product-size"><a href="#">{{item.size}}</a></span> {% endcomment %}
-                  <div>
-
-                     <span class="popup_price_list">
-                        <div class="price_quantity_popup">
-                           <span style="color: #282c3f; font-weight: 700;" class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
-                           <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.max_retail_price|floatformat:2}}</span>
-                           <div class="">
-                              <span style=" color: #ff905a; padding: 0 3px; font-size: 16px; font-weight: 700;" class="">({{item.item.discount|floatformat:0}}% OFF)</span>
-                           </div>
-                        </div>
-                     </span>
-                  </div>
-               </span>
-
-            </div>
-            
-            <input type="hidden" value="{{item.item.id}}" id="get-single-product-id">
-            <div style="display: flex; flex-direction: column;" class="available-sizes btn-group-toggle" role="group" name="choose-size" id="choose-size">
-               <span style="color: #282c3f; font-weight: 700; text-align: left;">Select Sizes : </span>
-               <span>
-                  {% for size in item.item.available_sizes %}
-                  <input type="radio" class="btn-check" name="choose-size" id="size-{{size}}" value="{{size}}">
-                  <label for="size-{{size}}" class="product-available-sizes-pop btn btn-outline-dark">{{size}}</label>
-                  {% endfor %}
-               </span>
-            </div>
-            <a href="#" class="border-btn_pop" id="wishlist-pop-up-btn">Done</a>
-         </div>
-      </div>
    <script>
-      function openPopup(product_id) {
-
-         var overlay = document.getElementById("popup-overlay");
-         overlay.style.display = "block";
-         var domain = window.location.origin;
-         $.ajax({
-            url: domain + "/api/v1/products/details/",
-            type: "GET",
-            body: {
-               id: product_id
-            },
-            success: function(response) {
-               document.getElementById('get-single-product-id').value = product_id;
-               
-
-            }
-         })
+      function openPopup(product_id, counter) {
+          var overlay = document.getElementById("popup-overlay-" + counter);
+          overlay.style.display = "block";
+          var domain = window.location.origin;
+          $.ajax({
+              url: domain + "/api/v1/products/details/",
+              type: "GET",
+              data: {
+                  id: product_id
+              },
+              success: function (response) {
+                  document.getElementById('get-single-product-id-' + counter).value = product_id;
+              }
+          });
       }
-   
-      function closePopup() {
-         var overlay = document.getElementById("popup-overlay");
-         overlay.style.display = "none";
+  
+      function closePopup(counter) {
+          var overlay = document.getElementById("popup-overlay-" + counter);
+          overlay.style.display = "none";
       }
-      $(document).on('click','#wishlist-pop-up-btn',function(e){
-         e.preventDefault();
-         var size = $('input[name="choose-size"]:checked').val();
-         //console.log(size);
-         var product_id = document.getElementById('get-single-product-id').value;
-        //console.log(product_id);
-         var domain  = window.location.origin;
-         //console.log(domain);
-         $.ajax({
-            url: domain+"/api/v1/cart/move-to-cart/",
-            type: "POST",
-            body: {
-               size: size,
-               id: product_id
-            },
-            success: function(response){
-               console.log(response);
-               window.location.href = "{% url 'cartview' %}";
-            }
-         })
-         
-      })
-   </script>
+  
+      function addToCartAndRemove(counter) {
+          var sizeInput = $('input[name="choose-size"]:checked', '#choose-size-' + counter);
+          var size = sizeInput.val();
+          var product_id = document.getElementById('get-single-product-id-' + counter).value;
+          var domain = window.location.origin;
+          
+          // Add to cart
+          $.ajax({
+              url: domain + "/api/v1/cart/move-to-cart/",
+              type: "POST",
+              data: {
+                  size: size,
+                  id: product_id
+              },
+              success: function (response) {
+                  console.log("Item added to cart:", response);
+  
+                  var selectedSizeLabel = sizeInput.siblings("label");
+                  var selectedSizeText = selectedSizeLabel.text();
+                  var sizeDisplayElement = document.getElementById("selected-size-display-" + counter);
+                  sizeDisplayElement.textContent = "Selected Size: " + selectedSizeText;
+                  
+                 
+              }
+          });
+      }
+  </script>
+  
    {% endblock body %}

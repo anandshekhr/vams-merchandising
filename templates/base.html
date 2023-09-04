@@ -21,6 +21,7 @@
    </script>
    <meta charset="utf-8">
    <meta http-equiv="x-ua-compatible" content="ie=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>{% block title %}{% endblock title %} - vamscentral</title>
    <meta name="description" content="Online Shopping Site for Fashion & Lifestyle in India. India's Fashion Expert brings you a variety of footwear, Clothing, Accessories and lifestyle products for women & men. Best Online Fashion Store *Easy returns and exchanges.">
    <meta name="Keywords" content="5 disadvantages of online shopping,
@@ -218,9 +219,9 @@ what is lifestyle store,
    <link rel="stylesheet" href="{% static 'assets/css/flaticon.css' %}">
    <link rel="stylesheet" href="{% static 'assets/css/default.css' %}">
    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
    <link rel="stylesheet" href="{% static 'navbar.css' %}">
 
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
    
    {% block head %}{% endblock head %}
    <style>
@@ -1339,17 +1340,27 @@ what is lifestyle store,
      });
   </script>
   <script>
-   $(document).ready(function () {
-      if ($(window).width() <= 981) {
-          $('.toggle-siblings').on('click', function () {
-              $(this).siblings().toggle();
-          });
-
-          // Initially hide siblings in mobile view
-          $('.toggle-siblings').siblings().hide();
-      }
-  });
-</script>
+   function toggleSiblings() {
+     if ($(window).width() <= 981) {
+       $('.toggle-siblings').off('click').on('click', function () {
+         $(this).siblings().toggle();
+       });
+     } else {
+       // Remove click event handler and show all siblings in desktop view
+       $('.toggle-siblings').off('click');
+       $('.toggle-siblings').siblings().show();
+     }
+   }
+ 
+   // Initial call to set up behavior based on viewport width
+   toggleSiblings();
+ 
+   // Update behavior when the window is resized
+   $(window).on('resize', function () {
+     toggleSiblings();
+   });
+ </script>
+ 
    <script>
       {% comment %} var getCookie = function (name) {
       var cookieValue = null;
