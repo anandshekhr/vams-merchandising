@@ -1062,7 +1062,7 @@ what is lifestyle store,
                      <div class="product-name"><a href="{% url 'productdetail' pk=cart_items.item.id %}">{{cart_items.item.name}}</a></div>
                      <div class="product-size">Size: {{cart_items.size}}</div>
                      <div class="product-pricing">
-                        <span class="item-number">{{cart_items.quantity}} &times;</span>
+                        <span class="item-number">Qty: {{cart_items.quantity}} </span><br>
                         <span class="price-now">₹{{cart_items.get_final_price|floatformat:2}}</span>
                         <span class="price-old" style="color:#17171766;">₹{{cart_items.get_total_item_price|floatformat:2}}</span>
                      </div>

@@ -54,7 +54,7 @@
                 {% for order in orders.items.all %}
                 <li class="col-md-4">
                     <figure class="itemside mb-3">
-                        <div class="aside"><img src="/media/{{order.item.image1}}" class="img-sm border"></div>
+                        <div class="aside"><img src="data: image/png; base64, {{order.item.binaryToStringImage1|safe}}" class="img-sm border"></div>
                         <figcaption class="info align-self-center">
                             <p class="title">{{order.item.name}} <br>Size: {{order.size}} <br>Qty: {{order.quantity}}</p> <span class="text-muted">₹{{order.get_final_price|floatformat:2}} </span>
                         </figcaption>
