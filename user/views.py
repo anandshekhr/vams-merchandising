@@ -345,6 +345,26 @@ def user_payment(request):
 def user_coupon(request):
     return render(request, "user/coupon.html")
 
+def refund_page(request,pk):
+    order = Order.objects.get(pk=pk)
+    if request.method == 'POST':
+        order_number = request.POST.get('orderNumber')
+        reason = request.POST.get('returnReason')
+        account_holder_name = request.POST.get('accountHolder')
+        account_number = request.POST.get('accountNumber')
+        ifsc_number = request.POST.get('ifscNumber')
+        
+        save_bank_account = UserBankAccount(user=request.user, account_name=account_holder_name, bank_account_number=account_number,ifsc_code=ifsc_number)
+        save_bank_account.save()
+
+        refund_details = Refund(order = order,order_sid =order.sid,reason = reason,email= request.user.email, refund_bank_account = save_bank_account)
+        refund_details.save()
+        messages.success(request,"Refund Details Saved.")
+    context = {
+       'orders':order
+    }
+    return render(request,"user/return.html",context)
+
 
 def user_notification(request):
     notifications = request.user.notifications.filter(is_read=False)
@@ -358,7 +378,6 @@ def delete_user_address(request, pk):
 
 
 def set_primary_address(request, pk):
-    print("calling set function")
     address = UserAddresses.objects.get(user=request.user.id, pk=pk)
     if address.set_default == False:
         address.set_default == True
