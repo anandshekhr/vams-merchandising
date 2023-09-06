@@ -404,6 +404,27 @@
          </div>
       </section>
       <!-- checkout-area end -->
+      <script>
+         function getPincodeDeliveryValidation(value){
+            domain = window.location.origin;
+            $.ajax({
+               url: domain+'/api/v1/stores/location-availability/',
+               type: 'GET',
+               body: {
+                  pincode: value
+               },
+               success: function (response){
+                  document.getElementById("pincode-availability-message").textContent = "";
+                  if (response.available == true) {
+                     document.getElementById("pincode-availability-message").textContent = "Hurray! We are delivering at this location.";
+                  }
+                  else  {
+                     document.getElementById("pincode-availability-message").textContent = "OOPS! We are currently not delivering at this location.";
+                  }
+               }
+            })
+         }
+      </script>
 
 
 
