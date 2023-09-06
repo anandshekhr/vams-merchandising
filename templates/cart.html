@@ -135,7 +135,7 @@
                   },
                   success: function(response) {
                      if (response){
-                     document.getElementById("grand-subtotal").innerHTML ="Subtotal <span>"+"₹"+response['tmax_amount']+".00</span>";
+                     document.getElementById("grand-subtotal").innerHTML ="Subtotal <span>"+"₹"+response['amount']+".00</span>";
                      document.getElementById("grand-total").innerHTML ="Total <span>"+ "₹"+response['amount']+".00</span>";
                      document.getElementById(elementId+"-product-subtotal-save").innerHTML = "₹"+response['item_dprice']+".00" ;
                      document.getElementById("cart-number").innerHTML = response['qty'];
@@ -164,7 +164,7 @@
                   },
                   success: function(response) {
                      if (response){
-                     document.getElementById("grand-subtotal").innerHTML ="Subtotal <span>"+"₹"+response['tmax_amount']+".00</span>";
+                     document.getElementById("grand-subtotal").innerHTML ="Subtotal <span>"+"₹"+response['amount']+".00</span>";
                      document.getElementById("grand-total").innerHTML ="Total <span>"+ "₹"+response['amount']+".00</span>";
                      document.getElementById(elementId+"-product-subtotal-save").innerHTML = "₹"+response['item_dprice']+".00";
                      document.getElementById("cart-number").innerHTML = response['qty'];
