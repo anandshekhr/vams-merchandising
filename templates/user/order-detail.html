@@ -85,7 +85,7 @@
 
             {% comment %} if order is deliverd {% endcomment %}
             {% if orders.delivered %}
-            <a href="{% url 'profile-notification' %}" type="button" class="btn btn-success order-return-btn" data-abc="true">Return</a>
+            <a href="{% url 'refund-status' orders.id %}" type="button" class="btn btn-success order-return-btn" data-abc="true">Return</a>
             {% else %}
             <a href="#" class="btn btn-outline-danger order-cancel-btn" data-abc="true"><i class="fa fa-close" style="margin-right:5px;"></i>Cancel Order</a>
             {% endif %}
