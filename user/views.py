@@ -359,6 +359,10 @@ def refund_page(request,pk):
 
         refund_details = Refund(order = order,order_sid =order.sid,reason = reason,email= request.user.email, refund_bank_account = save_bank_account)
         refund_details.save()
+
+        order.refund_requested = True
+        order.refund_requested_date = datetime.now()
+        order.save()
         messages.success(request,"Refund Details Saved.")
     context = {
        'orders':order

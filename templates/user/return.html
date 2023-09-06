@@ -18,23 +18,36 @@
     <div class="container mt-5">
         <div>
             {% if orders.refund_requested %}
-            <h2>Refund Status</h2>
+            <h2 style="text-align:left;">Refund Status:</h2>
+            <p>Order Number: {{orders.sid}}</p>
             <div class="custom-progress custom-progress--medium">
                 <ol class="custom-progress-list" id="custom-progress-list">
                     <li class="custom-progress-step completed" data-step="1">
-                        <span class="custom-item-heading">Return request submitted</span>
+                        <span class="custom-item-heading">Return Requested</span>
                     </li>
                     <li class="custom-progress-step padding_left active" data-step="2">
                         <span class="custom-item-heading">Item Received</span>
                     </li>
                     <li class="custom-progress-step padding_left" data-step="3">
-                        <span class="custom-item-heading">Refund Sent</span>
+                        <span class="custom-item-heading">Refunded</span>
                     </li>
                 </ol>
+                
+            </div>
+            <div>
+                <br>
+                
+                <h5>Refund Requested Date:</h5>
+                <p>{{orders.refund_requested_date}}</p>
+
+                {% if orders.refund_granted %}
+                <h5>Refunded to Bank Date:</h5>
+                <p>{{orders.refund_granted_date}}</p>
+                {% endif %}
             </div>
             {% endif %}
 
-            {% if orders.refund_requested != true %}
+            {% if orders.refund_requested == false %}
             <div class="row">
                 <div class="col-md-12">
                     <h2 style="text-align:center;">Request for Return:</h2>
