@@ -24,7 +24,7 @@
                   {% if 'homepage' in banner.position and 'newarrival' in banner.position %}
                      <div class="swiper-slide">
                         <div class="single-banner single-banner-1 banner-800 d-flex align-items-center pos-rel">
-                           <div class="banner-bg banner-bg1 banner-bg1-1 height=1080px width=1980px" data-background="/media/{{banner.banner_images}}">
+                           <div class="banner-bg banner-bg1 banner-bg1-1 height=1080px width=1980px" data-background="data: image/png; base64, {{banner.binaryToStringImage1}}">
                            </div>
                            <div class="container pos-rel">
                               <div class="row align-items-center">
@@ -160,9 +160,15 @@
                <div class="product-tab-nav mb-60">
                   <nav>
                      <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <button class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1"
+                        <button class="nav-link active" id="nav-4-tab" data-bs-toggle="tab" data-bs-target="#nav-4"
+                           type="button" role="tab" aria-controls="nav-4" aria-selected="false">New Arrival<span
+                              class="total-product">[{{len_na}}]
+                           </span>
+                        </button>
+                        <button class="nav-link" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1"
                            type="button" role="tab" aria-controls="nav-1" aria-selected="true">Best Seller <span
-                              class="total-product">[{{len_bs}}]</span></button>
+                              class="total-product">[{{len_bs}}]</span>
+                       </button>
                         <button class="nav-link" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2"
                            type="button" role="tab" aria-controls="nav-2" aria-selected="false">Hot Collection<span
                               class="total-product">
@@ -171,10 +177,6 @@
                            type="button" role="tab" aria-controls="nav-3" aria-selected="false">Trendy<span
                               class="total-product">[{{len_tr}}]</span>
                         </button>
-                        <button class="nav-link" id="nav-4-tab" data-bs-toggle="tab" data-bs-target="#nav-4"
-                           type="button" role="tab" aria-controls="nav-4" aria-selected="false">New Arrival<span
-                              class="total-product">[{{len_na}}]
-                           </span></button>
                      </div>
                   </nav>
                </div>
@@ -215,6 +217,7 @@
                                           </div>
                                        </div>
                                        <div class="product-desc">
+                                          <div class="product-name" style="color:grey;">{{product.brand}}</div>
                                           <div class="product-name"><a href="{% url 'productdetail' product.id %}">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
@@ -223,16 +226,16 @@
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
-                                                <img src="/media/{{product.image1}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img">
                                              </li>
                                              {% if product.image2 %}
                                              <li class="cl-ash">
-                                                <img src="/media/{{product.image2}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage2|safe}}" alt="img">
                                              </li>
                                              {% endif %}
                                              {% if product.image3 %}
                                              <li class="cl-black">
-                                                <img src="/media/{{product.image3}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage3|safe}}" alt="img">
                                              </li>
                                              {% endif %}
                                           </ul>
@@ -269,7 +272,7 @@
                                  <div class="swiper-slide">
                                     <div class="single-product single-product-st2">
                                        <div class="product-image pos-rel">
-                                          <a href="shop-details.html" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}"
+                                          <a href="{% url 'productdetail' product.id %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}"
                                                 alt="img" width="265px" height="390px"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
@@ -294,6 +297,7 @@
                                           </div>
                                        </div>
                                        <div class="product-desc">
+                                          <div class="product-name" style="color:grey;">{{product.brand}}</div>
                                           <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
@@ -302,14 +306,18 @@
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
-                                                <img src="/media/{{product.image1}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img">
                                              </li>
+                                             {% if product.image2 %}
                                              <li class="cl-ash">
-                                                <img src="/media/{{product.image2}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage2|safe}}" alt="img">
                                              </li>
+                                             {% endif %}
+                                             {% if product.image3 %}
                                              <li class="cl-black">
-                                                <img src="/media/{{product.image3}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage3|safe}}" alt="img">
                                              </li>
+                                             {% endif %}
                                           </ul>
                                        </div>
                                     </div>
@@ -343,7 +351,7 @@
                                  <div class="swiper-slide">
                                     <div class="single-product single-product-st2">
                                        <div class="product-image pos-rel">
-                                          <a href="shop-details.html" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}"
+                                          <a href="{% url 'productdetail' product.id %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}"
                                                 alt="img" width="265px" height="390px"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
@@ -368,6 +376,7 @@
                                           </div>
                                        </div>
                                        <div class="product-desc">
+                                          <div class="product-name" style="color:grey;">{{product.brand}}</div>
                                           <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
@@ -376,14 +385,18 @@
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
-                                                <img src="/media/{{product.image1}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img">
                                              </li>
+                                             {% if product.image2 %}
                                              <li class="cl-ash">
-                                                <img src="/media/{{product.image2}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage2|safe}}" alt="img">
                                              </li>
+                                             {% endif %}
+                                             {% if product.image3 %}
                                              <li class="cl-black">
-                                                <img src="/media/{{product.image3}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage3|safe}}" alt="img">
                                              </li>
+                                             {% endif %}
                                           </ul>
                                        </div>
                                     </div>
@@ -417,7 +430,7 @@
                                  <div class="swiper-slide">
                                     <div class="single-product single-product-st2">
                                        <div class="product-image pos-rel">
-                                          <a href="shop-details.html" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}"
+                                          <a href="{% url 'productdetail' product.id %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}"
                                                 alt="img" width="265px" height="390px"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
@@ -442,6 +455,7 @@
                                           </div>
                                        </div>
                                        <div class="product-desc">
+                                          <div class="product-name" style="color:grey;">{{product.brand}}</div>
                                           <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
@@ -450,14 +464,18 @@
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
-                                                <img src="/media/{{product.image1}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img">
                                              </li>
+                                             {% if product.image2 %}
                                              <li class="cl-ash">
-                                                <img src="/media/{{product.image2}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage2|safe}}" alt="img">
                                              </li>
+                                             {% endif %}
+                                             {% if product.image3 %}
                                              <li class="cl-black">
-                                                <img src="/media/{{product.image3}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringImage3|safe}}" alt="img">
                                              </li>
+                                             {% endif %}
                                           </ul>
                                        </div>
                                     </div>

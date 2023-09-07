@@ -14,6 +14,13 @@
       left: 72%;
       top: 27%;
   }
+  .btn-warning-modified {
+   font-family: sans-serif;
+    color: white;
+    font-weight: bold;
+    background-color: #fc8955;
+    border-color: #fc8955;
+}
 </style>
    <main>
       {% if messages %}
@@ -21,11 +28,15 @@
          <div class="alert alert-{{ message.tags }} auto-dismiss" id="err-message">
                <span>
                   <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="..." width="65px" height="80px" style="width:auto;">
+                  
                </span>
                <span>
 
                   {{ message }}
                </span>
+               {% comment %} <span>
+                  <a href="{% url 'cartview' %}" type="button" class="btn btn-warning-modified" style="float:right"><i class="fal fa-shopping-bag"> View Cart</i></a>
+               </span> {% endcomment %}
           </div>
          {% endfor %}
          <script>
@@ -322,6 +333,7 @@
                               {% endif %}
                            </div>
                            <div class="product-desc">
+                              <div class="product-name" style="color:grey;">{{product.brand}}</div>
                               <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
                               <div class="product-price">
                                  <span class="price-now">₹{{product.list_price|floatformat:2}}</span>

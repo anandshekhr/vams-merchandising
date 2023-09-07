@@ -39,7 +39,7 @@
                         <div class="wishlist_wrap">
                            <span class="product-thumbnail"><a href="{% url 'productdetail' obj.item.id %}"><img class="wishlist_image"
                               src="data: image/png; base64, {{obj.item.binaryToStringImage1|safe}}" alt="img"></a></span>
-                           <span class="product-name"><a href="{% url 'productdetail' obj.item.id %}">{{obj.item.name}}</a></span>
+                           <span class="product-name"><a href="{% url 'productdetail' obj.item.id %}">{{obj.item.name|slice:25}}</a></span>
                            <span class="product-name">{{obj.item.long_name}}</span>
                            <div>
                               <div style="border-bottom: 1px solid #d9d9d9; padding-bottom: 10px;">
