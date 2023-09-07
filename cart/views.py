@@ -424,7 +424,11 @@ def paymentStatusAndOrderStatusUpdate(request):
 @login_required(login_url="login")
 def checkoutPage(request):
     Items = Order.objects.get(user=request.user, ordered=False)
-    address = UserAddresses.objects.get(user=request.user)
+    try:
+        address = UserAddresses.objects.filter(user=request.user)
+    except UserAddresses.DoesNotExist:
+        address = []
+
     totalAmount = round(Items.get_total(), 2)
     ShippingCharges = 40
     if totalAmount > 599:
