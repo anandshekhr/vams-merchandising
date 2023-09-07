@@ -43,44 +43,22 @@
    </div>
       <!-- page title area end  -->
 
+      <section class="pt-100 pb-30" >
+         <div class="card" style="width: 40%;margin-left:10%;">
+            <div class="card-body">
+               <h5 class="card-title">Address: </h5>
+               <h6 class="card-subtitle mb-2 text-muted">Address Name: </h6>
+               <p class="card-text"></p>
+               <a href="#" class="card-link">Card link</a>
+               <a href="#" class="card-link">Another link</a>
+            </div>
+         </div>
+      </section>
+
       <!-- coupon-area start -->
       <section class="coupon-area pt-100 pb-30">
          <div class="container container-small">
             <div class="row">
-               <div class="col-md-6">
-                  <div class="coupon-accordion">
-                     <!-- ACCORDION START -->
-                     <h3>Returning customer? <span id="showlogin">Click here to login</span></h3>
-                     <div id="checkout-login" class="coupon-content">
-                        <div class="coupon-info">
-                           <p class="coupon-text">Quisque gravida turpis sit amet nulla posuere lacinia. Cras
-                              sed est
-                              sit amet ipsum luctus.</p>
-                           <form action="#">
-                              <p class="form-row-first">
-                                 <label>Username or email <span class="required">*</span></label>
-                                 <input type="text" />
-                              </p>
-                              <p class="form-row-last">
-                                 <label>Password <span class="required">*</span></label>
-                                 <input type="text" />
-                              </p>
-                              <p class="form-row">
-                                 <button class="fill-btn" type="submit">Login</button>
-                                 <label>
-                                    <input type="checkbox" />
-                                    Remember me
-                                 </label>
-                              </p>
-                              <p class="lost-password">
-                                 <a href="#">Lost your password?</a>
-                              </p>
-                           </form>
-                        </div>
-                     </div>
-                     <!-- ACCORDION END -->
-                  </div>
-               </div>
                <div class="col-md-6">
                   <div class="coupon-accordion">
                      <!-- ACCORDION START -->
@@ -340,59 +318,6 @@
                         </div>
 
                         <div class="payment-method">
-                           {% comment %} <div class="accordion" id="checkoutAccordion">
-                              <div class="accordion-item">
-                                 <h2 class="accordion-header" id="checkoutOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                       data-bs-target="#bankOne" aria-expanded="true" aria-controls="bankOne">
-                                       Direct Bank Transfer
-                                    </button>
-                                 </h2>
-                                 <div id="bankOne" class="accordion-collapse collapse show"
-                                    aria-labelledby="checkoutOne" data-bs-parent="#checkoutAccordion">
-                                    <div class="accordion-body">
-                                       Make your payment directly into our bank account. Please use your
-                                       Order ID
-                                       as the payment reference. Your order won’t be shipped until the
-                                       funds have
-                                       cleared in our account.
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="accordion-item">
-                                 <h2 class="accordion-header" id="paymentTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                       data-bs-target="#payment" aria-expanded="false" aria-controls="payment">
-                                       Cheque Payment
-                                    </button>
-                                 </h2>
-                                 <div id="payment" class="accordion-collapse collapse" aria-labelledby="paymentTwo"
-                                    data-bs-parent="#checkoutAccordion">
-                                    <div class="accordion-body">
-                                       Please send your cheque to Store Name, Store Street, Store Town,
-                                       Store
-                                       State / County, Store
-                                       Postcode.
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="accordion-item">
-                                 <h2 class="accordion-header" id="paypalThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                       data-bs-target="#paypal" aria-expanded="false" aria-controls="paypal">
-                                       PayPal
-                                    </button>
-                                 </h2>
-                                 <div id="paypal" class="accordion-collapse collapse" aria-labelledby="paypalThree"
-                                    data-bs-parent="#checkoutAccordion">
-                                    <div class="accordion-body">
-                                       Pay via PayPal; you can pay with your credit card if you don’t have
-                                       a
-                                       PayPal account.
-                                    </div>
-                                 </div>
-                              </div>
-                           </div> {% endcomment %}
                            <div class="order-button-payment mt-20">
                               <button type="submit" class="fill-btn">Place order</button>
                            </div>
@@ -404,6 +329,27 @@
          </div>
       </section>
       <!-- checkout-area end -->
+      <script>
+         function getPincodeDeliveryValidation(value){
+            domain = window.location.origin;
+            $.ajax({
+               url: domain+'/api/v1/stores/location-availability/',
+               type: 'GET',
+               body: {
+                  pincode: value
+               },
+               success: function (response){
+                  document.getElementById("pincode-availability-message").textContent = "";
+                  if (response.available == true) {
+                     document.getElementById("pincode-availability-message").textContent = "Hurray! We are delivering at this location.";
+                  }
+                  else  {
+                     document.getElementById("pincode-availability-message").textContent = "OOPS! We are currently not delivering at this location.";
+                  }
+               }
+            })
+         }
+      </script>
 
 
 

@@ -85,7 +85,7 @@ urlpatterns = (
             name="profile-notification",
         ),
         path("accounts/profile/coupon/", views.user_coupon, name="profile-coupon"),
-        # path('accounts/user/dashboard/',views.userDashboard,name="user-dashboard"),
+        path("accounts/profile/refund/<int:pk>",views.refund_page,name="refund-status"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

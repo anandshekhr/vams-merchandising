@@ -103,6 +103,8 @@ class Order(models.Model):
     refund_granted = models.BooleanField(default=False)
     refund_granted_date = models.DateTimeField(
         auto_now_add=True)
+    
+    refund_request_cancelled = models.BooleanField(default=False)
 
 
     '''
@@ -172,12 +174,33 @@ class Coupon(models.Model):
     def __str__(self):
         return self.code
 
+class UserBankAccount(models.Model):
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    bank_account_number = models.CharField(_("Bank Account No."), max_length=100)
+    ifsc_code = models.CharField(_("IFSC Code"), max_length=50)
+    account_name = models.CharField(_("Account Holder Name"), max_length=250,null=True,blank=True)
+    nick_name = models.CharField(_("Nick Name"), max_length=50,null=True,blank=True)
+
+    
+
+    class Meta:
+        verbose_name = _("UserBankAccount")
+        verbose_name_plural = _("UserBankAccounts")
+
+    def __str__(self):
+        return self.user.username
+
+    def get_absolute_url(self):
+        return reverse("UserBankAccount_detail", kwargs={"pk": self.pk})
+
 
 class Refund(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order_sid = models.CharField(_("Order Reference Id"), max_length=50,default="")
     reason = models.TextField()
     accepted = models.BooleanField(default=False)
     email = models.EmailField()
+    refund_bank_account = models.ForeignKey(UserBankAccount, verbose_name=_("Refund Bank Account"), on_delete=models.CASCADE,default="")
 
     def __str__(self):
         return f"{self.pk}"

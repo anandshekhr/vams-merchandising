@@ -68,3 +68,5 @@ class VendorTransactionDetailAdmin(admin.ModelAdmin):
                           'total_order_amount','order_completed_date','payment_status','payment_transfer_date')
     
 
+admin.site.register(Refund)
+admin.site.register(UserBankAccount)

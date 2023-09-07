@@ -52,29 +52,27 @@
                                 </td>
                                 <td class="product-total-price">
                                     </span>
-                                    {% if order.ordered %}
+                                    {% if order.refund_granted %}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refunded</span> 
+                                    {% elif order.refund_requested%}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refund Requested</span> 
+                                    {% elif order.received %}
+                                    <span
+                                    class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Delivered</span> 
+                                    {% elif order.being_delivered %}
+                                    <span
+                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Shipped</span> 
+                                    {% elif order.ordered %}
                                     <span
                                         class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Confirmed</span>
                                     {% else %}
                                     <span
                                         class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-danger d-inline-block text-danger mb-1">Pending</span> 
                                     {% endif %}
-                                    {% if order.being_delivered %}
-                                    <span
-                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Shipped</span> 
-                                    {% endif %}
-                                    {% if order.received %}
-                                    <span
-                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Delivered</span> 
-                                    {% endif %}
-                                    {% if order.refund_requested%}
-                                    <span
-                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refund Requested</span> 
-                                    {% endif %}
-                                    {% if order.refund_granted %}
-                                    <span
-                                        class="font-xsssss fw-700 ps-3 pe-3 lh-32 text-uppercase rounded-3 ls-2 alert-success d-inline-block text-success mb-1">Refunded</span> 
-                                    {% endif %}
+                                    
+                                    
                                 </td>
                                 {% comment %} <td class="product-remove text-right">
                                     <a href="#"><i class="feather-edit me-1 font-xs text-grey-500"></i></a>

@@ -1,0 +1,132 @@
+{% extends 'user/base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% block profile %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} auto-dismiss">
+            {{ message }}
+    </div>
+    {% endfor %}
+    <script>
+    setTimeout(function() {
+            $('.auto-dismiss').fadeOut('slow');
+    }, 3000);
+    </script> 
+{% endif %}
+<div class="row col-lg-8 pb-5 pt-4 ps-4">
+    <div class="container mt-5">
+        <div>
+            {% if orders.refund_requested %}
+            <h2 style="text-align:left;">Refund Status:</h2>
+            <p>Order Number: {{orders.sid}}</p>
+            <div class="custom-progress custom-progress--medium">
+                <ol class="custom-progress-list" id="custom-progress-list">
+                    <li class="custom-progress-step completed" data-step="1">
+                        <span class="custom-item-heading">Return Requested</span>
+                    </li>
+                    <li class="custom-progress-step padding_left active" data-step="2">
+                        <span class="custom-item-heading">Item Received</span>
+                    </li>
+                    <li class="custom-progress-step padding_left" data-step="3">
+                        <span class="custom-item-heading">Refunded</span>
+                    </li>
+                </ol>
+                
+            </div>
+            <div>
+                <br>
+                
+                <h5>Refund Requested Date:</h5>
+                <p>{{orders.refund_requested_date}}</p>
+
+                {% if orders.refund_granted %}
+                <h5>Refunded to Bank Date:</h5>
+                <p>{{orders.refund_granted_date}}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if orders.refund_requested == false %}
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 style="text-align:center;">Request for Return:</h2>
+                    <form action="{% url 'refund-status' orders.id %}" method="POST">{% csrf_token %}
+                        <div class="mb-3">
+                            <label for="orderNumber" class="form-label">Order Number</label>
+                            <input type="text" class="form-control" id="orderNumber" name="orderNumber" value="{{orders.sid}}" readonly>
+                        </div>
+                        <div class="mb-3" style="display: flex;flex-direction: column;">
+                            <label for="returnReason" class="form-label">Reason for Return</label>
+                            <select class="selectpicker" data-live-search="true" id="returnReason" name="returnReason" required>
+                                <option value="">Select a reason...</option>
+                                <option value="defective">Received defective product</option>
+                                <option value="wrongItem">Received wrong item</option>
+                                <option value="wrongItemSize">Received wrong size for product</option>
+                            </select>
+                        </div>
+                        <div>
+                            <h2 style="text-align:center;">Bank Details:</h2>
+                            <div class="mb-3">
+                                <label for="accountHolder" class="form-label">Account Holder Name</label>
+                                <input type="text" class="form-control" id="accountHolder" name="accountHolder" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="accountNumber" class="form-label">Account Number</label>
+                                <input type="password" class="form-control" id="accountNumber" name="accountNumber" required>
+                                <div class="invalid-feedback">Account number is required.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="confirmAccountNumber" class="form-label">Confirm Account Number</label>
+                                <input type="text" class="form-control" id="confirmAccountNumber" name="confirmAccountNumber" required>
+                                <div class="invalid-feedback">Please confirm the account number.</div>
+                                <div id="confirm-account-message" class="error-message"></div>
+
+                            </div>
+                            <div class="mb-3">
+                                <label for="ifscNumber" class="form-label">IFSC Code</label>
+                                <input type="text" class="form-control" id="ifscNumber" name="ifscNumber" required>
+                            </div>
+                        </div>
+                        <button style="color: white; font-size: 20px; font-weight: 400; " type="submit" class="btn btn-primary">Submit Return</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<!-- Inside your <style> tag -->
+    <style>
+        .nice-select {
+            font-size: 16px;
+            color: #171717;
+            display: flex;
+            justify-content: flex-start;
+            border: 1px solid;
+            margin-bottom: 20px;
+            padding-left: 14px;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function() {
+            $('#returnForm').submit(function(event) {
+                event.preventDefault(); // Prevent form from submitting
+                
+                var accountNumber = $('#accountNumber').val();
+                var confirmAccountNumber = $('#confirmAccountNumber').val();
+                if (accountNumber !== confirmAccountNumber) {
+                    alert("Account numbers do not match.");
+                    return;
+                }
+
+                // Update progress bar for the "Item Received" step
+                $('.custom-progress-step[data-step="2"]').removeClass('active').addClass('completed');
+                $('.custom-progress-step[data-step="3"]').addClass('active');
+                alert('Form submitted successfully!');
+            });
+        });
+    </script>
+
+{% endblock profile %}

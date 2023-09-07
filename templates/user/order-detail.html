@@ -62,30 +62,17 @@
                 </li>
                 {% endfor %}
             </ul>
-             {% comment %} <div class="container mt-5">
-                <div>
-                    <h2>Refund Status</h2>
-                    <div class="custom-progress custom-progress--medium">
-                        <ol class="custom-progress-list" id="custom-progress-list">
-                            <li class="custom-progress-step completed" data-step="1">
-                                <span class="custom-item-heading">Return request submitted</span>
-                            </li>
-                            <li class="custom-progress-step padding_left active" data-step="2">
-                                <span class="custom-item-heading">Item Received</span>
-                            </li>
-                            <li class="custom-progress-step padding_left" data-step="3">
-                                <span class="custom-item-heading">Refund Sent</span>
-                            </li>
-                        </ol>
-                    </div>
-                </div> 
-            </div> {% endcomment %}
+             
             <hr>
             <a href="{% url 'profile-orders' %}" class="btn btn-outline-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
 
             {% comment %} if order is deliverd {% endcomment %}
-            {% if orders.delivered %}
-            <a href="{% url 'profile-notification' %}" type="button" class="btn btn-success order-return-btn" data-abc="true">Return</a>
+            {% if orders.refund_request_cancelled %}
+            <a type="button" class="btn btn-success order-return-btn" data-abc="true">Done</a>
+            {% elif orders.refund_requested %}
+            <a href="{% url 'refund-status' orders.id %}" type="button" class="btn btn-danger order-return-btn" data-abc="true"><i class="fa fa-close" style="margin-right:5px;"></i>Cancel Return</a>
+            {% elif orders.delivered %}
+            <a href="{% url 'refund-status' orders.id %}" type="button" class="btn btn-success order-return-btn" data-abc="true">Return</a>
             {% else %}
             <a href="#" class="btn btn-outline-danger order-cancel-btn" data-abc="true"><i class="fa fa-close" style="margin-right:5px;"></i>Cancel Order</a>
             {% endif %}
