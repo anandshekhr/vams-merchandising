@@ -103,6 +103,8 @@ class Order(models.Model):
     refund_granted = models.BooleanField(default=False)
     refund_granted_date = models.DateTimeField(
         auto_now_add=True)
+    
+    refund_request_cancelled = models.BooleanField(default=False)
 
 
     '''
