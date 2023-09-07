@@ -1558,6 +1558,7 @@ div.mean-container a.meanmenu-reveal {
   height: 100%;
   left: 0;
   top: 0;
+  background: url("data-background") no-repeat center center;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -6294,7 +6295,6 @@ html .ui-button.ui-state-disabled:active {
   background: transparent;
   border: 1px solid var(--clr-common-border);
   border-radius: 4px;
-  margin-bottom: 20px;
   display: flex;
   padding: 10px 20px;
   padding-right: 30px;
@@ -7075,7 +7075,9 @@ only screen and (min-width: 576px) and (max-width: 767px),
 }
 
 .error-message {
+  margin-left: 10px;
   color: red;
+  margin-bottom: 20px;
 }
 
 * {
