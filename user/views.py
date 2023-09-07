@@ -94,6 +94,7 @@ def login(request):
             set_token_cookie(response, token)
             return response
         else:
+            messages.info(request,"Mobile Number or Password incorrect.")
             return redirect('login')
     else:
         return render(request, 'login.html')
