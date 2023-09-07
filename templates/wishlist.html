@@ -132,34 +132,50 @@
 
 }
 
+   .alert {
+      position: absolute;
+      padding: 1rem 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid transparent;
+      border-radius: 0.25rem;
+      z-index: 10;
+      left: 72%;
+      top: 27%;
+  }
+  .btn-warning-modified {
+   font-family: sans-serif;
+    color: white;
+    font-weight: bold;
+    background-color: #fc8955;
+    border-color: #fc8955;
+}
+
+
 </style>
    <main>
-      <!-- page title area start  -->
-      {% comment %} <section class="page-title-area" data-background="assets/img/bg/page-title-bg.jpg">
-         <div class="container">
-            <div class="row">
-               <div class="col-lg-12">
-                  <div class="page-title-wrapper text-center">
-                     <h1 class="page-title mb-10">My Wishlist</h1>
-                     <div class="breadcrumb-menu">
-                        <nav aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs">
-                           <ul class="trail-items">
-                              <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
-                              <li class="trail-item trail-end"><span>Wishlist</span></li>
-                           </ul>
-                        </nav>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section> {% endcomment %}
+
       <div class="breadcrumb-menu-edit">
-      <ol class="breadcrumb">
-         <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
-         <li class="breadcrumb-item active"><span>Wishlist</span></li>
-      </ol>
-   </div>
+         <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
+            <li class="breadcrumb-item active"><span>Wishlist</span></li>
+         </ol>
+      </div>
+      {% if messages %}
+         {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} auto-dismiss" id="noti-message">
+                  {{ message }}
+                  <span>
+                     <a href="{% url 'cartview' %}" type="button" class="btn btn-warning-modified"><i class="fal fa-shopping-bag"> View Cart</i></a>
+                  </span>
+
+            </div>
+         {% endfor %}
+         <script>
+            setTimeout(function() {
+                  $('.auto-dismiss').fadeOut('slow');
+            }, 3000);
+         </script> 
+      {% endif %}
       <!-- page title area end  -->
       <!-- cart area start  -->
       <div class="cart-area ">
@@ -175,7 +191,7 @@
                                      <div class="wishlist_wrap">
                                          <span class="product-thumbnail"><a class="product-padding" href="{% url 'productdetail' pk=item.item.id %}"><img class="wishlist_image"
                                                      src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a></span>
-                                         <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></span>
+                                         <span class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name|slice:25}}</a></span>
                                          <span class="product-size"><a href="#">{{item.size}}</a></span>
                                          <div class="price_quantity">
                                              <span class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
@@ -266,6 +282,7 @@
           var size = sizeInput.val();
           var product_id = document.getElementById('get-single-product-id-' + counter).value;
           var domain = window.location.origin;
+          const targetUrl = "{% url 'cartview' %}";
           
           // Add to cart
           $.ajax({
@@ -277,15 +294,8 @@
                   id: product_id
               },
               success: function (response) {
-                  
-                  var selectedSizeLabel = sizeInput.siblings("label");
-                  var selectedSizeText = selectedSizeLabel.text();
-                  var sizeDisplayElement = document.getElementById("selected-size-display-" + counter);
-                  sizeDisplayElement.textContent = "Selected Size: " + selectedSizeText;
-
-                  window.location.reload();
-                  
-                 
+               window.location.reload();
+               showMessage('success','Item moved successfully!');
               }
           });
       }

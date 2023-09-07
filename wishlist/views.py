@@ -80,13 +80,13 @@ def addToWishlist(request, pk):
         if order.items.filter(item__id=item.id).exists():
             order_item.quantity += 1
             order_item.save()
-            messages.info(request, "This item quantity was updated.")
-            return redirect("wishlist-view")
+            messages.info(request, "This item was added to your Wishlist!")
+            return redirect(previous_page)
 
         else:
             order.items.add(order_item)
-            messages.info(request, "This item was added to your cart.")
-            return redirect("wishlist-view")
+            messages.info(request, "This item was added to your Wishlist!")
+            return redirect(previous_page)
 
     else:
         order = Wishlist.objects.create(user=request.user)
