@@ -420,10 +420,8 @@ class UserExistView(APIView):
 
     def get(self, request, format=None):
         email = request.query_params.get('email')
-        print("email: {0}".format(email))
         try:
             user = User.objects.get(email=email)
-            print("user: {0}".format(user))
             if user is not None:
                 return Response({'available':True},status=status.HTTP_200_OK)
         except User.DoesNotExist:
