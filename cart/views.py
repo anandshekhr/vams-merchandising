@@ -425,9 +425,9 @@ def paymentStatusAndOrderStatusUpdate(request):
 def checkoutPage(request):
     Items = Order.objects.get(user=request.user, ordered=False)
     try:
-        address = UserAddresses.objects.get(user=request.user)
+        address = UserAddresses.objects.filter(user=request.user)
     except UserAddresses.DoesNotExist:
-        address = ""
+        address = []
 
     totalAmount = round(Items.get_total(), 2)
     ShippingCharges = 40
