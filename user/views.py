@@ -7,7 +7,9 @@ from django.contrib import auth, messages
 from .serializers import UpdateUserSerializer
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+
 from rest_framework.views import APIView
 from products.serializer import userSerializer
 from cart.models import Order
@@ -94,6 +96,7 @@ def login(request):
             set_token_cookie(response, token)
             return response
         else:
+            messages.info(request,"Mobile Number or Password incorrect.")
             return redirect('login')
     else:
         return render(request, 'login.html')
@@ -409,3 +412,19 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
+
+
+class UserExistView(APIView):
+    permission_classes = (AllowAny,)
+    authentication_classes = (SessionAuthentication,)
+
+    def get(self, request, format=None):
+        email = request.query_params.get('email')
+        print("email: {0}".format(email))
+        try:
+            user = User.objects.get(email=email)
+            print("user: {0}".format(user))
+            if user is not None:
+                return Response({'available':True},status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'available':False},status=status.HTTP_200_OK)

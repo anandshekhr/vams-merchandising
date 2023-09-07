@@ -44,15 +44,15 @@
       <!-- page title area end  -->
 
       <section class="pt-100 pb-30" >
+         {% for addr in address %}
          <div class="card" style="width: 40%;margin-left:10%;">
             <div class="card-body">
-               <h5 class="card-title">Address: </h5>
-               <h6 class="card-subtitle mb-2 text-muted">Address Name: </h6>
-               <p class="card-text"></p>
-               <a href="#" class="card-link">Card link</a>
-               <a href="#" class="card-link">Another link</a>
+               <h5 class="card-title">Address: {{addr.user_address}}</h5>
+               <h6 class="card-subtitle mb-2 text-muted">Address Name:{{addr.name}} </h6>
+               
             </div>
          </div>
+         {% endfor %}
       </section>
 
       <!-- coupon-area start -->
@@ -347,7 +347,7 @@
                      document.getElementById("pincode-availability-message").textContent = "OOPS! We are currently not delivering at this location.";
                   }
                }
-            })
+            });
          }
       </script>
 
