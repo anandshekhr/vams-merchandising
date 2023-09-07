@@ -70,10 +70,25 @@ class ProductRARAdmin(admin.ModelAdmin):
 
 admin.site.register(ProductReviewAndRatings, ProductRARAdmin)
 
+class BannerItemForm(forms.ModelForm):
+    banner_images = forms.FileField(required=False)
+    
 
+    def save(self, commit=True):
+        if self.cleaned_data.get('banner_images') is not None \
+                and hasattr(self.cleaned_data['banner_images'], 'file'):
+            data = self.cleaned_data['banner_images'].file.read()
+            self.instance.banner_images = data
+
+        return self.instance
+
+    def save_m2m(self):
+        # FIXME: this function is required by ModelAdmin, otherwise save process will fail
+        pass
 class BannersAdmin(admin.ModelAdmin):
+    form = BannerItemForm
     list_display: list = ('banner_name', 'banner_status',
-                          'banner_images', 'position')
+                          'scheme_image_tag', 'position')
     search_fields: list = ('banner_status', 'banner_name')
 
 

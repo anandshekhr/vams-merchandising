@@ -268,8 +268,9 @@ class Banners(models.Model):
     banner_name = models.CharField(
         _("Banner Name"), max_length=50, null=True, blank=True)
     banner_desc = QuillField(null=True, blank=True)
-    banner_images = models.ImageField(
-        _("Banner Image"), upload_to="banners/media/images/%Y/%m/%d", height_field=None, width_field=None, max_length=None)
+    # banner_images = models.ImageField(
+        # _("Banner Image"), upload_to="banners/media/images/%Y/%m/%d", height_field=None, width_field=None, max_length=None)
+    banner_images = models.BinaryField(_("Banner Image"), blank=True, null=True,editable=True)
     banner_status = models.CharField(
         max_length=20, choices=ChoiceStatus, null=False, default=None)
     products_available = models.IntegerField(
@@ -281,3 +282,14 @@ class Banners(models.Model):
     class Meta:
         db_table = "Banners"
         verbose_name_plural = 'Banners'
+
+    def binaryToStringImage1(self):
+        return b64encode(self.banner_images).decode('utf-8')
+    
+    def scheme_image_tag(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="200" height="100">'.format(
+            b64encode(self.banner_images).decode('utf8')
+        ))
+
+    scheme_image_tag.short_description = 'Image'
+    scheme_image_tag.allow_tags = True

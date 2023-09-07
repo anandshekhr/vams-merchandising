@@ -78,9 +78,9 @@ def showAllProducts(request):
 
 def handle_messages(request):
     message_type = request.GET.get('type')
-    print(message_type)
+    
     message = request.GET.get('message')
-    print(message)
+    
 
     if message_type and message:
         if message_type == 'success':
