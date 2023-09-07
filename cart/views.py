@@ -424,13 +424,14 @@ def paymentStatusAndOrderStatusUpdate(request):
 @login_required(login_url="login")
 def checkoutPage(request):
     Items = Order.objects.get(user=request.user, ordered=False)
+    address = UserAddresses.objects.get(user=request.user)
     totalAmount = round(Items.get_total(), 2)
     ShippingCharges = 40
     if totalAmount > 599:
         ShippingCharges = 0
     totalAmount += ShippingCharges
     context = {'orderItems': Items, 'totalAmount': totalAmount,
-               'shippingCharges': ShippingCharges}
+               'shippingCharges': ShippingCharges,'address': address}
     return render(request, "checkout.html", context)
 
 
