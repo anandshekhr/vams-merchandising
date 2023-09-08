@@ -81,7 +81,7 @@ class UserAddresses(models.Model):
         return "user:{} city: {} pincode: {} phoneno. {}".format(self.user, self.city, self.pincode, self.addPhoneNumber)
 
     def user_address(self):
-        address = self.address+", "+self.city+", " + str(self.pincode)
+        address = self.address if self.address is not None else ""+", "+self.city if self.city is not None else ""+", " + str(self.pincode) if self.pincode is not None else ""
         return address
 
     # def tag_string(self):
