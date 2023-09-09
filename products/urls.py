@@ -9,6 +9,7 @@ urlpatterns = [
     path("show-all/",showAllProducts,name="show-all-products"),
     path("details/<int:pk>/",productDetailsPageView,name="productdetail"),
     path('handle-messages/', handle_messages, name='handle_messages'),
+    path("products-list/",products_list,name="products-list"),
 
     #APIs
     path("all",ProductAPI.as_view(),name="allProducts"),

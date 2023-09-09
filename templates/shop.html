@@ -3,335 +3,348 @@
 {% block title %}Online Shopping Site for Fashion & Lifestyle in India{% endblock title %}
 {% block body %}
 
-   <main>
-      {% if messages %}
-         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} auto-dismiss">
-                  {{ message }}
-            </div>
-         {% endfor %}
-         <script>
-            setTimeout(function() {
-                  $('.auto-dismiss').fadeOut('slow');
-            }, 3000);
-         </script> 
-      {% endif %} 
+<main>
+   {% if messages %}
+   {% for message in messages %}
+   <div class="alert alert-{{ message.tags }} auto-dismiss">
+      {{ message }}
+   </div>
+   {% endfor %}
+   <script>
+      setTimeout(function () {
+         $('.auto-dismiss').fadeOut('slow');
+      }, 3000);
+   </script>
+   {% endif %}
 
-      <!-- page title area start  -->
-      {% comment %} <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
-         <div class="container">
-            <div class="row">
-               <div class="col-lg-12"> {% endcomment %}
-                  
-                     
-                     <div class="breadcrumb-menu-edit">
-                           <ol class="breadcrumb">
-                              <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
-                              <li class="breadcrumb-item active"><span>Shop</span></li>
-                           </ol>
-                     </div>
-                 
-               {% comment %} </div>
+   <!-- page title area start  -->
+   {% comment %} <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-12"> {% endcomment %}
+
+
+               <div class="breadcrumb-menu-edit">
+                  <ol class="breadcrumb">
+                     <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a>
+                     </li>
+                     <li class="breadcrumb-item active"><span>Shop</span></li>
+                  </ol>
+               </div>
+
+               {% comment %}
             </div>
          </div>
-      </section> {% endcomment %}
-      <!-- page title area end  -->
+      </div>
+   </section> {% endcomment %}
+   <!-- page title area end  -->
 
-      <!-- shop main area start  -->
-      <div class="shop-main-area pt-120 pb-10">
-         <div class="container">
-            <div class="row">
-               <div class="col-xl-9 col-lg-8 col-md-12">
-                  <div class="shop-main-wrapper mb-60">
-                     <div class="shop-main-wrapper-head mb-30">
-                        <div class="swowing-list">Showing <span>12 of 39</span> Products</div>
-                        <div class="sort-type-filter">
-                           <div class="sorting-type">
-                              <span>Sort by : </span>
-                              <select class="sorting-list" name="sorting-list" id="sorting-list">
-                                 <option value="1">Default</option>
-                                 <option value="2">Most popular</option>
-                                 <option value="3">Date</option>
-                                 <option value="4">Trending</option>
-                                 <option value="4">Featured</option>
-                                 <option value="4">Discounted</option>
-                              </select>
+   <!-- shop main area start  -->
+   <div class="shop-main-area pt-120 pb-10">
+      <div class="container">
+         <div class="row">
+            <div class="col-xl-9 col-lg-8 col-md-12">
+               <div class="shop-main-wrapper mb-60">
+                  <div class="shop-main-wrapper-head mb-30">
+                     <div class="swowing-list">Showing <span>12 of 39</span> Products</div>
+                     <div class="sort-type-filter">
+                        <div class="sorting-type">
+                           <span>Sort by : </span>
+                           <select class="sorting-list" name="sorting-list" id="sorting-list">
+                              <option value="1">Default</option>
+                              <option value="2">Most popular</option>
+                              <option value="3">Date</option>
+                              <option value="4">Trending</option>
+                              <option value="4">Featured</option>
+                              <option value="4">Discounted</option>
+                           </select>
+                        </div>
+                        <div class="action-item action-item-filter d-lg-none">
+                           <a href="javascript:void(0)" class="view-filter-button">
+                              <i class="flaticon-filter"></i>
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="products-wrapper">
+                     {% for product in products %}
+                     <div class="single-product">
+                        <div class="product-image pos-rel">
+                           <a href="{% url 'productdetail' product.id %}" class=""><img
+                                 src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"
+                                 width="265px" height="390px"></a>
+                           <div class="product-action-bottom">
+                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i
+                                    class="fal fa-eye"></i></a>
+                              <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
                            </div>
-                           <div class="action-item action-item-filter d-lg-none">
-                              <a href="javascript:void(0)" class="view-filter-button">
-                                 <i class="flaticon-filter"></i>
+                           {% if product.discount %}
+                           <div class="product-sticker-wrapper">
+                              <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+                           </div>
+                           {% else %}
+                           <div class="product-sticker-wrapper">
+                              <span class="product-sticker new">New</span>
+                           </div>
+                           {% endif %}
+                           <div class="product-nav">
+                              <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
+                              <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
+                           </div>
+                        </div>
+                        <div class="product-desc">
+                           <div class="product-name" style="color:grey;">{{product.brand}}</div>
+                           <div class="product-name"><a href="{% url 'productdetail' product.id %}">{{product.name}}</a>
+                           </div>
+                           <div class="product-price">
+                              <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+                              <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>
+                           </div>
+                        </div>
+                     </div>
+                     {% endfor %}
+                  </div>
+
+
+               </div>
+               <div class="pagination-page" style="float:left;">
+               <span class="current" style="float:center;">
+                        Page {{ products.number }} of {{ products.paginator.num_pages }}.
+                     </span>
+                  </div>
+               <div class="pagination-div" style="float:right;">
+                  
+                  <nav aria-label="Page navigation example">
+                     
+                     <ul class="pagination justify-content-end">
+                        {% if products.has_previous %}
+                        <li class="page-item">
+                           <a class="page-link" href="?page={{ products.previous_page_number }}" tabindex="-1"
+                              aria-disabled="true">Previous</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                           <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        {% endif %}
+                        {% for i in products.paginator.page_range %}
+                        {% if products.number == i %}
+                        {% comment %} <li class="active"><span> </span></li> {% endcomment %}
+                        <li class="page-item active"><a class="page-link" href="#">{{ i }}<span
+                                 class="sr-only">(current)</span></a></li>
+                        {% else %}
+                        {% comment %} <li><a href="?page={{ i }}">{{ i }}</a></li> {% endcomment %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if products.has_next %}
+                        
+                        <li class="page-item">
+                           <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                           <a class="page-link" href="#">Next</a>
+                        </li>
+                        {% endif %}
+
+                        {% comment %} <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li> {% endcomment %}
+
+                     </ul>
+                  </nav>
+               </div>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-6">
+               <div class="sidebar-widget-wrapper mb-110 d-none d-lg-block">
+                  <div class="product-filters mb-50">
+                     <div class="filter-widget">
+                        <h4 class="filter-widget-title drop-btn">Search</h4>
+                        <div class="filter-widget-content">
+                           <div class="filter-widget-search">
+                              <input type="text" placeholder="Search here..">
+                              <button type="submit"><i class="fal fa-search"></i></button>
+                           </div>
+
+                        </div>
+                     </div>
+                     <div class="filter-widget">
+                        <h4 class="filter-widget-title drop-btn">Category</h4>
+                        <div class="filter-widget-content">
+                           <div class="category-items">
+                              <a href="#" class="category-item">
+                                 <div class="category-name">Shirts</div> <span class="category-items-number">8</span>
+                              </a>
+                              <a href="#" class="category-item">
+                                 <div class="category-name">Pants</div> <span class="category-items-number">12</span>
+                              </a>
+                              <a href="#" class="category-item">
+                                 <div class="category-name">Jackets</div> <span class="category-items-number">17</span>
+                              </a>
+                              <a href="#" class="category-item">
+                                 <div class="category-name">Leggings</div> <span class="category-items-number">6</span>
+                              </a>
+                              <a href="#" class="category-item">
+                                 <div class="category-name">Beachware</div> <span
+                                    class="category-items-number">25</span>
+                              </a>
+                              <a href="#" class="category-item">
+                                 <div class="category-name">Underwear</div> <span
+                                    class="category-items-number">17</span>
+                              </a>
+                              <a href="#" class="category-item">
+                                 <div class="category-name">Bag</div> <span class="category-items-number">15</span>
+                              </a>
+                              <a href="#" class="category-item">
+                                 <div class="category-name">Belt</div> <span class="category-items-number">9</span>
                               </a>
                            </div>
                         </div>
                      </div>
-                     <div class="products-wrapper">
-                        {% for product in products %}
-                        <div class="single-product">
-                           <div class="product-image pos-rel">
-                              <a href="{% url 'productdetail' product.id %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}"
-                                    alt="img" width="265px" height="390px"></a>
-                              <div class="product-action-bottom">
-                                 <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                 <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
+                     <div class="filter-widget">
+                        <h4 class="filter-widget-title drop-btn">Size</h4>
+                        <div class="filter-widget-content">
+                           <div class="category-sizes">
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="ex-s" value="XS">
+                                 <label class="check-label" for="ex-s">Extra Small</label>
                               </div>
-                              {% if product.discount %}
-                              <div class="product-sticker-wrapper">
-                                 <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="sm" value="S">
+                                 <label class="check-label" for="sm">Small</label>
                               </div>
-                              {% else %}
-                              <div class="product-sticker-wrapper">
-                                 <span class="product-sticker new">New</span>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="md" value="M">
+                                 <label class="check-label" for="md">Medium</label>
                               </div>
-                              {% endif %}
-                              <div class="product-nav">
-                                 <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
-                                 <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="large" value="L">
+                                 <label class="check-label" for="large">Large</label>
                               </div>
-                           </div>
-                           <div class="product-desc">
-                              <div class="product-name"><a href="{% url 'productdetail' product.id %}">{{product.name}}</a>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="ex-l" value="XL">
+                                 <label class="check-label" for="ex-l">Extra Large</label>
                               </div>
-                              <div class="product-price">
-                                 <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                 <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>
-                              </div>
-                              <ul class="product-color-nav">
-                                 <li class="cl-brown active">
-                                    <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img">
-                                 </li>
-                                 {% if product.image2 %}
-                                 <li class="cl-ash">
-                                    <img src="data: image/png; base64, {{product.binaryToStringImage2|safe}}" alt="img">
-                                 </li>
-                                 {% endif %}
-                                 {% if product.image3 %}
-                                 <li class="cl-black">
-                                    <img src="data: image/png; base64, {{product.binaryToStringImage3|safe}}" alt="img">
-                                 </li>
-                                 {% endif %}
-                              </ul>
                            </div>
                         </div>
-                        {% endfor %}
+                     </div>
+                     <div class="filter-widget">
+                        <h4 class="filter-widget-title drop-btn">Rating</h4>
+                        <div class="filter-widget-content">
+                           <div class="category-ratings">
+                              <div class="category-rating">
+                                 <input class="radio-box" type="radio" id="st-5" name="rating" value="5">
+                                 <label class="radio-star" for="st-5">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                 </label>
+                              </div>
+                              <div class="category-rating">
+                                 <input class="radio-box" type="radio" id="st-4" name="rating" value="4">
+                                 <label class="radio-star" for="st-4">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                 </label>
+                              </div>
+                              <div class="category-rating">
+                                 <input class="radio-box" type="radio" id="st-3" name="rating" value="3">
+                                 <label class="radio-star" for="st-3">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                 </label>
+                              </div>
+                              <div class="category-rating">
+                                 <input class="radio-box" type="radio" id="st-2" name="rating" value="2">
+                                 <label class="radio-star" for="st-2">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                 </label>
+                              </div>
+                              <div class="category-rating">
+                                 <input class="radio-box" type="radio" id="st-1" name="rating" value="1">
+                                 <label class="radio-star" for="st-1">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                    <i class="fal fa-star"></i>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
                      </div>
 
-                  </div>
-               </div>
-               <div class="col-xl-3 col-lg-4 col-md-6">
-                  <div class="sidebar-widget-wrapper mb-110 d-none d-lg-block">
-                     <div class="product-filters mb-50">
-                        <div class="filter-widget">
-                           <h4 class="filter-widget-title drop-btn">Search</h4>
-                           <div class="filter-widget-content">
-                              <div class="filter-widget-search">
-                                 <input type="text" placeholder="Search here..">
-                                 <button type="submit"><i class="fal fa-search"></i></button>
+                     <div class="filter-widget">
+                        <h4 class="filter-widget-title drop-btn">Brand</h4>
+                        <div class="filter-widget-content">
+                           <div class="category-brands">
+                              <div class="category-brand">
+                                 <input class="check-box" type="checkbox" id="b-next">
+                                 <label class="check-label" for="b-next">Next</label>
                               </div>
-
-                           </div>
-                        </div>
-                        <div class="filter-widget">
-                           <h4 class="filter-widget-title drop-btn">Category</h4>
-                           <div class="filter-widget-content">
-                              <div class="category-items">
-                                 <a href="shop.html" class="category-item">
-                                    <div class="category-name">Shirts</div> <span class="category-items-number">8</span>
-                                 </a>
-                                 <a href="shop.html" class="category-item">
-                                    <div class="category-name">Pants</div> <span class="category-items-number">12</span>
-                                 </a>
-                                 <a href="shop.html" class="category-item">
-                                    <div class="category-name">Jackets</div> <span
-                                       class="category-items-number">17</span>
-                                 </a>
-                                 <a href="shop.html" class="category-item">
-                                    <div class="category-name">Leggings</div> <span
-                                       class="category-items-number">6</span>
-                                 </a>
-                                 <a href="shop.html" class="category-item">
-                                    <div class="category-name">Beachware</div> <span
-                                       class="category-items-number">25</span>
-                                 </a>
-                                 <a href="shop.html" class="category-item">
-                                    <div class="category-name">Underwear</div> <span
-                                       class="category-items-number">17</span>
-                                 </a>
-                                 <a href="shop.html" class="category-item">
-                                    <div class="category-name">Bag</div> <span class="category-items-number">15</span>
-                                 </a>
-                                 <a href="shop.html" class="category-item">
-                                    <div class="category-name">Belt</div> <span class="category-items-number">9</span>
-                                 </a>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="b-ri">
+                                 <label class="check-label" for="b-ri">River Island</label>
+                              </div>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="b-geox">
+                                 <label class="check-label" for="b-geox">Geox</label>
+                              </div>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="b-eco">
+                                 <label class="check-label" for="b-eco">Ecomart</label>
+                              </div>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="b-abby">
+                                 <label class="check-label" for="b-abby">Abby</label>
+                              </div>
+                              <div class="category-size">
+                                 <input class="check-box" type="checkbox" id="b-nike">
+                                 <label class="check-label" for="b-nike">Nike</label>
                               </div>
                            </div>
                         </div>
-                        <div class="filter-widget">
-                           <h4 class="filter-widget-title drop-btn">Size</h4>
-                           <div class="filter-widget-content">
-                              <div class="category-sizes">
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="ex-s">
-                                    <label class="check-label" for="ex-s">Extra Small</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="sm">
-                                    <label class="check-label" for="sm">Small</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="md">
-                                    <label class="check-label" for="md">Medium</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="large">
-                                    <label class="check-label" for="large">Large</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="ex-l">
-                                    <label class="check-label" for="ex-l">Extra Large</label>
-                                 </div>
+                     </div>
+                     <div class="filter-widget">
+                        <h4 class="filter-widget-title drop-btn">Price</h4>
+                        <div class="filter-widget-content">
+                           <div class="filter-price">
+                              <div class="slider-range">
+                                 <div class="slider-range-bar"></div>
+                                 <p>
+                                    <label for="amount">Price :</label>
+                                    <input type="text" id="amount" class="amount" readonly>
+                                 </p>
                               </div>
                            </div>
                         </div>
-                        <div class="filter-widget">
-                           <h4 class="filter-widget-title drop-btn">Rating</h4>
-                           <div class="filter-widget-content">
-                              <div class="category-ratings">
-                                 <div class="category-rating">
-                                    <input class="radio-box" type="radio" id="st-5" name="rating">
-                                    <label class="radio-star" for="st-5">
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                    </label>
-                                 </div>
-                                 <div class="category-rating">
-                                    <input class="radio-box" type="radio" id="st-4" name="rating">
-                                    <label class="radio-star" for="st-4">
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                    </label>
-                                 </div>
-                                 <div class="category-rating">
-                                    <input class="radio-box" type="radio" id="st-3" name="rating">
-                                    <label class="radio-star" for="st-3">
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                    </label>
-                                 </div>
-                                 <div class="category-rating">
-                                    <input class="radio-box" type="radio" id="st-2" name="rating">
-                                    <label class="radio-star" for="st-2">
-                                       <i class="fas fa-star"></i>
-                                       <i class="fas fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                    </label>
-                                 </div>
-                                 <div class="category-rating">
-                                    <input class="radio-box" type="radio" id="st-1" name="rating">
-                                    <label class="radio-star" for="st-1">
-                                       <i class="fas fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                       <i class="fal fa-star"></i>
-                                    </label>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="filter-widget">
-                           <h4 class="filter-widget-title drop-btn">Colour</h4>
-                           <div class="filter-widget-content">
-                              <div class="category-colours">
-                                 <div class="category-color">
-                                    <ul class="product-color-nav">
-                                       <li class="cl-pink active">
-                                          <img src="assets/img/product/product-img1.jpg" alt="img">
-                                       </li>
-                                       <li class="cl-black">
-                                          <img src="assets/img/product/product-img2.jpg" alt="img">
-                                       </li>
-                                       <li class="cl-blue">
-                                          <img src="assets/img/product/product-img3.jpg" alt="img">
-                                       </li>
-                                       <li class="cl-red">
-                                          <img src="assets/img/product/product-img4.jpg" alt="img">
-                                       </li>
-                                    </ul>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="filter-widget">
-                           <h4 class="filter-widget-title drop-btn">Brand</h4>
-                           <div class="filter-widget-content">
-                              <div class="category-brands">
-                                 <div class="category-brand">
-                                    <input class="check-box" type="checkbox" id="b-next">
-                                    <label class="check-label" for="b-next">Next</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="b-ri">
-                                    <label class="check-label" for="b-ri">River Island</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="b-geox">
-                                    <label class="check-label" for="b-geox">Geox</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="b-eco">
-                                    <label class="check-label" for="b-eco">Ecomart</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="b-abby">
-                                    <label class="check-label" for="b-abby">Abby</label>
-                                 </div>
-                                 <div class="category-size">
-                                    <input class="check-box" type="checkbox" id="b-nike">
-                                    <label class="check-label" for="b-nike">Nike</label>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="filter-widget">
-                           <h4 class="filter-widget-title drop-btn">Price</h4>
-                           <div class="filter-widget-content">
-                              <div class="filter-price">
-                                 <div class="slider-range">
-                                    <div class="slider-range-bar"></div>
-                                    <p>
-                                       <label for="amount">Price :</label>
-                                       <input type="text" id="amount" class="amount" readonly>
-                                    </p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="filter-widget">
-                           <h4 class="filter-widget-title drop-btn">Tags</h4>
-                           <div class="filter-widget-content">
-                              <div class="category-tags">
-                                 <a href="#" class="category-tag">Fashion</a>
-                                 <a href="#" class="category-tag">Hats</a>
-                                 <a href="#" class="category-tag">Sandal</a>
-                                 <a href="#" class="category-tag">Bags</a>
-                                 <a href="#" class="category-tag">Snacker</a>
-                                 <a href="#" class="category-tag">Denim</a>
-                                 <a href="#" class="category-tag">Sunglasses</a>
-                                 <a href="#" class="category-tag">Beachwear</a>
-                                 <a href="#" class="category-tag">Vagabond</a>
-                                 <a href="#" class="category-tag">Trend</a>
-                              </div>
+                     </div>
+                     <div class="filter-widget">
+                        <h4 class="filter-widget-title drop-btn">Tags</h4>
+                        <div class="filter-widget-content">
+                           <div class="category-tags">
+                              <a href="#" class="category-tag">Fashion</a>
+                              <a href="#" class="category-tag">Hats</a>
+                              <a href="#" class="category-tag">Sandal</a>
+                              <a href="#" class="category-tag">Bags</a>
+                              <a href="#" class="category-tag">Snacker</a>
+                              <a href="#" class="category-tag">Denim</a>
+                              <a href="#" class="category-tag">Sunglasses</a>
+                              <a href="#" class="category-tag">Beachwear</a>
+                              <a href="#" class="category-tag">Vagabond</a>
+                              <a href="#" class="category-tag">Trend</a>
                            </div>
                         </div>
                      </div>
@@ -340,7 +353,84 @@
             </div>
          </div>
       </div>
-      <!-- shop main area end  -->
-   </main>
-{% endblock body %}
+   </div>
+   <!-- shop main area end  -->
 
+   <script>
+      // shop/static/js/shop.js
+
+      $(document).ready(function () {
+
+
+         // Function to get data for checked size options
+         function getCheckedSizes() {
+            var checkedSizes = [];
+
+            // Iterate through each checkbox
+            $(".category-size input[type='checkbox']").each(function () {
+               if ($(this).is(":checked")) {
+                  // Get the label text for the checked checkbox
+                  var labelText = $(this).val();
+                  checkedSizes.push(labelText);
+               }
+            });
+
+            return checkedSizes;
+         }
+
+         // Example usage:
+         $(".filter-widget-content").click(function () {
+            var rating = 'None';
+
+            var selectedSizes = getCheckedSizes();
+            console.log("Selected Sizes:", selectedSizes);
+
+            var selectedRatings = document.querySelector('input[name="rating"]:checked');
+            if (selectedRatings){
+               rating = selectedRatings.value;
+            } 
+            
+            domain = window.location.origin;
+            $.ajax({
+               url: domain + '/api/v1/products/products-list/?web=True&size=' + selectedSizes+'&ratings='+rating, // Replace with your product list URL
+               type: 'GET',
+               
+               success: function (data) {
+                  //console.log(data);
+                  // Update the product list and pagination
+
+                  $('.single-product').remove();
+                  $('.products-wrapper').html(data.product_list);
+                  $('.pagination').html(data.pagination);
+               },
+            });
+         });
+
+         // Handle pagination
+         $('.pagination a').click(function (e) {
+            e.preventDefault();
+
+            // Get the page number from the link's href attribute
+            const page = $(this).attr('href').split('=')[1];
+            //console.log(page);
+            domain = window.location.origin;
+            // Make an AJAX request to get the requested page of products
+            $.ajax({
+               url: domain + '/api/v1/products/products-list/?web=True', // Replace with your product list URL
+               type: 'GET',
+               data: {
+                  page: page,
+               },
+               success: function (data) {
+                  // Update the product list and pagination
+                  $('.single-product').remove();
+                  $('.products-wrapper').html(data.product_list);
+                  $('.pagination-div').html(data.pagination);
+               },
+            });
+         });
+      });
+
+   </script>
+</main>
+{% endblock body %}
