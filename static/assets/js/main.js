@@ -551,7 +551,7 @@
 
 	$(".slider-range-bar").slider({
 		range: true,
-		min: 0,
+		min: 100,
 		max: 15000,
 		values: [75, 300],
 
