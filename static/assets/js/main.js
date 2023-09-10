@@ -554,13 +554,23 @@
 
 		min: 0,
 
-		max: 500,
+		max: 15000,
 
 		values: [75, 300],
 
 		slide: function (event, ui) {
-			$(".amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+			$(".amount").val("₹" + ui.values[0] + " - ₹" + ui.values[1]);
 		},
+		change: function (event, ui) {
+			// Handle the change event here (e.g., filter products based on the selected price range)
+			var minValue = ui.values[0];
+			var maxValue = ui.values[1];
+
+			// Example: Log the selected price range
+			console.log("Selected Price Range: ₹" + minValue + " - ₹" + maxValue);
+
+			// You can perform additional actions based on the selected price range here.
+		}
 	});
 
 	$(".category-click").click(function () {

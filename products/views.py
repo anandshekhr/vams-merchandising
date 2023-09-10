@@ -247,25 +247,41 @@ class ProductReviewsAPI(APIView):
 
 def products_list(request):
     # Get filter options from request (e.g., category)
-    category_filter = request.GET.get('category')
+    category = request.GET.get('category')
     size = request.GET.get('size')
     web = request.GET.get('web')
     page = request.GET.get('page')
     ratings = request.GET.get('ratings')
+    discount = request.GET.get('discount')
+    brand = request.GET.get('brand')
+
+    
     
     # Retrieve all products or filter by category
     products = Products.objects.all()
-    if category_filter:
-        products = products.filter(subcategory=category_filter)
+    if category:
+        products = products.filter(subcategory=category)
     
     if size:
         size = size.split(',')
         products = products.filter(available_sizes__contains=size)
+    
+    if ratings != "None" and ratings != None:
+        products = products.filter(average_rating=ratings) 
+    
+    if discount != "0.0" and discount != None:
+        discount = discount.split(' TO ')[0]
+        discount = float(discount)
+        products = products.filter(discount=discount)
+    
+    if brand:
+        brand = brand.split(',')
+        products = products.filter(brand__contains=brand)
+
 
     # Paginate the products
     paginator = Paginator(products, 2)
     try:
-        # returns the desired page object
         product_page = paginator.get_page(page)
     except PageNotAnInteger:
         product_page = paginator.page(1)
