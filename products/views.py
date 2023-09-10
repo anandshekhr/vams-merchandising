@@ -285,7 +285,7 @@ def products_list(request):
 
 
     # Paginate the products
-    paginator = Paginator(products, 2)
+    paginator = Paginator(products, 24)
     
     try:
         product_page = paginator.get_page(page)
