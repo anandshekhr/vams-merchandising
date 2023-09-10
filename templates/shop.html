@@ -46,8 +46,7 @@
             <div class="col-xl-9 col-lg-8 col-md-12">
                <div class="shop-main-wrapper mb-60">
                   <div class="shop-main-wrapper-head mb-30">
-                     <div class="swowing-list">Showing <span>{{ products.start_index }} - {{ products.end_index }} of {{
-                           products.paginator.count }}</span> Products</div>
+                     <div class="swowing-list">Showing <span>{{ products.start_index }} - {{ products.end_index }} of {{products.paginator.count}}</span> Products</div>
                      <div class="sort-type-filter">
                         <div class="sorting-type">
                            <span>Sort by : </span>
@@ -109,8 +108,7 @@
 
                </div>
                <div class="pagination-page" style="float:left;">
-                  <span class="current" style="float:center;">Page {{ products.number }} of {{
-                     products.paginator.num_pages }}</span>
+              <span class="current" style="float:center;">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
                </div>
                <div class="pagination-div" style="float:right;">
 
@@ -318,6 +316,7 @@
                      </div>
                      <div class="filter-widget">
                         <h4 class="filter-widget-title drop-btn">Discount Range</h4>
+                        <div class="filter-widget-content">
                         <div class="discount-lists">
                            <div class="discount-list">
                               <input type="radio" class="radio-box" name="discount-product" id="discount-product-1" 
@@ -350,9 +349,8 @@
                               <input type="radio" class="radio-box" name="discount-product" id="discount-product-5"
                                     value="70.0 TO 100.0">
                               <label class="discount-label" for="discount-product-5">70% and above</label>
-                              
-                                 
                            </div>
+                        </div>
                         </div>
                      </div>
 
@@ -399,7 +397,8 @@
       // shop/static/js/shop.js
 
       $(document).ready(function () {
-
+         var minValue = 0;
+         var maxValue = 0;
 
          // Function to get data for checked size options
          function getCheckedSizes() {
@@ -430,8 +429,10 @@
 
          }
 
+         
+
          // Example usage:
-         $(".filter-widget-content").click(function () {
+         $(".filter-widget-content").change(function () {
             var rating = 'None';
             var discount = '0.0';
             var appendURL = '/api/v1/products/products-list/?web=True';
@@ -457,6 +458,7 @@
             if (selectedBrand) {
                appendURL = appendURL + `&brand=${selectedBrand}`;
             }
+            
 
             domain = window.location.origin;
             $.ajax({
@@ -472,7 +474,7 @@
                },
             });
          });
-
+         
          // Handle pagination
          $('.pagination a').click(function (e) {
             e.preventDefault();

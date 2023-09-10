@@ -254,6 +254,7 @@ def products_list(request):
     ratings = request.GET.get('ratings')
     discount = request.GET.get('discount')
     brand = request.GET.get('brand')
+    price = request.GET.get('price')
 
     
     
@@ -270,17 +271,22 @@ def products_list(request):
         products = products.filter(average_rating=ratings) 
     
     if discount != "0.0" and discount != None:
-        discount = discount.split(' TO ')[0]
-        discount = float(discount)
-        products = products.filter(discount=discount)
+        discount_1 = float(discount.split(' TO ')[0])
+        discount_2 = float(discount.split(' TO ')[1])
+        products = products.filter(discount__range=[discount_1,discount_2])
     
     if brand:
         brand = brand.split(',')
         products = products.filter(brand__contains=brand)
+    
+    if price:
+        price = price.split(',')
+        products = products.filter(max_retail_price__range = price)
 
 
     # Paginate the products
     paginator = Paginator(products, 2)
+    
     try:
         product_page = paginator.get_page(page)
     except PageNotAnInteger:
@@ -299,5 +305,6 @@ def products_list(request):
             'pagination': pagination_html.content.decode(),
         })
     else:
+        context = {'products': product_page}
         # For regular requests, return the HTML template
-        return render(request, 'shop.html', {'products': product_page})
+        return render(request, 'shop.html', context=context)
