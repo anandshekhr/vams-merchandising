@@ -18,25 +18,13 @@
    {% endif %}
 
    <!-- page title area start  -->
-   {% comment %} <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
-      <div class="container">
-         <div class="row">
-            <div class="col-lg-12"> {% endcomment %}
-
-
-               <div class="breadcrumb-menu-edit">
-                  <ol class="breadcrumb">
-                     <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a>
-                     </li>
-                     <li class="breadcrumb-item active"><span>Shop</span></li>
-                  </ol>
-               </div>
-
-               {% comment %}
-            </div>
-         </div>
-      </div>
-   </section> {% endcomment %}
+   <div class="breadcrumb-menu-edit">
+      <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a>
+         </li>
+         <li class="breadcrumb-item active"><span>Shop</span></li>
+      </ol>
+   </div>
    <!-- page title area end  -->
 
    <!-- shop main area start  -->
@@ -68,14 +56,14 @@
                   </div>
                   <div class="products-wrapper">
                      {% for product in products %}
-                     <div class="single-product">
+                     <div class="single-product single-product-st2">
                         <div class="product-image pos-rel">
                            <a href="{% url 'productdetail' product.id %}" class=""><img
                                  src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"
-                                 width="265px" height="350px"></a>
+                                 width="265px" height="350px">
+                           </a>
                            <div class="product-action-bottom">
-                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i
-                                    class="fal fa-eye"></i></a>
+                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                               <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
                            </div>
                            {% if product.discount %}
@@ -100,6 +88,21 @@
                               <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
                               <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>
                            </div>
+                           <ul class="product-color-nav">
+                              <li class="cl-brown active">
+                                 <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img">
+                              </li>
+                              {% if product.image2 %}
+                              <li class="cl-ash">
+                                 <img src="data: image/png; base64, {{product.binaryToStringImage2|safe}}" alt="img">
+                              </li>
+                              {% endif %}
+                              {% if product.image3 %}
+                              <li class="cl-black">
+                                 <img src="data: image/png; base64, {{product.binaryToStringImage3|safe}}" alt="img">
+                              </li>
+                              {% endif %}
+                           </ul>
                         </div>
                      </div>
                      {% endfor %}
