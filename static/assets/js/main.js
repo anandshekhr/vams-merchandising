@@ -574,6 +574,7 @@
 					$('.single-product').remove();
 					$('.products-wrapper').html(response.product_list);
 					$('.pagination').html(response.pagination);
+					$('.Showing-product-list').html(response.pagination_product_list);
 				},
 			});
 

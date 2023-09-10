@@ -34,7 +34,9 @@
             <div class="col-xl-9 col-lg-8 col-md-12">
                <div class="shop-main-wrapper mb-60">
                   <div class="shop-main-wrapper-head mb-30">
+                     <div class="Showing-product-list">
                      <div class="swowing-list">Showing <span>{{ products.start_index }} - {{ products.end_index }} of {{products.paginator.count}}</span> Products</div>
+                     </div>
                      <div class="sort-type-filter">
                         <div class="sorting-type">
                            <span>Sort by : </span>
@@ -474,6 +476,7 @@
                   $('.single-product').remove();
                   $('.products-wrapper').html(response.product_list);
                   $('.pagination').html(response.pagination);
+                  $('.Showing-product-list').html(response.pagination_product_list);
                },
             });
          });
@@ -498,6 +501,7 @@
                   $('.single-product').remove();
                   $('.products-wrapper').html(response.product_list);
                   $('.pagination-div').html(response.pagination);
+                  $('.Showing-product-list').html(response.pagination_product_list);
                },
             });
          });

@@ -297,12 +297,14 @@ def products_list(request):
     # Generate HTML for product list and pagination
     product_list_html = render(request, 'shop/products.html', {'products': product_page})
     pagination_html = render(request, 'shop/pagination.html', {'products': product_page, 'page': page})
+    product_list_pagination_html = render(request, 'shop/product-list.html',{'products':product_page})
 
     if web:
         # If it's an AJAX request, return JSON response
         return JsonResponse({
             'product_list': product_list_html.content.decode(),
             'pagination': pagination_html.content.decode(),
+            'pagination_product_list':product_list_pagination_html.content.decode(),
         })
     else:
         context = {'products': product_page}
