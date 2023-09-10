@@ -1,0 +1,36 @@
+{% for product in products %}
+<div class="single-product">
+   <div class="product-image pos-rel">
+      <a href="{% url 'productdetail' product.id %}" class=""><img
+            src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"
+            width="265px" height="390px"></a>
+      <div class="product-action-bottom">
+         <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i
+               class="fal fa-eye"></i></a>
+         <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
+      </div>
+      {% if product.discount %}
+      <div class="product-sticker-wrapper">
+         <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+      </div>
+      {% else %}
+      <div class="product-sticker-wrapper">
+         <span class="product-sticker new">New</span>
+      </div>
+      {% endif %}
+      <div class="product-nav">
+         <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
+         <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
+      </div>
+   </div>
+   <div class="product-desc">
+      <div class="product-name" style="color:grey;">{{product.brand}}</div>
+      <div class="product-name"><a href="{% url 'productdetail' product.id %}">{{product.name}}</a>
+      </div>
+      <div class="product-price">
+         <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
+         <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>
+      </div>
+   </div>
+</div>
+{% endfor %}

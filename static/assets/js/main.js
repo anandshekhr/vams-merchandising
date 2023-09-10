@@ -551,16 +551,38 @@
 
 	$(".slider-range-bar").slider({
 		range: true,
-
-		min: 0,
-
-		max: 500,
-
+		min: 100,
+		max: 15000,
 		values: [75, 300],
 
 		slide: function (event, ui) {
-			$(".amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+			$(".amount").val("₹" + ui.values[0] + " - ₹" + ui.values[1]);
 		},
+		change: function (event, ui) {
+			// Handle the change event here (e.g., filter products based on the selected price range)
+			var minValue = ui.values[0];
+			var maxValue = ui.values[1];
+
+			domain = window.location.origin;
+			$.ajax({
+				url: domain + '/api/v1/products/apparel/?web=True&price='+minValue+','+maxValue, // Replace with your product list URL
+				type: 'GET',
+				success: function (response) {
+					//console.log(response);
+					// Update the product list and pagination
+
+					$('.single-product').remove();
+					$('.products-wrapper').html(response.product_list);
+					$('.pagination').html(response.pagination);
+					$('.Showing-product-list').html(response.pagination_product_list);
+				},
+			});
+
+			// Example: Log the selected price range
+			//console.log("Selected Price Range: ₹" + minValue + " - ₹" + maxValue);
+
+			// You can perform additional actions based on the selected price range here.
+		}
 	});
 
 	$(".category-click").click(function () {
