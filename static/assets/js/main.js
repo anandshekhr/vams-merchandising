@@ -565,7 +565,7 @@
 
 			domain = window.location.origin;
 			$.ajax({
-				url: domain + '/api/v1/products/products-list/?web=True&price='+minValue+','+maxValue, // Replace with your product list URL
+				url: domain + '/api/v1/products/apparel/?web=True&price='+minValue+','+maxValue, // Replace with your product list URL
 				type: 'GET',
 				success: function (response) {
 					//console.log(response);
