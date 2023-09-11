@@ -19,7 +19,7 @@ from django.db.models import Max, Min, Count, Avg
 from django.template.loader import render_to_string
 from blogs.models import *
 from django.shortcuts import get_object_or_404
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters,pagination
 from django_filters import FilterSet
@@ -48,7 +48,7 @@ class ProductsFilter(FilterSet):
             queryset = queryset.filter(category__contains=category_value.split(','))
 
         if sizes_value:
-            queryset = queryset.filter(available_sizes__contains=sizes_value.split(','))
+            queryset = queryset.filter(available_sizes__contains__in=sizes_value)
 
         if tags_value:
             queryset = queryset.filter(tags__contains=tags_value.split(','))
@@ -244,3 +244,69 @@ class ProductReviewsAPI(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def products_list(request):
+    # Get filter options from request (e.g., category)
+    category = request.GET.get('category')
+    size = request.GET.get('size')
+    web = request.GET.get('web')
+    page = request.GET.get('page')
+    ratings = request.GET.get('ratings')
+    discount = request.GET.get('discount')
+    brand = request.GET.get('brand')
+    price = request.GET.get('price')
+
+    
+    
+    # Retrieve all products or filter by category
+    products = Products.objects.all()
+    if category:
+        products = products.filter(subcategory=category)
+    
+    if size:
+        size = size.split(',')
+        products = products.filter(available_sizes__contains=size)
+    
+    if ratings != "None" and ratings != None:
+        products = products.filter(average_rating=ratings) 
+    
+    if discount != "0.0" and discount != None:
+        discount_1 = float(discount.split(' TO ')[0])
+        discount_2 = float(discount.split(' TO ')[1])
+        products = products.filter(discount__range=[discount_1,discount_2])
+    
+    if brand:
+        brand = brand.split(',')
+        products = products.filter(brand__contains=brand)
+    
+    if price:
+        price = price.split(',')
+        products = products.filter(max_retail_price__range = price)
+
+
+    # Paginate the products
+    paginator = Paginator(products, 24)
+    
+    try:
+        product_page = paginator.get_page(page)
+    except PageNotAnInteger:
+        product_page = paginator.page(1)
+    except EmptyPage:
+        product_page = paginator.page(paginator.num_pages)
+
+    # Generate HTML for product list and pagination
+    product_list_html = render(request, 'shop/products.html', {'products': product_page})
+    pagination_html = render(request, 'shop/pagination.html', {'products': product_page, 'page': page})
+    product_list_pagination_html = render(request, 'shop/product-list.html',{'products':product_page})
+
+    if web:
+        # If it's an AJAX request, return JSON response
+        return JsonResponse({
+            'product_list': product_list_html.content.decode(),
+            'pagination': pagination_html.content.decode(),
+            'pagination_product_list':product_list_pagination_html.content.decode(),
+        })
+    else:
+        context = {'products': product_page}
+        # For regular requests, return the HTML template
+        return render(request, 'shop.html', context=context)

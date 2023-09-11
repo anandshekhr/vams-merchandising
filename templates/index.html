@@ -21,7 +21,7 @@
          <div class="swiper-container slider__active">
             <div class="swiper-wrapper">
                {% for banner in Banners %}
-                  {% if 'homepage' in banner.position and 'newarrival' in banner.position %}
+                  {% if 'homepage' in banner.position and 'newarrival' in banner.position and banner.banner_status == 'Activate' %}
                      <div class="swiper-slide">
                         <div class="single-banner single-banner-1 banner-800 d-flex align-items-center pos-rel">
                            <div class="banner-bg banner-bg1 banner-bg1-1 height=1080px width=1980px" style="background-image: url('data: image/png; base64, {{banner.binaryToStringImage1}}');">
@@ -276,21 +276,17 @@
                                                 alt="img" width="265px" height="390px"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                             {% comment %} <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
-                                                   class="fal fa-shopping-bag"></i>Add
-                                                to
-                                                Cart</a> {% endcomment %}
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
                                           {% if product.discount %}
-                              <div class="product-sticker-wrapper">
-                                 <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
-                              </div>
-                              {% else %}
-                              <div class="product-sticker-wrapper">
-                                 <span class="product-sticker new">New</span>
-                              </div>
-                              {% endif %}
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+                                          </div>
+                                          {% else %}
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker new">New</span>
+                                          </div>
+                                          {% endif %}
                                           <div class="product-nav">
                                              <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
                                              <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
@@ -355,10 +351,6 @@
                                                 alt="img" width="265px" height="390px"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                             {% comment %} <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
-                                                   class="fal fa-shopping-bag"></i>Add
-                                                to {% endcomment %}
-                                                Cart</a>
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
                                           {% if product.discount %}
@@ -434,21 +426,17 @@
                                                 alt="img" width="265px" height="390px"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                             {% comment %} <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
-                                                   class="fal fa-shopping-bag"></i>Add
-                                                to
-                                                Cart</a> {% endcomment %}
                                              <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a>
                                           </div>
                                           {% if product.discount %}
-                              <div class="product-sticker-wrapper">
-                                 <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
-                              </div>
-                              {% else %}
-                              <div class="product-sticker-wrapper">
-                                 <span class="product-sticker new">New</span>
-                              </div>
-                              {% endif %}
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
+                                          </div>
+                                          {% else %}
+                                          <div class="product-sticker-wrapper">
+                                             <span class="product-sticker new">New</span>
+                                          </div>
+                                          {% endif %}
                                           <div class="product-nav">
                                              <div class="product-nav-prev"><i class="fal fa-angle-left"></i></div>
                                              <div class="product-nav-next"><i class="fal fa-angle-right"></i></div>
