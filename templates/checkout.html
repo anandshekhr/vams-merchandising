@@ -51,7 +51,7 @@
       font-size: 20px;
       transition: color 0.3s ease-in-out;
    }
-
+   
    .close-button:hover {
       color: #000;
    }
@@ -71,6 +71,7 @@
    @media (min-width: 510px) and (max-width: 1024px) {
       .card_address{
          width: max-content !important;
+         margin-left:5%;
       }
    }
    @media (max-width: 600px) {
@@ -89,7 +90,7 @@
       }
       .card_address{
          width: 90% !important;
-         margin-left: 5%;
+         margin-left: 9%;
          display: flex;
          flex-direction: column !important;
          align-items: center;
@@ -147,7 +148,7 @@
       <!-- page title area end  -->
       <section class="pt-100 pb-30">
          <div>
-            <div class="card card_address" style="width: 40% ;margin-left:5%; display: flex; flex-direction: row; align-items: center; padding: 10px;">
+            <div class="card card_address" style="width: 40% ;margin-left:9%; display: flex; flex-direction: row; align-items: center; padding: 10px;font-family: sans-serif;">
                <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted" style=" color: #000; font-family: Inter; font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span>Deliver to:</span> <span id="mainScreenDeliverTo">{{ address.0.name }}, {{ address.0.pincode }}</span> </h6>
                   <h5 class="card-title" style=" color: #000; font-family: Inter; font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">Address: <span id="mainScreenAddress">{{ address.0.user_address }}</span></h5>
@@ -162,8 +163,8 @@
       <div id="addressPopup" class="overlay" style="display: none;">
          <div class="popup">
             <span class="close-button" onclick="closePopup()">&times;</span>
-            <h4 id="popupmaintext" style=" color: var(--black, #1C1B1F); font-variant-numeric: lining-nums tabular-nums; font-family: Poppins; font-size: 20px; font-style: normal; font-weight: 500; line-height: 20px;">Select Address</h4>
-            <form id="addressForm">
+            <h4 id="popupmaintext" style=" color: var(--black, #1C1B1F); font-variant-numeric: lining-nums tabular-nums; font-family: sans-serif; font-size: 20px; font-style: normal; font-weight: 500; line-height: 20px;">Select Address</h4>
+            
                <div id="SaveaddressForm">
                   <!-- Dynamically populate options with addresses as radio buttons -->
                   {% for addr in address %}
@@ -188,6 +189,7 @@
                   {% endfor %}
                   
                </div>
+            <form id="addressForm">
                <div id="billingAddressForm" style="display: none;">
                   
                   <div class="checkbox-form">
@@ -350,7 +352,7 @@
                   </div>
                </div>
 
-               <span class="add-new-address fill-btn" onclick="toggleBillingAddressForm()">Add new address</span>               
+               <span class="add-new-address fill-btn" onclick="#">Add new address</span>               
 
             </form>
          </div>
@@ -606,7 +608,7 @@
      
              closePopup();
          }
-     
+         
      </script>
      
    </main>

@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib import auth, messages
-from .serializers import UpdateUserSerializer
+from .serializers import *
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -426,3 +426,22 @@ class UserExistView(APIView):
                 return Response({'available':True},status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({'available':False},status=status.HTTP_200_OK)
+
+class UserAddressAPI(APIView):
+    permission_classes = (AllowAny,)
+    authentication_classes = (SessionAuthentication,)
+
+    def get(self, request, format=None):
+        try:
+            address = UserAddresses.objects.all()
+            serializer = UserAddressSerializer(address,many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except UserAddresses.DoesNotExist:
+            return Response({'detail':'Please add a new address'}, status=status.HTTP_200_OK)
+    
+    def post(self, request, format=None):
+        serializer = UserAddressSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

@@ -87,6 +87,7 @@ urlpatterns = (
         path("accounts/profile/coupon/", views.user_coupon, name="profile-coupon"),
         path("accounts/profile/refund/<int:pk>",views.refund_page,name="refund-status"),
         path("accounts/user-exists/", views.UserExistView.as_view(), name="user-exists"),
+        path("accounts/address/", views.UserAddressAPI.as_view(), name="user-address"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
