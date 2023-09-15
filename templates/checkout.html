@@ -3,6 +3,7 @@
 {% block title %} Checkout {% endblock title %}
 {% block body %}
 <style>
+ 
    .wishlist_wrap{
       display: flex;
       flex-direction: row;
@@ -162,8 +163,9 @@
       <div id="addressPopup" class="overlay" style="display: none;">
          <div class="popup">
             <span class="close-button" onclick="closePopup()">&times;</span>
-            <h4 id="popupmaintext" style=" color: var(--black, #1C1B1F); font-variant-numeric: lining-nums tabular-nums; font-family: sans-serif; font-size: 20px; font-style: normal; font-weight: 500; line-height: 20px;">Select Address</h4>
-            
+            <h4 id="popupmaintext" style=" color: var(--black, #1C1B1F); font-variant-numeric: lining-nums tabular-nums;  font-size: 20px; font-style: normal; font-weight: 500; line-height: 20px;">Select Address</h4>
+            <form id="addressForm">
+               {% comment %} {{request.user.id}} {% endcomment %}
                <div id="SaveaddressForm">
                   <!-- Dynamically populate options with addresses as radio buttons -->
                   {% for addr in address %}
@@ -188,7 +190,10 @@
                   {% endfor %}
                   
                </div>
-            <form id="addressForm">
+            <form id="newAddressForm" method="POST">
+               {% csrf_token %}
+               <input type="hidden" id="user_id" name="user_id" value="{{ request.user.id }}">
+
                <div id="billingAddressForm" style="display: none;">
                   
                   <div class="checkbox-form">
@@ -351,8 +356,8 @@
                   </div>
                </div>
 
-               <span class="add-new-address fill-btn" onclick="#">Add new address</span>               
-
+               <span class="add-new-address fill-btn" id="add-new-address" onclick="toggleBillingAddressForm()">Add new address</span>               
+               <span class="add-new-address fill-btn" id="save-new-address" style="display: none" onclick="saveNewAddress()">Save new address</span>            
             </form>
          </div>
       </div>
@@ -529,28 +534,28 @@
       </section>
       <!-- checkout-area end -->
       <script>
-         function getPincodeDeliveryValidation(value){
-            domain = window.location.origin;
-            $.ajax({
-               url: domain+'/api/v1/stores/location-availability/',
-               type: 'GET',
-               body: {
-                  pincode: value
-               },
-               success: function (response){
-                  document.getElementById("pincode-availability-message").textContent = "";
-                  if (response.available == true) {
-                     document.getElementById("pincode-availability-message").textContent = "Hurray! We are delivering at this location.";
-                  }
-                  else  {
-                     document.getElementById("pincode-availability-message").textContent = "OOPS! We are currently not delivering at this location.";
-                  }
-               }
-            });
+         function getPincodeDeliveryValidation(value) {
+             domain = window.location.origin;
+             $.ajax({
+                 url: domain + '/api/v1/stores/location-availability/',
+                 type: 'GET',
+                 body: {
+                     pincode: value
+                 },
+                 success: function (response) {
+                     document.getElementById("pincode-availability-message").textContent = "";
+                     if (response.available == true) {
+                         document.getElementById("pincode-availability-message").textContent = "Hurray! We are delivering at this location.";
+                     }
+                     else {
+                         document.getElementById("pincode-availability-message").textContent = "OOPS! We are currently not delivering at this location.";
+                     }
+                 }
+             });
          }
-      </script>
-
-      <script>
+     </script>
+     
+     <script>
          let isPopupOpen = false;
      
          function togglePopup() {
@@ -560,39 +565,100 @@
                  openPopup();
              }
          }
-         
+     
          function openPopup() {
              document.getElementById("addressPopup").style.display = "flex";
              isPopupOpen = true;
          }
-         
+     
          function closePopup() {
              document.getElementById("addressPopup").style.display = "none";
              isPopupOpen = false;
          }
-         
+     
          function selectAddress(deliverTo, userAddress) {
              const mainScreenDeliverTo = document.getElementById("mainScreenDeliverTo");
              mainScreenDeliverTo.textContent = deliverTo;
-             
+     
              const mainScreenAddress = document.getElementById("mainScreenAddress");
              mainScreenAddress.textContent = userAddress;
-            
+     
              closePopup();
          }
      
-         function toggleBillingAddressForm() {
-             var billingAddressForm = document.querySelector("#billingAddressForm");
-             if (billingAddressForm) {
-                 billingAddressForm.style.display = billingAddressForm.style.display === "none" ? "block" : "none";
-             }
-             var SaveaddressForm = document.querySelector("#SaveaddressForm");
-             if (SaveaddressForm) {
-                 SaveaddressForm.style.display = "none";
-                 $("#popupmaintext").hide();
-                 $(".popup").css('height', '500px');
-             }
+         function saveNewAddress() {
+            // Gather address details from input fields
+            const first_name = $("#first_name").val();
+            const last_name = $("#last_name").val();
+            const email = $("#email").val();
+            const phone_number = $("#phone_number").val();
+            const country = $("#country").val();
+            const address_line_1 = $("#address_line_1").val();
+            const address_line_2 = $("#address_line_2").val();
+            const city = $("#city").val();
+            const state = $("#state").val();
+            const pincode = $("#pincode").val();
+            
+            // Create the payload object
+            const addressData = {
+                first_name,
+                last_name,
+                email,
+                phone_number,
+                country,
+                address_line_1,
+                address_line_2,
+                city,
+                state,
+                pincode,
+                // Add other fields as needed
+            };
+        
+            // Make an AJAX POST request to save the address
+            $.ajax({
+                type: "POST",
+                url: "/api/v1/accounts/profile/address/", // Update with your actual URL
+                data: addressData,
+                success: function (response) {
+                    console.log(response);
+                    alert("Address saved successfully!");
+                    // Reload the page after a short delay
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000); // Reload after 1 second (1000 milliseconds)
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    // Handle errors
+                    console.error("Error:", xhr, textStatus, errorThrown);
+                    alert("Failed to save address. Please try again.");
+                },
+            });
+        }
+        
+        
+    
+        // Function to toggle the billing address form
+        function toggleBillingAddressForm() {
+         var billingAddressForm = document.querySelector("#billingAddressForm");
+         if (billingAddressForm) {
+             billingAddressForm.style.display = billingAddressForm.style.display === "none" ? "block" : "none";
          }
+         var SaveaddressForm = document.querySelector("#SaveaddressForm");
+         if (SaveaddressForm) {
+             SaveaddressForm.style.display = "none";
+             $("#popupmaintext").hide();
+             $(".popup").css('height', '500px');
+             $("#add-new-address").hide();
+             $("#save-new-address").show();
+         }
+     }
+    
+        // Attach a click event listener to the "Save new address" button
+        $(document).ready(function () {
+            $("#save-new-address").click(function () {
+                saveNewAddress();
+            });
+        });
      
          function saveAddressDetails() {
              var billingFirstName = document.querySelector("#billing_first_name").value;
@@ -607,7 +673,7 @@
      
              closePopup();
          }
-         
+     
      </script>
      
    </main>
