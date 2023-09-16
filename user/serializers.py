@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from .models import *
+from rest_framework.fields import CurrentUserDefault
 try:
     from allauth.account import app_settings as allauth_settings
     from allauth.utils import (email_address_exists,
@@ -189,3 +190,8 @@ class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAddresses
         fields = '__all__'
+
+    def get_or_create(self):
+        user = CurrentUserDefault()
+        defaults = self.validated_data.copy()
+        return UserAddresses.objects.get_or_create(user=user, defaults=defaults)
