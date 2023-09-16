@@ -134,7 +134,7 @@
             {% if primary_address %}
             <div class="card card_address" style="width: 40% ;margin-left:9%; display: flex; flex-direction: row; align-items: center; padding: 10px;font-family: sans-serif;">
                <div class="card-body" id="selected-address-card">
-                  <h6 class="card-subtitle mb-2 text-muted" style=" color: #000;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span>Deliver to:</span> <span id="mainScreenDeliverTo">{{ primary_address.name }}, {{ primary_address.pincode }}</span> </h6>
+                  <h6 class="card-subtitle mb-2 text-muted" style=" color: #000;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span id="add-address"></span><span>Deliver to:</span> <span id="mainScreenDeliverTo">{{ primary_address.name }}, {{ primary_address.pincode }}</span> </h6>
                   <h5 class="card-title" style=" color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">Address: <span id="mainScreenAddress">{{ primary_address.address }},{{primary_address.city}},{{primary_address.state}}</span></h5>
                   <h5 class="card-title" style=" color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">Phone: <span id="mainScreenPhone">{{ address.0.addPhoneNumber }}</span></h5>
                </div>
@@ -145,13 +145,14 @@
             {% else %}
             <div class="card card_address" style="width: 40% ;margin-left:9%; display: flex; flex-direction: row; align-items: center; padding: 10px;font-family: sans-serif;">
                <div class="card-body" id="selected-address-card">
-                  <h6 class="card-subtitle mb-2 text-muted" style=" color: #000;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span>Please add new address</span></h6>
+                  <h6 class="card-subtitle mb-2 text-muted" style=" color: red;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span id="add-address">Please add a Delivery Address</span></h6>
                   
                </div>
                <div onclick="togglePopup()" style="border-radius: 8px; border: 1px solid #C25729; padding: 8px; color: #C25729;  font-size: 12px; font-style: normal; font-weight: 400; line-height: normal;">
                   Add Address
                </div>
             </div>
+            <div id="add-address-message" class="error-message" style="margin-left:9%;"></div>
             {% endif %}
          </div>
       </section>
@@ -829,13 +830,24 @@
       });
 
       function checkout(){
-         var mainScreenDeliverTo = document.getElementById("mainScreenDeliverTo").textContent ;
-         var mainScreenAddress = document.getElementById("mainScreenAddress").textContent ;
-         var mainScreenPhone = document.getElementById("mainScreenPhone").textContent ;
+         var valid = false;
+         var add_address = document.getElementById('add-address').textContent;
 
-         var ShippingAddress = "Deliver To: "+mainScreenDeliverTo+", Address: "+mainScreenAddress+ ", Phone: "+mainScreenPhone;
-        
-         document.cookie = 'shipping_address=' +ShippingAddress+ ";domain=;path=/;expires=" + new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+         if (add_address === "Please add a Delivery Address"){
+            valid = false;
+            document.getElementById('add-address-message').innerHTML= "Please Enter a Delivery Address"; 
+         } else {
+            var mainScreenDeliverTo = document.getElementById("mainScreenDeliverTo").textContent ;
+            var mainScreenAddress = document.getElementById("mainScreenAddress").textContent ;
+            var mainScreenPhone = document.getElementById("mainScreenPhone").textContent ;
+   
+   
+            var ShippingAddress = "Deliver To: "+mainScreenDeliverTo+", Address: "+mainScreenAddress+ ", Phone: "+mainScreenPhone;
+           
+            document.cookie = 'shipping_address=' +ShippingAddress+ ";domain=;path=/;expires=" + new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+            window.location.href = $('.place-order-btn').attr('href');
+         }
+         
 
       }
    </script>
