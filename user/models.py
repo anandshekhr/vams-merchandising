@@ -58,7 +58,7 @@ class UserAddresses(models.Model):
     name = models.CharField(
         _("contact Name"), max_length=200, blank=True, null=True)
     address = models.CharField(
-        _("address line 1"), max_length=200, blank=True, null=True)
+        _("address"), max_length=200, blank=True, null=True)
     state = models.CharField(
         _("select state"), max_length=200, blank=True, null=True)
     city = models.CharField(
@@ -81,7 +81,7 @@ class UserAddresses(models.Model):
         return "user:{} city: {} pincode: {} phoneno. {}".format(self.user, self.city, self.pincode, self.addPhoneNumber)
 
     def user_address(self):
-        address = self.address if self.address is not None else ""+", "+self.city if self.city is not None else ""+", " + str(self.pincode) if self.pincode is not None else ""
+        address = self.address if self.address else "" +", "+self.city if self.city else "" +", " + str(self.pincode) if self.pincode else ""
         return address
 
     # def tag_string(self):

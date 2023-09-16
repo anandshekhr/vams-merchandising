@@ -944,3 +944,23 @@ $(document).on("submiadat", "#add-to-cart-form", function (e) {
 	});
 
 })
+
+function setCookie(name, value, daysToExpire, path, domain) {
+	let cookie = name + "=" + encodeURIComponent(value);
+
+	if (daysToExpire) {
+		const expirationDate = new Date();
+		expirationDate.setTime(expirationDate.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+		cookie += "; expires=" + expirationDate.toUTCString();
+	}
+
+	if (path) {
+		cookie += "; path=" + path;
+	}
+
+	if (domain) {
+		cookie += "; domain=" + domain;
+	}
+
+	document.cookie = cookie;
+}

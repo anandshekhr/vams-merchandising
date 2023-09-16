@@ -310,6 +310,9 @@ def orderPaymentRequest(request, amount):
         )
         # print(response)
         order.ref_code = response['payment_request']['id']
+        order.shipping_address = request.COOKIES.get('shipping_address')
+        order.billing_address = request.COOKIES.get('shipping_address')
+
         order.save()
         payment_redirect_url = response['payment_request']['longurl']
         if payment_redirect_url:
@@ -426,8 +429,10 @@ def checkoutPage(request):
     items = Order.objects.get(user=request.user, ordered=False)
     try:
         address = UserAddresses.objects.filter(user=request.user)
+        primary_address = UserAddresses.objects.get(user=request.user,set_default=True)
     except UserAddresses.DoesNotExist:
         address = []
+        primary_address = ""
 
     totalAmount = round(items.get_total(), 2)
     ShippingCharges = 40
@@ -435,7 +440,7 @@ def checkoutPage(request):
         ShippingCharges = 0
     totalAmount += ShippingCharges
     context = {'orderItems': items, 'totalAmount': items.total_amount_at_checkout(),
-               'shippingCharges': ShippingCharges,'address': address,'gst_amount': items.gst_amount()}
+               'shippingCharges': ShippingCharges,'address': address,'gst_amount': items.gst_amount(),'primary_address':primary_address}
     return render(request, "checkout.html", context)
 
 

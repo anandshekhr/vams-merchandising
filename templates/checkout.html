@@ -152,9 +152,9 @@
       <section class="pt-100 pb-30">
          <div>
             <div class="card card_address" style="width: 40% ;margin-left:9%; display: flex; flex-direction: row; align-items: center; padding: 10px;font-family: sans-serif;">
-               <div class="card-body">
-                  <h6 class="card-subtitle mb-2 text-muted" style=" color: #000;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span>Deliver to:</span> <span id="mainScreenDeliverTo">{{ address.0.name }}, {{ address.0.pincode }}</span> </h6>
-                  <h5 class="card-title" style=" color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">Address: <span id="mainScreenAddress">{{ address.0.user_address }}</span></h5>
+               <div class="card-body" id="selected-address-card">
+                  <h6 class="card-subtitle mb-2 text-muted" style=" color: #000;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span>Deliver to:</span> <span id="mainScreenDeliverTo">{{ primary_address.name }}, {{ primary_address.pincode }}</span> </h6>
+                  <h5 class="card-title" style=" color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">Address: <span id="mainScreenAddress">{{ primary_address.address }},{{primary_address.city}},{{primary_address.state}}</span></h5>
                   <h5 class="card-title" style=" color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">Phone: <span id="mainScreenPhone">{{ address.0.addPhoneNumber }}</span></h5>
                </div>
                <div onclick="togglePopup()" style="border-radius: 8px; border: 1px solid #C25729; padding: 8px; color: #C25729;  font-size: 12px; font-style: normal; font-weight: 400; line-height: normal;">
@@ -174,7 +174,7 @@
                   <!-- Dynamically populate options with addresses as radio buttons -->
                   {% for addr in address %}
                   <label style=" display: flex; flex-direction: row; align-items: center; ">
-                     <input type="radio" name="selectedAddress" value="{{ addr.name }}, {{ addr.pincode }}" onclick="selectAddress('{{ addr.name }}', '{{ addr.user_address }}','{{addr.addPhoneNumber}}');">
+                     <input type="radio" name="selectedAddress" value="{{ addr.name }}, {{ addr.pincode }}" onclick="selectAddress('{{ addr.name }}', '{{ addr.address }}','{{addr.addPhoneNumber}}','{{addr.city}}','{{addr.state}}');">
                      <div class="card-body" style="text-align: start ;display: flex; flex-direction: row; align-items: baseline; gap: 20px;">
                         <div style="
                         width: 100%;
@@ -535,7 +535,7 @@
 
                         <div class="payment-method">
                            <div class="order-button-payment mt-20">
-                              <a type="button" href="{% url 'paymentcheckout' totalAmount %}" class="fill-btn place-order-btn" style="width: 80%;">Place order</a>
+                              <a type="button" href="{% url 'paymentcheckout' totalAmount %}" class="fill-btn place-order-btn" style="width: 80%;" onclick="checkout();">Place order</a>
                            </div>
                         </div>
                      </div>
@@ -595,12 +595,12 @@
              isPopupOpen = false;
          }
      
-         function selectAddress(deliverTo, userAddress,phone) {
+         function selectAddress(deliverTo, userAddress,phone,city,state) {
              const mainScreenDeliverTo = document.getElementById("mainScreenDeliverTo");
              mainScreenDeliverTo.textContent = deliverTo;
      
              const mainScreenAddress = document.getElementById("mainScreenAddress");
-             mainScreenAddress.textContent = userAddress;
+             mainScreenAddress.textContent = userAddress+","+city+","+state;
 
              const mainScreenPhone = document.getElementById("mainScreenPhone");
              mainScreenPhone.textContent = phone;
@@ -835,6 +835,17 @@
                })
          });
       });
+
+      function checkout(){
+         var mainScreenDeliverTo = document.getElementById("mainScreenDeliverTo").textContent ;
+         var mainScreenAddress = document.getElementById("mainScreenAddress").textContent ;
+         var mainScreenPhone = document.getElementById("mainScreenPhone").textContent ;
+
+         var ShippingAddress = "Deliver To: "+mainScreenDeliverTo+", Address: "+mainScreenAddress+ ", Phone: "+mainScreenPhone;
+        
+         document.cookie = 'shipping_address=' +ShippingAddress+ ";domain=;path=/;expires=" + new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+
+      }
    </script>
      
    </main>
