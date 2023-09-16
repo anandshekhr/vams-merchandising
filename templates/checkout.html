@@ -122,35 +122,16 @@
             }, 3000);
          </script> 
       {% endif %}
-      <!-- page title area start  -->
-      {% comment %} <section class="page-title-area" data-background="assets/img/bg/page-title-bg.jpg">
-         <div class="container">
-            <div class="row">
-               <div class="col-lg-12">
-                  <div class="page-title-wrapper text-center">
-                     <h1 class="page-title mb-10">Checkout</h1>
-                     <div class="breadcrumb-menu">
-                        <nav aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs">
-                           <ul class="trail-items">
-                              <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
-                              <li class="trail-item trail-end"><span>Checkout</span></li>
-                           </ul>
-                        </nav>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section> {% endcomment %}
       <div class="breadcrumb-menu-edit">
-      <ol class="breadcrumb">
-         <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
-         <li class="breadcrumb-item active"><span>Checkout</span></li>
-      </ol>
-   </div>
+         <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
+            <li class="breadcrumb-item active"><span>Checkout</span></li>
+         </ol>
+      </div>
       <!-- page title area end  -->
       <section class="pt-100 pb-30">
          <div>
+            {% if primary_address %}
             <div class="card card_address" style="width: 40% ;margin-left:9%; display: flex; flex-direction: row; align-items: center; padding: 10px;font-family: sans-serif;">
                <div class="card-body" id="selected-address-card">
                   <h6 class="card-subtitle mb-2 text-muted" style=" color: #000;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span>Deliver to:</span> <span id="mainScreenDeliverTo">{{ primary_address.name }}, {{ primary_address.pincode }}</span> </h6>
@@ -161,6 +142,17 @@
                   Change Address
                </div>
             </div>
+            {% else %}
+            <div class="card card_address" style="width: 40% ;margin-left:9%; display: flex; flex-direction: row; align-items: center; padding: 10px;font-family: sans-serif;">
+               <div class="card-body" id="selected-address-card">
+                  <h6 class="card-subtitle mb-2 text-muted" style=" color: #000;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span>Please add new address</span></h6>
+                  
+               </div>
+               <div onclick="togglePopup()" style="border-radius: 8px; border: 1px solid #C25729; padding: 8px; color: #C25729;  font-size: 12px; font-style: normal; font-weight: 400; line-height: normal;">
+                  Add Address
+               </div>
+            </div>
+            {% endif %}
          </div>
       </section>
       
