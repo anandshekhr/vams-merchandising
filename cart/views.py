@@ -423,19 +423,19 @@ def paymentStatusAndOrderStatusUpdate(request):
 
 @login_required(login_url="login")
 def checkoutPage(request):
-    Items = Order.objects.get(user=request.user, ordered=False)
+    items = Order.objects.get(user=request.user, ordered=False)
     try:
         address = UserAddresses.objects.filter(user=request.user)
     except UserAddresses.DoesNotExist:
         address = []
 
-    totalAmount = round(Items.get_total(), 2)
+    totalAmount = round(items.get_total(), 2)
     ShippingCharges = 40
-    if totalAmount > 599:
+    if totalAmount > 600:
         ShippingCharges = 0
     totalAmount += ShippingCharges
-    context = {'orderItems': Items, 'totalAmount': totalAmount,
-               'shippingCharges': ShippingCharges,'address': address}
+    context = {'orderItems': items, 'totalAmount': items.total_amount_at_checkout(),
+               'shippingCharges': ShippingCharges,'address': address,'gst_amount': items.gst_amount()}
     return render(request, "checkout.html", context)
 
 
@@ -496,7 +496,7 @@ class CartAddView(APIView):
 
             order.items.add(order_item)
         serializer = OrderSerializer(instance=order_qs, many=True)
-        return Response({'cart': serializer.data, 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": order_item.get_amount_saved()}, status=status.HTTP_200_OK)
+        return Response({'cart': serializer.data, 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": round(order_item.get_amount_saved(),2),"amount_at_checkout":order.total_amount_at_checkout(),"shipping":order.shipping_charge(),"gst_amount":order.gst_amount()}, status=status.HTTP_200_OK)
 
 
 class CartRemoveView(APIView):
@@ -532,15 +532,15 @@ class CartRemoveView(APIView):
                     item.stock += 1
                     item.save()
 
-                    return Response({'cart': 'Item updated', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": order_item.get_amount_saved()}, status=status.HTTP_200_OK)
+                    return Response({'cart': 'Item updated', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': order_item.quantity, "item_tprice": order_item.get_total_item_price(), "item_dprice": order_item.get_amount_saved(),"amount_at_checkout":order.total_amount_at_checkout(),"shipping":order.shipping_charge(),"gst_amount":order.gst_amount()}, status=status.HTTP_200_OK)
                 else:
                     order.items.remove(order_item)
                     order_item.delete()
                     item.stock += 1
                     item.save()
-                    return Response({'cart': 'Item updated', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': 0, "item_tprice": 0, "item_dprice": 0}, status=status.HTTP_200_OK)
+                    return Response({'cart': 'Item updated', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': 0, "item_tprice": 0, "item_dprice": 0,"amount_at_checkout":order.total_amount_at_checkout(),"shipping":order.shipping_charge(),"gst_amount":order.gst_amount()}, status=status.HTTP_200_OK)
             else:
-                return Response({'cart': 'Item not available in cart', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': 0, "item_tprice": 0, "item_dprice": 0}, status=status.HTTP_200_OK)
+                return Response({'cart': 'Item not available in cart', 'amount': order.get_total(), 'tmax_amount': order.get_max_total(), 'qty': order.get_quantity(), 'item_qty': 0, "item_tprice": 0, "item_dprice": 0,"amount_at_checkout":order.total_amount_at_checkout(),"shipping":order.shipping_charge(),"gst_amount":order.gst_amount()}, status=status.HTTP_200_OK)
         else:
             return Response({'cart': 'No Active Orders'}, status=status.HTTP_201_OK)
 

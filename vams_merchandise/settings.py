@@ -124,9 +124,9 @@ if DEBUG:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "vamscentral1",
             "USER": "postgres",
-            "PASSWORD": "prune",
+            "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
-            "PORT": "5433",
+            "PORT": "5432",
         }
     }
 else:
@@ -240,3 +240,12 @@ EMAIL_HOST_PASSWORD = "1$Onemanarmy$2023"
 EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = "www.vamscentral.com <vamscentral@hotmail.com>"
+
+
+
+# GST
+GST_STICHED = 12
+
+# Delivery Charges
+DELIVERY = 40
+ABOVE_AMOUNT = 600

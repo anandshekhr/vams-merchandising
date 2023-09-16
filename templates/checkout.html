@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %} Checkout {% endblock title %}
+{% block head %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+{% endblock head %}
 {% block body %}
 <style>
  
@@ -152,6 +155,7 @@
                <div class="card-body">
                   <h6 class="card-subtitle mb-2 text-muted" style=" color: #000;  font-size: 16px; font-style: normal; font-weight: 400; line-height: normal;"><span>Deliver to:</span> <span id="mainScreenDeliverTo">{{ address.0.name }}, {{ address.0.pincode }}</span> </h6>
                   <h5 class="card-title" style=" color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">Address: <span id="mainScreenAddress">{{ address.0.user_address }}</span></h5>
+                  <h5 class="card-title" style=" color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">Phone: <span id="mainScreenPhone">{{ address.0.addPhoneNumber }}</span></h5>
                </div>
                <div onclick="togglePopup()" style="border-radius: 8px; border: 1px solid #C25729; padding: 8px; color: #C25729;  font-size: 12px; font-style: normal; font-weight: 400; line-height: normal;">
                   Change Address
@@ -170,7 +174,7 @@
                   <!-- Dynamically populate options with addresses as radio buttons -->
                   {% for addr in address %}
                   <label style=" display: flex; flex-direction: row; align-items: center; ">
-                     <input type="radio" name="selectedAddress" value="{{ addr.name }}, {{ addr.pincode }}" onclick="selectAddress('{{ addr.name }}, {{ addr.pincode }}', '{{ addr.user_address }}')">
+                     <input type="radio" name="selectedAddress" value="{{ addr.name }}, {{ addr.pincode }}" onclick="selectAddress('{{ addr.name }}', '{{ addr.user_address }}','{{addr.addPhoneNumber}}');">
                      <div class="card-body" style="text-align: start ;display: flex; flex-direction: row; align-items: baseline; gap: 20px;">
                         <div style="
                         width: 100%;
@@ -180,6 +184,9 @@
                            </h6>
                            <h5 class="card-title" style="color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">
                               Address: {{ addr.user_address }}
+                           </h5>
+                           <h5 class="card-title" style="color: #000;  font-size: 14px; font-style: normal; font-weight: 400; line-height: normal;">
+                              Phone: {{ addr.addPhoneNumber }}
                            </h5>
                         </div>
                         <div>
@@ -392,7 +399,7 @@
       <!-- checkout-area start -->
       <section class="checkout-area pb-70">
          <div class="container container-small">
-            <form action="{% url 'paymentcheckout' totalAmount %}" method="post">
+            {% comment %} <form action="{% url 'paymentcheckout' totalAmount %}" method="post"> {% endcomment %}
                {% csrf_token %}
                <div class="row">
                   <div class="col-lg-6">
@@ -424,9 +431,9 @@
                                                 <div class="product-quantity-cart">
                                                    <div class="product-quantity-form">
                                                       <form action="">
-                                                         <button class="cart-minus cart-minus-ck far fa-minus" id="{{order.item.id}}-cart-minus-btn:{{order.size}}"></button>
-                                                         <input class="cart-input cart-input-ck" type="text" id="{{order.item.id}}-name-value:{{order.size}}" value="{{order.quantity}}">
-                                                         <button class="cart-plus cart-plus-ck far fa-plus" id="{{order.item.id}}-cart-plus-btn:{{order.size}}"></button>
+                                                         <button class="cart-minus cart-minus-co far fa-minus" id="{{order.item.id}}-cart-minus-btn:{{order.size}}"></button>
+                                                         <input class="cart-input cart-input-co" type="text" id="{{order.item.id}}-name-value:{{order.size}}" value="{{order.quantity}}">
+                                                         <button class="cart-plus cart-plus-co far fa-plus" id="{{order.item.id}}-cart-plus-btn:{{order.size}}"></button>
                                                       </form>
                                                    </div>
 
@@ -463,21 +470,21 @@
                               <tbody>
                                  <tr class="cart_item">
                                     <td class="product-name">
-                                       {{order.item.name}} <strong class="product-quantity"> × {{order.quantity}}</strong>
+                                       {{order.item.name}} <strong class="product-quantity" id="checkout-product-qty-{{order.item.id}}"> × {{order.quantity}}</strong>
                                     </td>
-                                    <td class="product-total">
-                                       <span class="amount">₹{{order.item.list_price|floatformat:2}}</span>
+                                    <td class="product-total" id="product-total-{{order.item.id}}">
+                                       <span class="amount">₹{{order.get_final_price|floatformat:2}}</span>
                                     </td>
                                  </tr>
                               </tbody>
                               {% endfor %}
                               <tfoot>
-                                 <tr class="cart-subtotal">
+                                 <tr class="cart-subtotal" id="card-subtotal">
                                     <th>Cart Subtotal</th>
                                     <td><span class="amount">₹{{orderItems.get_total|floatformat:2}}</span></td>
                                  </tr>
                                  {% if shippingCharges > 0 %}
-                                 <tr class="shipping">
+                                 <tr class="shipping" id="shipping-amount">
                                     <th>Shipping</th>
                                     <td>
                                        <ul>
@@ -491,7 +498,7 @@
                                     </td>
                                  </tr>
                                  {% else %}
-                                 <tr class="shipping">
+                                 <tr class="shipping" id="shipping-amount">
                                     <th>Shipping</th>
                                     <td>
                                        <ul>
@@ -505,7 +512,19 @@
                                     </td>
                                  </tr>
                                  {% endif %}
-                                 <tr class="order-total">
+                                 <tr class="shipping" id="gst_amount">
+                                    <th>GST</th>
+                                    <td>
+                                       <ul>
+                                          <li>
+                                             <label>
+                                               <span class="amount">₹{{gst_amount}} </span>
+                                             </label>
+                                          </li>
+                                       </ul>
+                                    </td>
+                                 </tr>
+                                 <tr class="order-total" id="order-total">
                                     <th>Order Total</th>
                                     <td><strong><span class="amount">₹{{totalAmount|floatformat:2}}</span></strong>
                                     </td>
@@ -516,13 +535,13 @@
 
                         <div class="payment-method">
                            <div class="order-button-payment mt-20">
-                              <button type="submit" class="fill-btn">Place order</button>
+                              <a type="button" href="{% url 'paymentcheckout' totalAmount %}" class="fill-btn place-order-btn" style="width: 80%;">Place order</a>
                            </div>
                         </div>
                      </div>
                   </div>
                </div>
-            </form>
+            {% comment %} </form> {% endcomment %}
          </div>
       </section>
       <section class="cart-area pt-100 pb-100">
@@ -576,56 +595,47 @@
              isPopupOpen = false;
          }
      
-         function selectAddress(deliverTo, userAddress) {
+         function selectAddress(deliverTo, userAddress,phone) {
              const mainScreenDeliverTo = document.getElementById("mainScreenDeliverTo");
              mainScreenDeliverTo.textContent = deliverTo;
      
              const mainScreenAddress = document.getElementById("mainScreenAddress");
              mainScreenAddress.textContent = userAddress;
+
+             const mainScreenPhone = document.getElementById("mainScreenPhone");
+             mainScreenPhone.textContent = phone;
      
              closePopup();
          }
      
          function saveNewAddress() {
-            // Gather address details from input fields
-            const first_name = $("#first_name").val();
-            const last_name = $("#last_name").val();
-            const email = $("#email").val();
-            const phone_number = $("#phone_number").val();
-            const country = $("#country").val();
-            const address_line_1 = $("#address_line_1").val();
-            const address_line_2 = $("#address_line_2").val();
-            const city = $("#city").val();
-            const state = $("#state").val();
-            const pincode = $("#pincode").val();
-            
-            // Create the payload object
-            const addressData = {
-                first_name,
-                last_name,
-                email,
-                phone_number,
-                country,
-                address_line_1,
-                address_line_2,
-                city,
-                state,
-                pincode,
-                // Add other fields as needed
-            };
-        
+            domain = window.location.origin;
+
             // Make an AJAX POST request to save the address
             $.ajax({
                 type: "POST",
-                url: "/api/v1/accounts/profile/address/", // Update with your actual URL
-                data: addressData,
+                url: domain + "/api/v1/user/accounts/address/", // Update with your actual URL
+                data: {
+                  name: $("#first_name").val() + " " + $("#last_name").val(),
+                  email:$("#email").val(),
+                  addPhoneNumber:$("#phone_number").val(),
+                  country:$("#country").val(),
+                  address:$("#address_line_1").val()+", "+ $("#address_line_2").val(),
+                  city:$("#city").val(),
+                  state:$("#state").val(),
+                  pincode:$("#pincode").val(),
+                  set_default:true,
+                  address_type:"Home",
+                  user:$('#user_id').val(),
+                  csrfmiddlewaretoken:getCookie('csrftoken'),
+               },
                 success: function (response) {
                     console.log(response);
                     alert("Address saved successfully!");
                     // Reload the page after a short delay
                     setTimeout(function () {
                         location.reload();
-                    }, 1000); // Reload after 1 second (1000 milliseconds)
+                    }, 500); // Reload after 1 second (1000 milliseconds)
                 },
                 error: function (xhr, textStatus, errorThrown) {
                     // Handle errors
@@ -673,8 +683,159 @@
      
              closePopup();
          }
-     
-     </script>
+      
+      $(document).ready(function(){
+         $('.cart-plus-co').click(function(e){
+               //showLoader();
+               e.preventDefault();
+               
+               var elementId = $(this).attr('id').split('-')[0];
+               //console.log(elementId);
+               var size = $(this).attr('id').split(':')[1];
+               //console.log(size);
+               domain = window.location.origin;
+               path_name = '/api/v1/cart/customer/order/add/'; 
+               $.ajax({
+                  type: 'POST',
+                  url: domain+path_name,
+                  data: {
+                     "csrfmiddlewaretoken":getCookie('csrftoken'),
+                     "product" : elementId.toString(),
+                     "size": size.toString(),
+                     "quantity": "1"
+                  },
+                  success: function(response) {
+                     //console.log(response);
+                     if (response){
+                     document.getElementById("product-total-"+elementId).innerHTML ="<span>"+"₹"+response['item_dprice']+"</span>";
+                     document.getElementById("order-total").innerHTML =`<th>Order Total</th><td><strong><span class="amount">₹`+response['amount_at_checkout']+`</span></strong></td>`;
+                     document.getElementById("card-subtotal").innerHTML =`<th>Cart Subtotal</th>
+                                    <td><span class="amount">₹`+response['amount']+`</span></td>`;
+                     document.getElementById("checkout-product-qty-"+elementId).innerHTML =" × "+response['item_qty'];
+                     document.getElementById("cart-number").innerHTML = response['qty'];
+                     //document.getElementById("place-order-btn").href = "/api/v1/cart/payment/checkout/"+response['amount_at_checkout'];
+                     $('.place-order-btn').attr("href","/api/v1/cart/payment/checkout/"+response['amount_at_checkout']);
+                     document.getElementById("gst_amount").innerHTML = `<th>GST</th>
+                                    <td>
+                                       <ul>
+                                          <li>
+                                             <label>
+                                               <span class="amount">₹`+response['gst_amount']+` </span>
+                                             </label>
+                                          </li>
+                                       </ul>
+                                    </td>`;
+                     if (response['shipping'] == 0) {
+                        document.getElementById("shipping-amount").innerHTML = `<th>Shipping</th>
+                                    <td>
+                                       <ul>
+                                          <li>
+                                             <input type="radio" select />
+                                             <label>
+                                                Free Shipping: <span class="amount">₹`+response['shipping']+`</span>
+                                             </label>
+                                          </li>
+                                       </ul>
+                                    </td>`;
+                     }
+                     else {
+                        document.getElementById("shipping-amount").innerHTML = `<th>Shipping</th>
+                                    <td>
+                                       <ul>
+                                          <li>
+                                             <input type="radio" select />
+                                             <label>
+                                                Flat Rate: <span class="amount">₹`+response['shipping']+`</span>
+                                             </label>
+                                          </li>
+                                       </ul>
+                                    </td>`;
+
+                     }
+                  }
+               },
+                  error: function(response){
+                     console.log(response);
+                  },
+               });
+         });
+         
+         $('.cart-minus-co').click(function(e){
+               //showLoader();
+               e.preventDefault();
+               var elementId = $(this).attr('id').split('-')[0];
+               var size = $(this).attr('id').split(':')[1];
+               domain = window.location.origin;
+               path_name = '/api/v1/cart/customer/order/remove/'; //change-this url
+               $.ajax({
+                  type: 'POST',
+                  url: domain+path_name,
+                  data: {
+                    "csrfmiddlewaretoken":getCookie('csrftoken'),
+                     "product" : elementId.toString(),
+                     "size": size.toString(),
+                     "quantity": "1" 
+                  },
+                  success: function(response) {
+                     //console.log(response);
+                     if (response){
+                     document.getElementById("product-total-"+elementId).innerHTML ="<span>"+"₹"+response['item_dprice']+"</span>";
+                     document.getElementById("order-total").innerHTML =`<th>Order Total</th><td><strong><span class="amount">₹`+response['amount_at_checkout']+`</span></strong></td>`;
+                     document.getElementById("card-subtotal").innerHTML =`<th>Cart Subtotal</th>
+                                    <td><span class="amount">₹`+response['amount']+`</span></td>`;
+                     document.getElementById("checkout-product-qty-"+elementId).innerHTML =" × "+response['item_qty'];
+                     document.getElementById("cart-number").innerHTML = response['qty'];
+                     $('.place-order-btn').attr("href","/api/v1/cart/payment/checkout/"+response['amount_at_checkout']);
+                     document.getElementById("gst_amount").innerHTML = `<th>GST</th>
+                                    <td>
+                                       <ul>
+                                          <li>
+                                             <label>
+                                               <span class="amount">₹`+response['gst_amount']+` </span>
+                                             </label>
+                                          </li>
+                                       </ul>
+                                    </td>`;
+
+                     if (response['item_qty'] == 0){
+                              location.reload(true);
+                           }
+                     }
+                     if (response['shipping'] == 0) {
+                        document.getElementById("shipping-amount").innerHTML = `<th>Shipping</th>
+                                    <td>
+                                       <ul>
+                                          <li>
+                                             <input type="radio" select />
+                                             <label>
+                                                Free Shipping: <span class="amount">₹`+response['shipping']+`</span>
+                                             </label>
+                                          </li>
+                                       </ul>
+                                    </td>`;
+                     }
+                     else {
+                        document.getElementById("shipping-amount").innerHTML = `<th>Shipping</th>
+                                    <td>
+                                       <ul>
+                                          <li>
+                                             <input type="radio" select />
+                                             <label>
+                                                Flat Rate: <span class="amount">₹`+response['shipping']+`</span>
+                                             </label>
+                                          </li>
+                                       </ul>
+                                    </td>`;
+
+                     }
+                  },
+                  error: function(response){
+                     console.log(response);
+                  },
+               })
+         });
+      });
+   </script>
      
    </main>
 {% endblock body %}

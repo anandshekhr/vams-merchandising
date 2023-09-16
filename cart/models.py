@@ -4,6 +4,7 @@ from stores.models import *
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from datetime import date
+import decimal
 
 
 User = get_user_model()
@@ -153,6 +154,31 @@ class Order(models.Model):
     
     def get_total_discount(self):
         return self.get_max_total() - self.get_total()
+    
+    def shipping_charge(self):
+        amount = self.get_total()
+
+        if amount > settings.ABOVE_AMOUNT:
+            return 0
+        return 40
+
+    
+    def amount_with_shipping(self):
+        amount = self.get_total()
+
+        if amount > settings.ABOVE_AMOUNT:
+            amount += settings.DELIVERY
+        return amount
+    
+    def gst_amount(self):
+        gst_amount = (float(self.amount_with_shipping()) * (settings.GST_STICHED/100))
+        return round(gst_amount,2)
+
+    
+    def total_amount_at_checkout(self):
+        total_amount = float(self.amount_with_shipping()) + self.gst_amount()
+        return round(total_amount,2)
+    
 
 
     
