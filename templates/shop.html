@@ -440,7 +440,7 @@
          $(".filter-widget-content").change(function () {
             var rating = 'None';
             var discount = '0.0';
-            var appendURL = '/api/v1/products/apparel/?web=True';
+            var appendURL = '/products/apparel/?web=True';
 
             var selectedSizes = getCheckedSizes();
             if (selectedSizes){
@@ -491,7 +491,7 @@
             domain = window.location.origin;
             // Make an AJAX request to get the requested page of products
             $.ajax({
-               url: domain + '/api/v1/products/apparel/?web=True', // Replace with your product list URL
+               url: domain + '/products/apparel/?web=True', // Replace with your product list URL
                type: 'GET',
                data: {
                   page: page,

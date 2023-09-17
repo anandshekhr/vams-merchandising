@@ -170,7 +170,7 @@ $(document).ready(function () {
         return false;
     });
 
-    
+
     // navigation slide menu mobile
     $('.nav-menu').on('click', function () {
         $(this).toggleClass('active');
@@ -244,7 +244,7 @@ jQuery(document).ready(function () {
         console.log("calling ");
         domain = window.location.origin
         console.log(domain);
-        path_name = '/api/v1/accounts/api/v1/user-address/' //change-this url
+        path_name = '/accounts/user-address/' //change-this url
         $.ajax({
             type: 'POST',
             url: domain + path_name,
@@ -265,7 +265,7 @@ jQuery(document).ready(function () {
 function showLocationSearch(value) {
     console.log(value);
     domain = window.location.origin
-    path_name = '/api/v1/stores/suggest-delivery-location/' //change-this url
+    path_name = '/stores/suggest-delivery-location/' //change-this url
     if (value.length < 5) {
         $('#location-list').empty()
         $('#location-list').hide()
@@ -331,7 +331,7 @@ jQuery(document).ready(function () {
         const elementId = $(this).attr('id').split('-')[0]
         const cate = $(this).attr('id').split(":")[1]
         domain = window.location.origin
-        path_name = '/buy/api/v1/customer/order/add/' //change-this url
+        path_name = '/buy/customer/order/add/' //change-this url
         $.ajax({
             type: 'POST',
             url: domain + path_name,
@@ -350,13 +350,13 @@ jQuery(document).ready(function () {
             }
         })
     });
-    
+
     $('.posasf').click(function (e) {
         e.preventDefault();
         const elementId = $(this).attr('id').split('-')[0]
         const cate = $(this).attr('id').split(":")[1]
         domain = window.location.origin
-        path_name = '/buy/api/v1/customer/order/add/' //change-this url
+        path_name = '/buy/customer/order/add/' //change-this url
         $.ajax({
             type: 'POST',
             url: domain + path_name,
@@ -374,13 +374,13 @@ jQuery(document).ready(function () {
             }
         })
     });
-    
+
     $('.minus-bttn').click(function (e) {
         e.preventDefault();
         const elementId = $(this).attr('id').split('-')[0]
         const cate = $(this).attr('id').split(":")[1]
         domain = window.location.origin
-        path_name = '/buy/api/v1/customer/order/remove/' //change-this url
+        path_name = '/buy/customer/order/remove/' //change-this url
         $.ajax({
             type: 'POST',
             url: domain + path_name,
@@ -508,10 +508,10 @@ var getCookie = function (name) {
 const g_csrftoken = getCookie('csrftoken');
 
 function showProducts(value) {
-    
+
     console.log(value)
     domain = window.location.origin
-    path_name = '/api/v1/stores/products/' //change-this url
+    path_name = '/stores/products/' //change-this url
     if (value.length < 3) {
         $('.suggestProduct').empty()
         $('.suggestProduct').hide()
@@ -566,7 +566,7 @@ function showProducts(value) {
 var checkStoreAvailabilty = function (Fformatted_address) {
     var availablility = null;
     domain = window.location.origin
-    path_name = '/api/v1/stores/availability/'
+    path_name = '/stores/availability/'
     $.ajax({
         type: 'GET',
         url: domain + path_name,
@@ -663,7 +663,7 @@ function get_otp(elm) {
     input = $('#' + elm).val()
     domain = window.location.origin
     //domain = 'https://ashekhar.pythonanywhere.com'
-    path_name = '/api/v1/accounts/register/get_otp/'
+    path_name = '/accounts/register/get_otp/'
     $('#error_login').empty()
     $('#button_submit').attr('disabled')
     $.ajax({
@@ -719,7 +719,7 @@ function verify_otp(input_id) {
         $('#error_otp').hide()
         domain = window.location.origin
         //domain = 'https://ashekhar.pythonanywhere.com'
-        path_name = '/api/v1/accounts/register/verify/'
+        path_name = '/accounts/register/verify/'
         $.ajax({
             type: 'POST',
             url: domain + path_name,
@@ -798,7 +798,7 @@ function showProductDetails(productId) {
 }
 
 
-$(document).ready(function() {
+$(document).ready(function () {
     $('.list-group-item').click(function (event) {
         event.preventDefault();
         var categoryId = $(this).data('category-id');
@@ -812,11 +812,11 @@ $(document).ready(function() {
                     var product = data.products[i];
                     var card = $('<div class="owl-items">\
                             <div class="col-lg-12 p-3 rounded-0 posr">\
-                                <h4 class="ls-3 font-xsssss text-white text-uppercase bg-current fw-700 p-2 d-inline-block posa rounded-3">'+product.discount+'% off</h4>\
+                                <h4 class="ls-3 font-xsssss text-white text-uppercase bg-current fw-700 p-2 d-inline-block posa rounded-3">'+ product.discount + '% off</h4>\
                                 <a href="#" class="posa right-0 top-0 mt-3 me-3"><i class="ti-heart font-xs text-grey-500"></i></a>\
                                 <div class="clearfix"></div>\
                                 <a class="d-block text-center p-2" onclick="showProductDetails({{dp.id}})">\
-                                    <img src="/media/'+product.image+'" alt="product-image"  class="w-100 mt-1 d-inline-block" height="171px" width="148px">\
+                                    <img src="/media/'+ product.image + '" alt="product-image"  class="w-100 mt-1 d-inline-block" height="171px" width="148px">\
                                 </a>\
                                 <div class="star d-inline text-left">\
                                     {% for i in 1|range:5 %}\
@@ -857,7 +857,7 @@ $(document).ready(function() {
 function item_add(self) {
     var owl = $(self);
     owl.owlCarousel();
-    
+
     var element_id = self.id.split("-")[0];
     var cate = self.id.split(":")[1];
     owl.trigger('replace.owl.carousel', [$, 0]);

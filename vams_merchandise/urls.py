@@ -15,12 +15,15 @@ Including another URLconf
 """
 from .settings import *
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include, re_path,register_converter
 from django.conf import settings
 from django.conf.urls.static import static
 from dj_rest_auth.views import PasswordResetConfirmView
 from django.conf.urls import handler404, handler500
+from .utils import HashIdConverter,FloatConverter
 
+register_converter(HashIdConverter, "hashid")
+register_converter(FloatConverter, "float")
 
 
 admin.site.site_header = env.str('ADMIN_SITE_HEADER')
@@ -30,20 +33,20 @@ admin.site.site_title = env.str('ADMIN_SITE_TITLE')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('Home.urls')),
-    path('api/v1/about/', include('about.urls')),
-    path('api/v1/cart/', include('cart.urls')),
-    path('api/v1/stores/', include('stores.urls')),
-    path('api/v1/products/', include('products.urls')),
-    path('api/v1/user/', include('user.urls')),
-    path('api/v1/wishlist/', include('wishlist.urls')),
-    path("api/v1/accounts/", include("dj_rest_auth.urls")),
-    path("api/v1/accounts/registration/",
+    path('about/', include('about.urls')),
+    path('cart/', include('cart.urls')),
+    path('stores/', include('stores.urls')),
+    path('products/', include('products.urls')),
+    path('user/', include('user.urls')),
+    path('wishlist/', include('wishlist.urls')),
+    path("accounts/", include("dj_rest_auth.urls")),
+    path("accounts/registration/",
          include("dj_rest_auth.registration.urls")),
     path(
         'rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/',
         PasswordResetConfirmView.as_view(), name='password_reset_confirm'
     ),
-    path('api/v1/account/password/reset/',
+    path('account/password/reset/',
          include('django_rest_passwordreset.urls', namespace='password_reset')),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,

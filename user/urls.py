@@ -55,7 +55,7 @@ urlpatterns = (
             name="orderhistoryuser",
         ),
         path(
-            "accounts/user/ordershistory/order-detail/<int:pk>/",
+            "accounts/user/ordershistory/order-detail/<hashid:pk>/",
             views.userOrderDetailExpanded,
             name="orderhistorydetail",
         ),
@@ -68,12 +68,12 @@ urlpatterns = (
         ),
         path("accounts/profile/address/", views.user_address, name="profile-address"),
         path(
-            "accounts/profile/address/delete/<int:pk>",
+            "accounts/profile/address/delete/<hashid:pk>",
             views.delete_user_address,
             name="delete-profile-address",
         ),
         path(
-            "accounts/profile/address/set-primary/<int:pk>",
+            "accounts/profile/address/set-primary/<hashid:pk>",
             views.set_primary_address,
             name="set-primary-profile-address",
         ),
@@ -85,7 +85,7 @@ urlpatterns = (
             name="profile-notification",
         ),
         path("accounts/profile/coupon/", views.user_coupon, name="profile-coupon"),
-        path("accounts/profile/refund/<int:pk>",views.refund_page,name="refund-status"),
+        path("accounts/profile/refund/<hashid:pk>",views.refund_page,name="refund-status"),
         path("accounts/user-exists/", views.UserExistView.as_view(), name="user-exists"),
         path("accounts/address/", views.UserAddressAPI.as_view(), name="user-address"),
     ]

@@ -549,7 +549,7 @@
          function getPincodeDeliveryValidation(value) {
              domain = window.location.origin;
              $.ajax({
-                 url: domain + '/api/v1/stores/location-availability/',
+                 url: domain + '/stores/location-availability/',
                  type: 'GET',
                  body: {
                      pincode: value
@@ -607,7 +607,7 @@
             // Make an AJAX POST request to save the address
             $.ajax({
                 type: "POST",
-                url: domain + "/api/v1/user/accounts/address/", // Update with your actual URL
+                url: domain + "/user/accounts/address/", // Update with your actual URL
                 data: {
                   name: $("#first_name").val() + " " + $("#last_name").val(),
                   email:$("#email").val(),
@@ -687,7 +687,7 @@
                var size = $(this).attr('id').split(':')[1];
                //console.log(size);
                domain = window.location.origin;
-               path_name = '/api/v1/cart/customer/order/add/'; 
+               path_name = '/cart/customer/order/add/'; 
                $.ajax({
                   type: 'POST',
                   url: domain+path_name,
@@ -706,8 +706,8 @@
                                     <td><span class="amount">₹`+response['amount']+`</span></td>`;
                      document.getElementById("checkout-product-qty-"+elementId).innerHTML =" × "+response['item_qty'];
                      document.getElementById("cart-number").innerHTML = response['qty'];
-                     //document.getElementById("place-order-btn").href = "/api/v1/cart/payment/checkout/"+response['amount_at_checkout'];
-                     $('.place-order-btn').attr("href","/api/v1/cart/payment/checkout/"+response['amount_at_checkout']);
+                     //document.getElementById("place-order-btn").href = "/cart/payment/checkout/"+response['amount_at_checkout'];
+                     $('.place-order-btn').attr("href","/cart/payment/checkout/"+response['amount_at_checkout']);
                      document.getElementById("gst_amount").innerHTML = `<th>GST</th>
                                     <td>
                                        <ul>
@@ -759,7 +759,7 @@
                var elementId = $(this).attr('id').split('-')[0];
                var size = $(this).attr('id').split(':')[1];
                domain = window.location.origin;
-               path_name = '/api/v1/cart/customer/order/remove/'; //change-this url
+               path_name = '/cart/customer/order/remove/'; //change-this url
                $.ajax({
                   type: 'POST',
                   url: domain+path_name,
@@ -778,7 +778,7 @@
                                     <td><span class="amount">₹`+response['amount']+`</span></td>`;
                      document.getElementById("checkout-product-qty-"+elementId).innerHTML =" × "+response['item_qty'];
                      document.getElementById("cart-number").innerHTML = response['qty'];
-                     $('.place-order-btn').attr("href","/api/v1/cart/payment/checkout/"+response['amount_at_checkout']);
+                     $('.place-order-btn').attr("href","/cart/payment/checkout/"+response['amount_at_checkout']);
                      document.getElementById("gst_amount").innerHTML = `<th>GST</th>
                                     <td>
                                        <ul>

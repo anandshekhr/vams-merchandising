@@ -565,7 +565,7 @@
 
 			domain = window.location.origin;
 			$.ajax({
-				url: domain + '/api/v1/products/apparel/?web=True&price='+minValue+','+maxValue, // Replace with your product list URL
+				url: domain + '/products/apparel/?web=True&price=' + minValue + ',' + maxValue, // Replace with your product list URL
 				type: 'GET',
 				success: function (response) {
 					//console.log(response);
@@ -713,7 +713,7 @@ function showMessage(type, message) {
 	domain = window.location.origin;
 	$.ajax({
 
-		url: domain +'/api/v1/products/handle-messages/',  // Replace with your message handling URL
+		url: domain + '/products/handle-messages/',  // Replace with your message handling URL
 		method: 'GET',  // Use GET to send a message to the server
 		data: {
 			type: type,
@@ -734,7 +734,7 @@ function onClickAddToCartQuantity(product_id) {
 
 function addToWislistAPIRequest(id) {
 	domain = window.location.origin
-	path_name = "api/v1/wishlist/add/"
+	path_name = "wishlist/add/"
 	console.log(id);
 	jQuery(document).ready(function () {
 		$.ajax({
@@ -759,7 +759,7 @@ jQuery(document).ready(function () {
 		e.preventDefault();
 		const elementId = $(this).attr('id').split('-')[1];
 		domain = window.location.origin;
-		path_name = '/api/v1/wishlist/add/';
+		path_name = '/wishlist/add/';
 
 		$.ajax({
 			type: 'POST',
@@ -855,7 +855,7 @@ $(document).on('submit', '#submit-review-form', function (e) {
 	domain = window.location.origin;
 	$.ajax({
 		type: 'POST',
-		url: domain + '/api/v1/products/reviews',
+		url: domain + '/products/reviews',
 		headers: { 'Authorization': 'Token ' + token },
 		data: {
 			review: $('#product-review').val(),
@@ -927,7 +927,7 @@ $(document).on("submiadat", "#add-to-cart-form", function (e) {
 	var csrftoken = getCookie('csrftoken');
 
 	$.ajax({
-		url: domain + '/api/v1/customer/order/add/',
+		url: domain + '/customer/order/add/',
 		type: 'POST',
 		headers: { 'Authorization': 'Token ' + token, 'X-CSRFTOKEN': csrftoken },
 		body: {

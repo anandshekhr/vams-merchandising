@@ -2,24 +2,22 @@ from django.urls import path,register_converter
 from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
-from .utils import FloatConverter
 
-# register_converter(converters.RomanNumeralConverter, 'roman')
-register_converter(FloatConverter, 'float')
+
 
 urlpatterns = [
-    path("addtocart/<int:pk>/<str:size>", addToCart, name="addtocart"),
-    path("cart/add/<int:pk>", addToCartWithSizeQuantity,name="add-to-cart-size-qty"),
+    path("addtocart/<hashid:pk>/<hashid:size>", addToCart, name="addtocart"),
+    path("cart/add/<hashid:pk>", addToCartWithSizeQuantity,name="add-to-cart-size-qty"),
     path("ordersummary/",cartCheckoutPageView,name="cartview"),
     path("checkout/",checkoutPage,name="payment-checkout"),
-    path("removesingleitemfromcart/<int:pk>",removeSingleItemFromCart,name="removesingleitemfromcart"),
+    path("removesingleitemfromcart/<hashid:pk>",removeSingleItemFromCart,name="removesingleitemfromcart"),
     path("payment/checkout/<float:amount>",orderPaymentRequest,name="paymentcheckout"),
     path("paymentstatusupdate/",paymentStatusAndOrderStatusUpdate,name="paymentstatusupdate"),
-    path("cart/delete/item/<int:pk>",deleteItemFromCart,name="delete-from-cart"),
-    path("order-summary/<int:pk>/", order_summary, name="ordersummary"),
-    path("payment-pending/<int:pk>/",
+    path("cart/delete/item/<hashid:pk>",deleteItemFromCart,name="delete-from-cart"),
+    path("order-summary/<hashid:pk>/", order_summary, name="ordersummary"),
+    path("payment-pending/<hashid:pk>/",
          pending_payment_page, name="pending-payment"),
-    path("payment-failed/<int:pk>/",
+    path("payment-failed/<hashid:pk>/",
          failed_payment_page, name="failed-payment"),
 
      # api

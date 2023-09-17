@@ -249,3 +249,7 @@ GST_STICHED = 12
 # Delivery Charges
 DELIVERY = 40
 ABOVE_AMOUNT = 600
+
+
+# Hashing 
+HASHIDS_SALT = 'jkqbdvaiacobaowr27834691230jnfbqoey92tribhwefq8w9r1@E23jr23r!3hrg81t43r1r'

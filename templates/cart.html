@@ -123,7 +123,7 @@
                var size = $(this).attr('id').split(':')[1];
                
                domain = window.location.origin
-               path_name = '/api/v1/cart/customer/order/add/' 
+               path_name = '/cart/customer/order/add/' 
                $.ajax({
                   type: 'POST',
                   url: domain+path_name,
@@ -152,7 +152,7 @@
                var elementId = $(this).attr('id').split('-')[0];
                var size = $(this).attr('id').split(':')[1];
                domain = window.location.origin
-               path_name = '/api/v1/cart/customer/order/remove/' //change-this url
+               path_name = '/cart/customer/order/remove/' //change-this url
                $.ajax({
                   type: 'POST',
                   url: domain+path_name,

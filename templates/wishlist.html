@@ -261,7 +261,7 @@
           overlay.style.display = "block";
           var domain = window.location.origin;
           $.ajax({
-              url: domain + "/api/v1/products/details/",
+              url: domain + "/products/details/",
               type: "GET",
               data: {
                   id: product_id
@@ -286,7 +286,7 @@
           
           // Add to cart
           $.ajax({
-              url: domain + "/api/v1/cart/move-to-cart/",
+              url: domain + "/cart/move-to-cart/",
               type: "POST",
               data: {
                   "csrfmiddlewaretoken":getCookie('csrftoken'),
