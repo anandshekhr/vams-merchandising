@@ -19,22 +19,20 @@ class HashIdConverter:
     regex = '[a-zA-Z0-9]{8,}'
 
     def to_python(self, value):
-        print(type(value))
         return h_decode(value)
 
     def to_url(self, value):
         return h_encode(value)
     
 class FloatConverter:
-    # regex = '[\d\.\d]+'
-    regex = '[0-9]+\.?[0-9]+'
+    regex = '[\d\.\d]+'
+    # regex = '[0-9]'
 
     def to_python(self, value):
-        
         return float(value)
 
     def to_url(self, value):
-        return '{}'.format(value)  
+        return '{}'.format(value)
 
 class RomanNumeralConverter:
     regex = '[MDCLXVImdclxvi]+'

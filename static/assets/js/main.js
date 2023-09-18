@@ -723,19 +723,14 @@ function showMessage(type, message) {
 }
 
 function onClickAddToCartQuantity(product_id) {
-	// console.log('printCall')
 	var qty = document.getElementById('pro-qty').value;
-	console.log(qty);
 	var size = document.querySelectorAll("");
-	console.log(size);
 	var url = "{% url 'productdetail' pk=" + product_id + " qty=" + qty + " %}";
-	// window.location.href = url;
 }
 
 function addToWislistAPIRequest(id) {
 	domain = window.location.origin
 	path_name = "wishlist/add/"
-	console.log(id);
 	jQuery(document).ready(function () {
 		$.ajax({
 			type: 'GET',
@@ -770,7 +765,6 @@ jQuery(document).ready(function () {
 			},
 			success: function (response) {
 				if (response) {
-					console.log(response);
 					location.reload(true);
 				}
 			}
@@ -797,13 +791,7 @@ var getCookie = function (name) {
 	return cookieValue;
 };
 const stars = document.querySelectorAll('.star');
-// stars.forEach((star, index) => {
-// 	star.addEventListener('click', () => {
-// 		// Send the selected rating to the server or update UI
-// 		const selectedRating = index + 1;
-// 		console.log('Selected Rating:', selectedRating);
-// 	});
-// });
+
 function updateStarRating(starRating, rating) {
 	const stars = starRating.querySelectorAll('.star');
 	stars.forEach(star => {
@@ -841,14 +829,6 @@ stars.forEach(star => {
 
 $(document).on('submit', '#submit-review-form', function (e) {
 	e.preventDefault();
-	// const stars = document.querySelectorAll('.star');
-	// stars.forEach((star, index) => {
-	// 	star.addEventListener('click', () => {
-	// 		// Send the selected rating to the server or update UI
-	// 		const selectedRating = index + 1;
-	// 		console.log('Selected Rating:', selectedRating);
-	// 	});
-	// });
 
 	const token = getCookie('token');
 
@@ -915,15 +895,10 @@ $(document).on("submiadat", "#add-to-cart-form", function (e) {
 	e.preventDefault();
 	const parentDiv = document.getElementById('choose-size');
 	var qty = document.getElementById('pro-qty').value;
-	console.log(qty);
 	const size = parentDiv.querySelector('input[type="radio"]:checked').value;
-	console.log(size);
 	const productid = document.getElementById('get-single-product-id').value;
-	console.log(productid);
 	domain = window.location.origin;
-	console.log(domain);
 	var token = getCookie('token');
-	console.log(token);
 	var csrftoken = getCookie('csrftoken');
 
 	$.ajax({
