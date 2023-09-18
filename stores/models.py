@@ -40,17 +40,18 @@ class PoliciesDetails(models.Model):
     return_policy = QuillField(null=True,blank=True)
     shipping_and_delivery_policy = QuillField(null=True,blank=True)
     payment_type = QuillField(null=True,blank=True)
+    privacy_policy = QuillField(null=True,blank=True)
 
     
     class Meta:
-        verbose_name = _("PoliciesDetails")
-        verbose_name_plural = _("PoliciesDetailss")
+        verbose_name = _("Policies")
+        verbose_name_plural = _("Policies")
 
     def __str__(self):
-        return "Policies Details"
+        return "Policies"
 
     def get_absolute_url(self):
-        return reverse("PoliciesDetails_detail", kwargs={"pk": self.pk})
+        return reverse("Policies_detail", kwargs={"pk": self.pk})
     
 class FAQ(models.Model):
 

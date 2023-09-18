@@ -80,7 +80,9 @@ def register(request):
             messages.info(request, "Password didn;t matched!")
             return redirect("register")
     else:
-        return render(request, "register.html")
+        policies = PoliciesDetails.objects.get()
+        context = {'policy': policies}
+        return render(request, "register.html",context)
 
 
 def set_token_cookie(response, token):
