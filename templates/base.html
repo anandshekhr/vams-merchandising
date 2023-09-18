@@ -12,6 +12,9 @@
 <head>
    <!-- Google tag (gtag.js) -->
    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVTJVHLQP8"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   <link rel="stylesheet" href="{% static 'style.css' %}">
+
    <script>
    window.dataLayer = window.dataLayer || [];
    function gtag(){dataLayer.push(arguments);}
@@ -69,6 +72,49 @@
              {% comment %} overflow-x: auto !important; {% endcomment %}
          }
      }
+   
+
+  #myAccountDropdown ul.show {
+      display: block;
+  }
+  #myAccountDropdown {
+   position: relative;
+   display: inline-block;
+}
+
+#myAccountDropdown span {
+   cursor: pointer;
+   padding: 10px 20px;
+   background-color: #f1f1f1;
+   color: #333;
+   border-radius: 4px;
+}
+
+#myAccountDropdown ul {
+   display: none;
+   position: relative;
+   
+   z-index: 1;
+   list-style: none;
+   padding: 0;
+   margin: 0;
+}
+
+#myAccountDropdown ul li {
+   padding: 10px;
+   text-align: left;
+}
+
+#myAccountDropdown ul li a {
+   text-decoration: none;
+   color: #333;
+   display: block;
+   padding: 8px;
+}
+
+#myAccountDropdown ul li a:hover {
+   background-color: #f1f1f1;
+}
    </style>
 </head>
 
@@ -805,9 +851,33 @@
                      </div>
                   </div>
                </div>
-               <div class="mobile-menu d-lg-none fix"></div>
+               <div>
+                  <div class="card-body p-0 mt-4" id="myAccountDropdown">
+                      <span id="accountToggle">My Account</span>
+                      <ul class="list-inline mb-0">
+                          <li class="list-inline-item d-block me-0">
+                              <a href="{% url 'profile-address' %}" class="pt-2 pb-2 d-flex align-items-center">
+                                  <i class="btn-round-sm bg-gold-gradiant text-white feather-map-pin font-xss me-3"></i>
+                                  <h4 style="margin-right: 8px;" class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Saved Address</h4>
+                                  <i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i>
+                              </a>
+                          </li>
+                          <li class="list-inline-item d-block me-0">
+                              <a href="{% url 'profile-orders' %}" class="pt-2 pb-2 d-flex align-items-center">
+                                  <i class="btn-round-sm bg-mini-gradiant text-white feather-hard-drive font-xss me-3"></i>
+                                  <h4 style="margin-right: 8px;" class="fw-600 font-xsss ls-0 text-grey-700 mb-0 mt-0">Orders</h4>
+                                  <i class="ti-angle-right font-xsssss text-grey-500 ms-auto mt-1"></i>
+                              </a>
+                          </li>
+                      </ul>
+                  </div>
+                  <div style="margin-top: -20px;z-index: 7; position: relative;"  class="mobile-menu d-lg-none fix"></div>
+              </div>
+              
                <div class="offset-profile-action d-xl-none">
                   <div class="offset-widget mb-40">
+                     
+                     
                      <div class="action-list action-list-header1">
                         {% comment %} <div class="action-item action-item-cart">
                            <a href="javascript:void(0)" class="view-cart-button">
@@ -1324,7 +1394,14 @@
    </div>
    <!-- back to top end -->
 
+   <script>
+      const accountToggle = document.getElementById("accountToggle");
+    const dropdownMenu = document.querySelector("#myAccountDropdown ul");
 
+    accountToggle.addEventListener("click", function () {
+        dropdownMenu.classList.toggle("show");
+    });
+  </script>
    <!-- JS here -->
    <script src="{% static 'assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
    <script src="{% static 'assets/js/vendor/waypoints.min.js' %}"></script>
