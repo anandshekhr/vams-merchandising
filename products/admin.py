@@ -30,6 +30,19 @@ class ProductItemForm(forms.ModelForm):
 
 class ProductsAdmin(admin.ModelAdmin):
     form = ProductItemForm
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['slug'].widget.attrs['placeholder'] = "Enter Slug in this format: brand-size-color-productname"
+        form.base_fields['name'].widget.attrs['placeholder'] = "Enter product name"
+        form.base_fields['longname'].widget.attrs['placeholder'] = "Enter product name with some details"
+        form.base_fields['name'].widget.attrs['placeholder'] = "Enter product name"
+        form.base_fields['desc'].widget.attrs['placeholder'] = "Enter product description here"
+        form.base_fields['unit'].widget.attrs['placeholder'] = "Enter unit as e.g. 'Pack of 1'"
+        form.base_fields['brand'].widget.attrs['placeholder'] = "Enter product brand here"
+
+        return form
+
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 

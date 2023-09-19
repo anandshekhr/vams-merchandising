@@ -90,18 +90,16 @@ def handle_messages(request):
 
     return JsonResponse({'status': 'ok'})
 
-def productDetailsPageView(request, pk):
-    counter = 0
-    a = 0
-
+def productDetailsPageView(request,subcategory,slug):
+   
     # filter product for images, reviews and ratings
-    product = Products.objects.get(pk=pk)
+    product = Products.objects.get(slug=slug)
     rating = ProductReviewAndRatings.objects.filter(product=product).aggregate(
         Avg("ratings")
     )
     reviews = ProductReviewAndRatings.objects.filter(product=product, is_approved=True)
     total_reviews_count = reviews.count()
-    related_products = Products.objects.filter(category__contains=[product.category[0]])
+    related_products = Products.objects.filter(subcategory=product.subcategory)
 
     # for greyed stars
     nonrating = 5 - int(
@@ -245,7 +243,7 @@ class ProductReviewsAPI(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def products_list(request):
+def products_list(request,subcategory=None):
     # Get filter options from request (e.g., category)
     category = request.GET.get('category')
     size = request.GET.get('size')
@@ -260,6 +258,11 @@ def products_list(request):
     
     # Retrieve all products or filter by category
     products = Products.objects.all()
+    if subcategory:
+        subcategory = subcategory.replace('[','').replace(']','').replace("'","").replace(' ','').split(',')
+        products = products.filter(category__contains=subcategory)
+
+    
     if category:
         products = products.filter(subcategory=category)
     
@@ -307,6 +310,6 @@ def products_list(request):
             'pagination_product_list':product_list_pagination_html.content.decode(),
         })
     else:
-        context = {'products': product_page}
+        context = {'products': product_page,'category':product_page[0].category}
         # For regular requests, return the HTML template
         return render(request, 'shop.html', context=context)

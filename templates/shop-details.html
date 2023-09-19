@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Product Detail{% endblock title %}
+{% block title %}Online Shopping Site for Fashion & Lifestyle in India{% endblock title %}
 {% block body %}
 <!-- Add your site or application content here -->
 <style>
@@ -34,9 +34,6 @@
 
                   {{ message }}
                </span>
-               {% comment %} <span>
-                  <a href="{% url 'cartview' %}" type="button" class="btn btn-warning-modified" style="float:right"><i class="fal fa-shopping-bag"> View Cart</i></a>
-               </span> {% endcomment %}
           </div>
          {% endfor %}
          <script>
@@ -46,31 +43,14 @@
          </script> 
       {% endif %}
       <!-- page title area start  -->
-      {% comment %} <section class="page-title-area" data-background="{% static 'assets/img/bg/page-title-bg.jpg' %}">
-         <div class="container">
-            <div class="row">
-               <div class="col-lg-12">
-                  <div class="page-title-wrapper text-center">
-                     <h1 class="page-title mb-10">Shop</h1>
-                     <div class="breadcrumb-menu">
-                        <nav aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs">
-                           <ul class="trail-items">
-                              <li class="trail-item trail-begin"><a href="{% url 'home' %}"><span>Home</span></a></li>
-                              <li class="trail-item trail-end"><span>{{product.name}}</span></li>
-                           </ul>
-                        </nav> {% endcomment %}
-                        <div class="breadcrumb-menu-edit">
-                           <ol class="breadcrumb">
-                              <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
-                              <li class="breadcrumb-item active"><span>{{product.name}}</span></li>
-                           </ol>
-                       </div>
-                     {% comment %} </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </section> {% endcomment %}
+      
+      <div class="breadcrumb-menu-edit">
+         <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
+            <li class="breadcrumb-item active"><span>{{product.name}}</span></li>
+         </ol>
+      </div>
+                     
       <!-- page title area end  -->
 
       <!-- shop details area start  -->
@@ -304,24 +284,14 @@
                   {% for product in related_products %}
                   <div class="swiper-slide">
                         {% comment %} {% if 'best-seller' in product.category %} {% endcomment %}
-                        <div class="single-product">
+                        <div class="single-product-st2">
                            <div class="product-image pos-rel">
-                              <a href="{% url 'productdetail' pk=product.id %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"  width="265px" height="390px"></a>
-                              {% comment %} <div class="product-action">
-                                 <a href="#" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                 <a href="#" class="wishlist-btn"><i class="fal fa-heart"></i></a>
-                                 <a href="#" class="compare-btn"><i class="fal fa-exchange"></i></a>
-                              </div>{% endcomment %}
+                              <a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"  width="265px" height="390px"></a>
+                              
                               <div class="product-action-bottom">
-                                 <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
-                                 {% comment %} <a href="{% url 'addtocart' pk=product.id size="L" %}" class="add-cart-btn"><i
-                                       class="fal fa-shopping-bag"></i>Add
-                                    to
-                                    Cart</a> {% endcomment %}
-                                 {% comment %} <a href="{% url 'add-to-wishlist' product.id %}" class="wishlist-btn"><i class="fal fa-heart"></i></a> {% endcomment %}
+                                 <a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                  <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
-                                          
-                              </div> 
+                              </div>
                               {% if product.discount %}
                               <div class="product-sticker-wrapper">
                                  <span class="product-sticker discount">-{{product.discount|floatformat:0}}%</span>
@@ -334,7 +304,7 @@
                            </div>
                            <div class="product-desc">
                               <div class="product-name" style="color:grey;">{{product.brand}}</div>
-                              <div class="product-name"><a href="{% url 'productdetail' pk=product.id %}">{{product.name}}</a></div>
+                              <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}">{{product.name}}</a></div>
                               <div class="product-price">
                                  <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
                                  <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>

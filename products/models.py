@@ -12,6 +12,7 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from base64 import b64encode
+from django.utils.text import slugify
 User = get_user_model()
 import os
 # from dotenv import load_dotenv
@@ -20,7 +21,7 @@ import os
 user = get_user_model()
 
 CATEGORIES = (('new-arrival', 'New Arrival'), ('best-seller', 'Best Seller'), ('trending', 'Trend Products'),
-              ('Featured Products', 'Featured Products'), ('kids-collection', 'Kids Collection'),('hot-collection','Hot Collection'))
+              ('Featured Products', 'Featured Products'), ('kids-collection', 'Kids Collection'),('hot-collection','Hot Collection'),('men-collection', 'Men Collection'),('women-collection', 'Women Collection'),('alto-collection','Alto Collection'))
 TAGS = (('cotton', 'Cotton'), ('synthetic',
                                'Synthetic'), ('woolen', 'Woolen'), ('polyster', 'Polyster'),('sports','Sports'),('running','Running'))
 SIZES = (('XS','XS'),('S','S'),('M','M'),('L','L'),('XL','XL'),('XXL','XXL'),('XXXL','XXXL'),('6','6'),('7','7'),('8','8'),('9','9'),('10','10'),('11','11'),('12','12'),('13','13'),('Double, King','Double, King'),('Double, Queen','Double, Queen'),('Single','Single'),('free-size','Free Size'))
@@ -93,6 +94,7 @@ class VendorBankAccountDetail(models.Model):
 class Products(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150)
+    slug = models.SlugField(_("Slug Field"),unique=True)
     longname = models.CharField(
         max_length=1000, default="", null=True, blank=True)
     desc = QuillField(null=True, blank=True)
@@ -127,6 +129,10 @@ class Products(models.Model):
 
     def __str__(self):
         return "Name: {} \tUnit: {}\t MRP: {}".format(self.name, self.unit, self.max_retail_price)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def get_attrib_id(self):
         return self.id
@@ -267,6 +273,7 @@ class Banners(models.Model):
         _("Banner Position"), max_length=255, choices=BannerPosition, null=True, blank=True), blank=True, null=True)
     banner_name = models.CharField(
         _("Banner Name"), max_length=50, null=True, blank=True)
+    banner_product_category = models.CharField(_("Banner Product Category"), max_length=50, choices=CATEGORIES,null=True,blank=True)
     banner_desc = QuillField(null=True, blank=True)
     # banner_images = models.ImageField(
         # _("Banner Image"), upload_to="banners/media/images/%Y/%m/%d", height_field=None, width_field=None, max_length=None)

@@ -6,9 +6,9 @@ from django.conf.urls.static import static
 api = settings.API_VERSION
 
 urlpatterns = [
-    path("details/<hashid:pk>/",productDetailsPageView,name="productdetail"),
+    path("apparels/<str:subcategory>/<slug:slug>",productDetailsPageView,name="productdetail"),
+    path("apparels/<str:subcategory>/",products_list,name="show-all-products"),
     path('handle-messages/', handle_messages, name='handle_messages'),
-    path("apparel/",products_list,name="show-all-products"),
 
     #APIs
     path("all",ProductAPI.as_view(),name="allProducts"),

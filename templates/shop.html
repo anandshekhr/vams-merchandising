@@ -56,16 +56,18 @@
                         </div>
                      </div>
                   </div>
+                  <input type="hidden" id="product-category" name="product-category" value="{{products.0.category}}">
                   <div class="products-wrapper">
                      {% for product in products %}
                      <div class="single-product single-product-st2">
+                        
                         <div class="product-image pos-rel">
-                           <a href="{% url 'productdetail' product.id %}" class=""><img
+                           <a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}" class=""><img
                                  src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"
                                  width="265px" height="350px">
                            </a>
                            <div class="product-action-bottom">
-                              <a href="{% url 'productdetail' product.id %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                              <a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                               <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
                            </div>
                            {% if product.discount %}
@@ -84,7 +86,7 @@
                         </div>
                         <div class="product-desc">
                            <div class="product-name" style="color:grey;">{{product.brand}}</div>
-                           <div class="product-name"><a href="{% url 'productdetail' product.id %}">{{product.name}}</a>
+                           <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}">{{product.name}}</a>
                            </div>
                            <div class="product-price">
                               <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
@@ -107,6 +109,10 @@
                            </ul>
                         </div>
                      </div>
+                     {% empty %}
+                     <tr>
+                        <td colspan='6'>No items to display</td>
+                     </tr>
                      {% endfor %}
                   </div>
 
@@ -440,7 +446,8 @@
          $(".filter-widget-content").change(function () {
             var rating = 'None';
             var discount = '0.0';
-            var appendURL = '/products/apparel/?web=True';
+            var category = document.getElementById('product-category').value;
+            var appendURL = '/products/apparels/'+category+'/?web=True';
 
             var selectedSizes = getCheckedSizes();
             if (selectedSizes){
@@ -491,7 +498,7 @@
             domain = window.location.origin;
             // Make an AJAX request to get the requested page of products
             $.ajax({
-               url: domain + '/products/apparel/?web=True', // Replace with your product list URL
+               url: domain + '/products/apparel/'+category+'/?web=True', // Replace with your product list URL
                type: 'GET',
                data: {
                   page: page,
