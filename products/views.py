@@ -310,6 +310,6 @@ def products_list(request,subcategory=None):
             'pagination_product_list':product_list_pagination_html.content.decode(),
         })
     else:
-        context = {'products': product_page,'category':product_page[0].category}
+        context = {'products': product_page}
         # For regular requests, return the HTML template
         return render(request, 'shop.html', context=context)
