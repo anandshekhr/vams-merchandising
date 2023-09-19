@@ -401,14 +401,14 @@
                            <div class="wishlist_card">
                               {% for order in orderItems.items.all %}
                               <div class="wishlist_wrap">
-                                 <span class="product-thumbnail"><a href="{% url 'productdetail' order.item.id %}"><img style="width: 100px;" class="wishlist_image"
+                                 <span class="product-thumbnail"><a href="{% url 'productdetail' subcategory=order.item.subcategory slug=order.item.slug %}"><img style="width: 100px;" class="wishlist_image"
                                     src="data: image/png; base64, {{order.item.binaryToStringImage1|safe}}" alt="img"></a></span>
                                     <div style="margin-left: ;">
-                                    <span class="product-name"><a href="{% url 'productdetail' order.item.id %}">{{order.item.name|slice:25}}</a></span>
+                                    <span class="product-name"><a href="{% url 'productdetail' subcategory=order.item.subcategory slug=order.item.slug %}">{{order.item.name|slice:25}}</a></span>
                                     <span class="product-name">{{order.item.long_name}}</span>
                                     <div style="">
                                        <span style="color: #282c3f; font-weight: 700; text-align: left;">Selected Size: </span>
-                                       <span class="product-size"><a href="{% url 'productdetail' order.item.id %}">{{order.size}}</a></span>
+                                       <span class="product-size"><a href="{% url 'productdetail' subcategory=order.item.subcategory slug=order.item.slug %}">{{order.size}}</a></span>
                                     </div>
                                     <div style=" padding: 16px 0px;">
                                        <span style="color: #282c3f; font-weight: 700; text-align: left;">Price: </span>

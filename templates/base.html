@@ -950,10 +950,10 @@
                {% for cart_items in cart.items.all %}
                <div class="sidebar-list-item">
                   <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=cart_items.item.id %}" class=""><img src="data: image/png; base64, {{cart_items.item.binaryToStringImage1|safe}}" alt="img"></a>
+                     <a href="{% url 'productdetail' subcategory=cart_items.item.subcategory slug=cart_items.item.slug %}" class=""><img src="data: image/png; base64, {{cart_items.item.binaryToStringImage1|safe}}" alt="img"></a>
                   </div>
                   <div class="product-desc">
-                     <div class="product-name"><a href="{% url 'productdetail' pk=cart_items.item.id %}">{{cart_items.item.name}}</a></div>
+                     <div class="product-name"><a href="{% url 'productdetail' subcategory=cart_items.item.subcategory slug=cart_items.item.slug %}">{{cart_items.item.name}}</a></div>
                      <div class="product-size">Size: {{cart_items.size}}</div>
                      <div class="product-pricing">
                         <span class="item-number">Qty: {{cart_items.quantity}} </span><br>
@@ -991,10 +991,10 @@
                {% for item in wishlist.items.all %}
                <div class="sidebar-list-item">
                   <div class="product-image pos-rel">
-                     <a href="{% url 'productdetail' pk=item.item.id %}" class=""><img src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a>
+                     <a href="{% url 'productdetail' subcategory=item.item.subcategory slug=item.item.slug %}" class=""><img src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a>
                   </div>
                   <div class="product-desc">
-                     <div class="product-name"><a href="{% url 'productdetail' pk=item.item.id %}">{{item.item.name}}</a></div>
+                     <div class="product-name"><a href="{% url 'productdetail' subcategory=item.item.subcategory slug=item.item.slug %}">{{item.item.name}}</a></div>
                      {% comment %} <div class="product-size">Size: {{item.size}}</div> {% endcomment %}
                      <div class="product-quantity">Quantity: {{item.quantity}}</div>
                      <div class="product-pricing">
