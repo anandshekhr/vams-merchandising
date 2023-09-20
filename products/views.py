@@ -23,6 +23,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters,pagination
 from django_filters import FilterSet
+from django.db.models import Q
 
 
 User = get_user_model()
@@ -260,7 +261,7 @@ def products_list(request,subcategory=None):
     products = Products.objects.all()
     if subcategory:
         subcategory = subcategory.replace('[','').replace(']','').replace("'","").replace(' ','').split(',')
-        products = products.filter(category__contains=subcategory)
+        products = products.filter(Q(category__contains=subcategory)|Q(subcategory=subcategory[0]))
 
     
     if category:
