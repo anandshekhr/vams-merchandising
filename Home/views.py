@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from products.models import *
+from about.models import VCReview
 
 # Create your views here.
 
@@ -28,4 +29,5 @@ def err_500(request):
     return render(request, '500.html')
 
 def aboutUs(request):
-    return render(request,'about.html')
+    reviews = VCReview.objects.filter(active=True)
+    return render(request,'about.html',{'reviews': reviews})
