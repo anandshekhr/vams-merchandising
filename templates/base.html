@@ -115,6 +115,37 @@
 #myAccountDropdown ul li a:hover {
    background-color: #f1f1f1;
 }
+.product_names{
+   font-family: "Jost", sans-serif;
+    font-size: 16px;
+    font-weight: normal;
+    color: var(--clr-common-text);
+    margin-bottom: 0px;
+    line-height: 26px;
+    padding-left: 15px;
+}
+.suggest-product:hover {
+   background-color: #edeef2;
+   box-shadow: none;
+    cursor: pointer;
+}
+.suggest-product {
+    box-shadow: none;
+    border-radius: 0px;
+    margin: 0px 0;
+    background: #f8f9fa;
+}
+.suggestProduct {
+   position: absolute;
+   background-color: white;
+   width: 27%;
+   height: max-content;
+   max-height: 300px;
+   overflow: hidden;
+   overflow-y: auto;
+   z-index: 2;
+   padding: 0px;
+}
    </style>
 </head>
 
@@ -1505,16 +1536,16 @@
                       //console.log(response[index].id)
                       $('.suggestProduct').append(`
                       <div class="suggest-product d-flex col-12" onclick='window.location.href="/details/`+response[index].id+`"' >
-                        <div class="col-2 ">
+                        {% comment %} <div class="col-2 ">
                           <img src="data: image/png; base64, `+response[index].image+`" alt=""  >
-                        </div>
+                        </div> {% endcomment %}
                         <div class="product_name col-8 align-self-center">
-                          <p style="font-size:14px;">`+response[index].name+`</p>
+                          <p class="product_names " style="font-size:14px;" >`+response[index].name+`</p>
                         </div>
-                        <div class="align-self-center">
+                        {% comment %} <div class="align-self-center">
                           <div class="product_pirce "><span class="pro_mrp" style="font-size:14px;">₹`+response[index].discounted_price+`</span></div>
                           <!-- <a href="#" class="btn btn-style1 btn-padding">ADD</a> -->
-                        </div>
+                        </div> {% endcomment %}
                       </div>
                       `)
                     })
@@ -1533,6 +1564,7 @@
       }
     }
    </script>
+
 </body>
 
 </html>

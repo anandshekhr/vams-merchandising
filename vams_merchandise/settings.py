@@ -122,11 +122,11 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentral1",
+            "NAME": "vamscentral3",
             "USER": "postgres",
-            "PASSWORD": "Shekhar123#",
+            "PASSWORD": "prune",
             "HOST": "localhost",
-            "PORT": "5432",
+            "PORT": "5433",
         }
     }
 else:
