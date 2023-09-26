@@ -132,3 +132,13 @@ dmypy.json
 
 # 
 vams_merchandise/settings.py
+
+# Migrations
+about/migrations/
+blogs/migrations/
+cart/migrations/
+Home/migrations/
+products/migrations/
+stores/migrations/
+user/migrations/
+wishlist/migrations/
