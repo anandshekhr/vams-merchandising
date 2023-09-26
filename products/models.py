@@ -94,7 +94,7 @@ class VendorBankAccountDetail(models.Model):
 class Products(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150)
-    slug = models.SlugField(_("Slug Field"),unique=True)
+    slug = models.SlugField(_("Slug Field"),unique=True,null=True,blank=True)
     longname = models.CharField(
         max_length=1000, default="", null=True, blank=True)
     desc = QuillField(null=True, blank=True)
@@ -107,7 +107,7 @@ class Products(models.Model):
     image2 = models.BinaryField(_("Product Image 2"), blank=True, null=True,editable=True)
     image3 = models.BinaryField(_("Product Image 3"), blank=True, null=True,editable=True)
     unit = models.CharField(max_length=50, blank=True)
-    brand = models.CharField(_("Brand"), max_length=50, null=True, blank=True)
+    brand = models.CharField(_("Brand"), max_length=50, null=False,default="")
     available_sizes = ModifiedArrayField(models.CharField(
         _("Product Available"), max_length=255, choices=SIZES, null=True, blank=True), null=True)
     tags = ModifiedArrayField(models.CharField(
