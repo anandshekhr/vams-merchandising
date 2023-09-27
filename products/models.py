@@ -149,10 +149,6 @@ class ProductSize(models.Model):
     def __str__(self):
         return "{}".format(self.code)
     
-    def save(self, *args, **kwargs):
-        self.code = slugify(self.name)
-        super().save(*args, **kwargs)
-    
     def subCategoryName(self):
         return ",".join([category.subcategory for category in self.subcategory.all()])
 
@@ -188,7 +184,7 @@ class ProductTag(models.Model):
 class Products(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150)
-    slug = models.SlugField(_("Slug Field"),unique=True,null=True,blank=True)
+    slug = models.SlugField(_("Slug Field"),unique=True,null=True,blank=True,max_length=250)
     longname = models.CharField(
         max_length=1000, default="", null=True, blank=True)
     desc = QuillField(null=True, blank=True)
