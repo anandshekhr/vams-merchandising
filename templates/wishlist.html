@@ -189,9 +189,9 @@
                                  <div class="wishlist_card">
                                      {% for item in items.items.all %}
                                      <div class="wishlist_wrap">
-                                         <span class="product-thumbnail"><a class="product-padding" href="{% url 'productdetail' subcategory=item.item.subcategory slug=item.item.slug %}"><img class="wishlist_image"
+                                         <span class="product-thumbnail"><a class="product-padding" href="{% url 'productdetail' subcategory=item.item.subcategory.all.first.subcategory_code slug=item.item.slug %}"><img class="wishlist_image"
                                                      src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a></span>
-                                         <span class="product-name"><a href="{% url 'productdetail' subcategory=item.item.subcategory slug=item.item.slug %}">{{item.item.name|slice:25}}</a></span>
+                                         <span class="product-name"><a href="{% url 'productdetail' subcategory=item.item.subcategory.all.first.subcategory_code slug=item.item.slug %}">{{item.item.name|slice:25}}</a></span>
                                          <span class="product-size"><a href="#">{{item.size}}</a></span>
                                          <div class="price_quantity">
                                              <span class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
@@ -205,11 +205,11 @@
                                              <div class="popup-content">
                                                  <span class="close-icon" onclick="closePopup('{{ forloop.counter }}')">&times;</span>
                                                  <div class="popup-image-desc">
-                                                     <span class=""><a class="product-padding" href="{% url 'productdetail' 1 %}"><img class="wishlist_image_popup"
+                                                     <span class=""><a class="product-padding" href="{% url 'productdetail' subcategory=item.item.subcategory.all.first.subcategory_code slug=item.item.slug %}"><img class="wishlist_image_popup"
                                                                  src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="img"></a>
                                                      </span>
                                                      <span>
-                                                         <span class="product-name"><a href="{% url 'productdetail' 1 %}">{{item.item.name}}</a></span>
+                                                         <span class="product-name"><a href="{% url 'productdetail' subcategory=item.item.subcategory.all.first.subcategory_code slug=item.item.slug %}">{{item.item.name}}</a></span>
                                                          <div>
                                                              <span class="popup_price_list">
                                                                  <div class="price_quantity_popup">
@@ -228,7 +228,7 @@
                                                  <div style="display: flex; flex-direction: column;" class="available-sizes btn-group-toggle" role="group" name="choose-size" id="choose-size-{{ forloop.counter }}">
                                                    <span style="color: #282c3f; font-weight: 700; text-align: left;">Select Sizes : </span>
                                                    <span>
-                                                      {% for size in item.item.available_sizes %}
+                                                      {% for size in item.item.available_sizes.all %}
                                                       <input type="radio" class="btn-check" name="choose-size" id="size-{{ forloop.counter }}-{{ size }}" value="{{ size }}">
                                                       <label for="size-{{ forloop.counter }}-{{ size }}" class="product-available-sizes-pop btn btn-outline-dark">{{ size }}</label>
 

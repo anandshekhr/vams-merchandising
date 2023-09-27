@@ -1,14 +1,34 @@
 from django.contrib import admin
 from .models import *
 
-# Register your models here.
 
+
+# Register your models here.
 class ProductItemForm(forms.ModelForm):
     image1 = forms.FileField(required=False)
     image2 = forms.FileField(required=False)
     image3 = forms.FileField(required=False)
 
+    category = forms.ModelMultipleChoiceField(
+        queryset=Categories.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
+    )
+    subcategory = forms.ModelMultipleChoiceField(
+        queryset=CategorySubCategories.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
+    )
+
+    available_sizes = forms.ModelMultipleChoiceField(
+        queryset=ProductSize.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
+    )
+    tags =forms.ModelMultipleChoiceField(
+        queryset=ProductTag.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
+    )
+    
     def save(self, commit=True):
+        
         if self.cleaned_data.get('image1') is not None \
                 and hasattr(self.cleaned_data['image1'], 'file'):
             data = self.cleaned_data['image1'].file.read()
@@ -28,8 +48,59 @@ class ProductItemForm(forms.ModelForm):
         # FIXME: this function is required by ModelAdmin, otherwise save process will fail
         pass
 
+class CategorySubCategoriesForm(forms.ModelForm):
+    class Meta:
+        model = CategorySubCategories
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(CategorySubCategoriesForm, self).__init__(*args, **kwargs)
+        if 'category' in self.data:
+            try:
+                category_id = int(self.data.get('category'))
+                self.fields['subcategory'].queryset = CategorySubCategories.objects.filter(category=category_id)
+            except (ValueError, TypeError):
+                pass  # Invalid input from the form; ignore and use the default queryset
+
+@admin.register(CategorySubCategories)
+class CategorySubCategoriesAdmin(admin.ModelAdmin):
+    
+    list_display: list = ('category_name','subcategory')
+    search_fields: list = ('category_name','subcategory')
+
+class ProductSizeForm(forms.ModelForm):
+    subcategory = forms.ModelMultipleChoiceField(
+        queryset=CategorySubCategories.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
+    )
+@admin.register(ProductSize)
+class ProductSizeAdmin(admin.ModelAdmin):
+    form = ProductSizeForm
+    list_display: list = ('subCategoryName','name','code')
+    search_fields: list = ('subCategoryName','name','code')
+    ordering: list = ['-name','-code']
+
+class ProductTagForm(forms.ModelForm):
+    subcategory = forms.ModelMultipleChoiceField(
+        queryset=CategorySubCategories.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
+    )
+
+@admin.register(ProductTag)
+class ProductTagAdmin(admin.ModelAdmin):
+    form = ProductTagForm
+    list_display: list = ('subCategoryName','name','code')
+    search_fields: list = ('subCategoryName','name','code')
+    ordering: list = ['-name','-code']
+
+    
+
+
+    
+
 class ProductsAdmin(admin.ModelAdmin):
     form = ProductItemForm
+    
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['slug'].widget.attrs['placeholder'] = "Enter Slug in this format: brand-size-color-productname"
@@ -42,7 +113,6 @@ class ProductsAdmin(admin.ModelAdmin):
 
         return form
 
-
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 
@@ -52,8 +122,41 @@ class ProductsAdmin(admin.ModelAdmin):
             qs = qs.filter(vendor__in=vendor)
 
         return qs
-    list_display: list = ('name', 'unit', 'max_retail_price',
-                          'created_at', 'modified_at','vendor','scheme_image_tag')
+
+    def save_model(self, request, obj, form, change):
+        # Call the parent class's save_model method to save the object
+        super().save_model(request, obj, form, change)
+        
+        # Get the selected categories from the form
+        selected_categories = form.cleaned_data['category']
+        selected_subcategories = form.cleaned_data['subcategory']
+        selected_sizes = form.cleaned_data['available_sizes']
+        selected_tags  = form.cleaned_data['tags']
+
+        # Clear existing categories for the object
+        obj.category.clear()
+        obj.subcategory.clear()
+        obj.available_sizes.clear()
+        obj.tags.clear()
+
+        # Add the selected categories to the object
+        for category in selected_categories:
+            obj.category.add(category)
+
+        for scategory in selected_subcategories:
+            obj.subcategory.add(scategory)
+        
+        for asizes in selected_sizes:
+            obj.available_sizes.add(asizes)
+        
+        for tag in selected_tags:
+            obj.tags.add(tag)
+
+        # Save the object
+        obj.save()
+
+    list_display: list = ('scheme_image_tag','name', 'unit', 'sizes','stock','max_retail_price','discount','list_price',
+                          'vendor','created_at')
     ordering: list = ['-modified_at','-vendor','-name','-max_retail_price','-created_at']
     search_fields: list = ('name', 'material_feature',
                            'max_retail_price', 'category','vendor')
@@ -63,28 +166,25 @@ admin.site.register(Products, ProductsAdmin)
 
 
 class CategoriesAdmin(admin.ModelAdmin):
-    list_display: list = ('category_id', 'category_name', 'category_image')
+    list_display: list = ('category_id', 'category_name')
     search_fields: list = ('category_id', 'category_name')
 
 
 admin.site.register(Categories, CategoriesAdmin)
-
-# class ProductImagesAdmin(admin.ModelAdmin):
-#     list_display: list = ('images')
-#     search_fields: list = ('images','product')
-
 admin.site.register(ProductImages)
-
 
 class ProductRARAdmin(admin.ModelAdmin):
     list_display: list = ('author', 'ratings', 'review','is_approved')
     search_fields: list = ('author', 'ratings')
 
-
 admin.site.register(ProductReviewAndRatings, ProductRARAdmin)
 
 class BannerItemForm(forms.ModelForm):
     banner_images = forms.FileField(required=False)
+    banner_product_category = forms.ModelMultipleChoiceField(
+        queryset=Categories.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
+    )
     
 
     def save(self, commit=True):
@@ -100,19 +200,31 @@ class BannerItemForm(forms.ModelForm):
         pass
 class BannersAdmin(admin.ModelAdmin):
     form = BannerItemForm
-    list_display: list = ('banner_name', 'banner_status',
-                          'scheme_image_tag', 'position')
+
+    def save_model(self, request, obj, form, change):
+        # Call the parent class's save_model method to save the object
+        super().save_model(request, obj, form, change)
+        
+        # Get the selected categories from the form
+        banner_product_category = form.cleaned_data['banner_product_category']
+        
+
+        # Clear existing categories for the object
+        obj.banner_product_category.clear()
+        
+
+        # Add the selected categories to the object
+        for category in banner_product_category:
+            obj.banner_product_category.add(category)
+
+        # Save the object
+        obj.save()
+    list_display: list = ('scheme_image_tag','banner_name', 'banner_status',
+                           'position')
     search_fields: list = ('banner_status', 'banner_name')
 
 
 admin.site.register(Banners, BannersAdmin)
-
-# class CategoriesProductsAdmin(admin.ModelAdmin):
-#     list_display: list = ('categoriesproduct_id',)
-#     search_fields: list = ('categoriesproduct_id',)
-
-admin.site.register(CategoriesProducts)
-
 
 class VendorDetailAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
@@ -128,7 +240,6 @@ class VendorDetailAdmin(admin.ModelAdmin):
     ordering: list = ['-storeName', '-email', '-owner','-phone_number']
     search_fields: list = ('storeName', 'owner', 'email',
                            'phone_number', 'address')
-
 
 admin.site.register(VendorDetail, VendorDetailAdmin)
 

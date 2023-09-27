@@ -95,12 +95,13 @@ def productDetailsPageView(request,subcategory,slug):
    
     # filter product for images, reviews and ratings
     product = Products.objects.get(slug=slug)
+    
     rating = ProductReviewAndRatings.objects.filter(product=product).aggregate(
         Avg("ratings")
     )
     reviews = ProductReviewAndRatings.objects.filter(product=product, is_approved=True)
     total_reviews_count = reviews.count()
-    related_products = Products.objects.filter(subcategory=product.subcategory)
+    related_products = Products.objects.filter(subcategory__in=product.subcategory.all())
 
     # for greyed stars
     nonrating = 5 - int(
@@ -245,6 +246,7 @@ class ProductReviewsAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def products_list(request,subcategory=None):
+    
     # Get filter options from request (e.g., category)
     category = request.GET.get('category')
     size = request.GET.get('size')
@@ -255,21 +257,17 @@ def products_list(request,subcategory=None):
     brand = request.GET.get('brand')
     price = request.GET.get('price')
 
-    
-    
     # Retrieve all products or filter by category
     products = Products.objects.all()
     if subcategory:
-        subcategory = subcategory.replace('[','').replace(']','').replace("'","").replace(' ','').split(',')
-        products = products.filter(Q(category__contains=subcategory)|Q(subcategory=subcategory[0]))
+        products = products.filter(Q(category__in=Categories.objects.filter(category_code=subcategory)))
 
-    
     if category:
         products = products.filter(subcategory=category)
     
     if size:
         size = size.split(',')
-        products = products.filter(available_sizes__contains=size)
+        products = products.filter(available_sizes__in=ProductSize.objects.filter(code__in=size))
     
     if ratings != "None" and ratings != None:
         products = products.filter(average_rating=ratings) 
@@ -314,3 +312,37 @@ def products_list(request,subcategory=None):
         context = {'products': product_page}
         # For regular requests, return the HTML template
         return render(request, 'shop.html', context=context)
+
+def products_list_tags(request,tags=None):
+    page = 1
+    
+    products = Products.objects.filter(tags=ProductTag.objects.filter(code=tags))
+    
+    # Paginate the products
+    paginator = Paginator(products, 24)
+    
+    try:
+        product_page = paginator.get_page(page)
+    except PageNotAnInteger:
+        product_page = paginator.page(1)
+    except EmptyPage:
+        product_page = paginator.page(paginator.num_pages)
+    
+    context = {'products': product_page}
+        # For regular requests, return the HTML template
+    return render(request, 'shop.html', context=context)
+
+
+
+class GetFilteredSubCategoryAPI(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+
+    def get(self, request,format=None):
+        category_id = request.GET.get('category_id',[''])
+        # if category_id:
+        category_id = category_id.split(',')
+        subcategory = CategorySubCategories.objects.filter(category__in=category_id)
+    
+        serializer = SubCategorySerializer(subcategory,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)

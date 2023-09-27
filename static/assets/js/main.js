@@ -562,10 +562,10 @@
 			// Handle the change event here (e.g., filter products based on the selected price range)
 			var minValue = ui.values[0];
 			var maxValue = ui.values[1];
-
+			var category = document.getElementById('product-category').value;
 			domain = window.location.origin;
 			$.ajax({
-				url: domain + '/products/apparel/?web=True&price=' + minValue + ',' + maxValue, // Replace with your product list URL
+				url: domain + '/products/apparels/'+category+'?web=True&price=' + minValue + ',' + maxValue, // Replace with your product list URL
 				type: 'GET',
 				success: function (response) {
 					//console.log(response);

@@ -47,3 +47,10 @@ class BannersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banners
         fields = "__all__"
+
+class SubCategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategorySubCategories
+        fields = "__all__"
+        

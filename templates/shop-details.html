@@ -149,7 +149,7 @@
                         <input type="hidden" value="{{product.id}}" id="get-single-product-id">
                         <div class="available-sizes btn-group-toggle" role="group" name="choose-size" id="choose-size">
                            <span>Available Sizes : </span>
-                           {% for size in product.available_sizes %}
+                           {% for size in product.available_sizes.all %}
                            <input type="radio" class="btn-check" name="choose-size" id="size-{{size}}" value="{{size}}">
                            <label for="size-{{size}}" class="product-available-sizes btn btn-outline-dark ms-3">{{size}}</label>
                            {% endfor %}
@@ -165,7 +165,7 @@
                      </form>
                      <a href="{% url 'add-to-wishlist' product.id %}" class="border-btn">Add to Wishlist</a>
                      <div class="product__details__tag tagcloud mt-25 mb-10"><span>Tags : </span>
-                        {% for tags in product.tags %}
+                        {% for tags in product.tags.all %}
                         <a rel="tag">{{tags}}</a>
                         {% endfor %}
                         
@@ -287,10 +287,10 @@
                         {% comment %} {% if 'best-seller' in product.category %} {% endcomment %}
                         <div class="single-product-st2">
                            <div class="product-image pos-rel">
-                              <a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"  width="265px" height="390px"></a>
+                              <a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"  width="265px" height="390px"></a>
                               
                               <div class="product-action-bottom">
-                                 <a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                                 <a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                                  <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
                               </div>
                               {% if product.discount %}
@@ -305,7 +305,7 @@
                            </div>
                            <div class="product-desc">
                               <div class="product-name" style="color:grey;">{{product.brand}}</div>
-                              <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}">{{product.name}}</a></div>
+                              <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}">{{product.name}}</a></div>
                               <div class="product-price">
                                  <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
                                  <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>

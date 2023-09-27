@@ -56,18 +56,18 @@
                         </div>
                      </div>
                   </div>
-                  <input type="hidden" id="product-category" name="product-category" value="{{products.0.category}}">
+                  <input type="hidden" id="product-category" name="product-category" value="{{products.0.category.all.first.category_code}}">
                   <div class="products-wrapper">
                      {% for product in products %}
                      <div class="single-product single-product-st2">
                         
                         <div class="product-image pos-rel">
-                           <a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}" class=""><img
+                           <a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}" class=""><img
                                  src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img"
                                  width="265px" height="350px">
                            </a>
                            <div class="product-action-bottom">
-                              <a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
+                              <a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
                               <a class="wishlist-btn" id="wishlist-{{product.id}}"><i class="fal fa-heart"></i></a>
                            </div>
                            {% if product.discount %}
@@ -86,7 +86,7 @@
                         </div>
                         <div class="product-desc">
                            <div class="product-name" style="color:grey;">{{product.brand}}</div>
-                           <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory slug=product.slug %}">{{product.name}}</a>
+                           <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}">{{product.name}}</a>
                            </div>
                            <div class="product-price">
                               <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
@@ -214,28 +214,28 @@
                         <h4 class="filter-widget-title drop-btn">Brand</h4>
                         <div class="filter-widget-content">
                            <div class="category-brands">
-                              <div class="category-brand">
-                                 <input class="check-box" type="checkbox" id="b-next">
-                                 <label class="check-label" for="b-next">Next</label>
+                              <div class="category-brand-f">
+                                 <input class="check-box" type="checkbox" id="b-addidas" value="addidas">
+                                 <label class="check-label" for="b-addidas">Addidas</label>
                               </div>
-                              <div class="category-brand">
-                                 <input class="check-box" type="checkbox" id="b-ri">
-                                 <label class="check-label" for="b-ri">River Island</label>
+                              <div class="category-brand-f">
+                                 <input class="check-box" type="checkbox" id="b-raymond" value="john">
+                                 <label class="check-label" for="b-raymond">Raymond</label>
                               </div>
-                              <div class="category-brand">
-                                 <input class="check-box" type="checkbox" id="b-geox">
-                                 <label class="check-label" for="b-geox">Geox</label>
+                              <div class="category-brand-f">
+                                 <input class="check-box" type="checkbox" id="b-reebok" value="reebok">
+                                 <label class="check-label" for="b-reebok">Reebok</label>
                               </div>
-                              <div class="category-brand">
-                                 <input class="check-box" type="checkbox" id="b-eco">
-                                 <label class="check-label" for="b-eco">Ecomart</label>
+                              <div class="category-brand-f">
+                                 <input class="check-box" type="checkbox" id="b-usp" value="usp">
+                                 <label class="check-label" for="b-usp">U. S. Polo Assn.</label>
                               </div>
-                              <div class="category-brand">
-                                 <input class="check-box" type="checkbox" id="b-abby">
-                                 <label class="check-label" for="b-abby">Abby</label>
+                              <div class="category-brand-f">
+                                 <input class="check-box" type="checkbox" id="b-cp" value="cp">
+                                 <label class="check-label" for="b-cp">Color Plus</label>
                               </div>
-                              <div class="category-brand">
-                                 <input class="check-box" type="checkbox" id="b-nike">
+                              <div class="category-brand-f">
+                                 <input class="check-box" type="checkbox" id="b-nike" value="nike">
                                  <label class="check-label" for="b-nike">Nike</label>
                               </div>
                            </div>
@@ -379,11 +379,12 @@
                            </div>
                         </div>
                      </div>
-                     <div class="filter-widget">
+                     {% comment %} <div class="filter-widget">
                         <h4 class="filter-widget-title drop-btn">Tags</h4>
                         <div class="filter-widget-content">
                            <div class="category-tags">
-                              <a href="#" class="category-tag">Fashion</a>
+                              
+                              <a href="{% url "products-list-tags" 'cotton' %}" class="category-tag">Cotton</a>
                               <a href="#" class="category-tag">Hats</a>
                               <a href="#" class="category-tag">Sandal</a>
                               <a href="#" class="category-tag">Bags</a>
@@ -395,7 +396,7 @@
                               <a href="#" class="category-tag">Trend</a>
                            </div>
                         </div>
-                     </div>
+                     </div> {% endcomment %}
                   </div>
                </div>
             </div>
@@ -430,13 +431,14 @@
          function getCheckedBrand() {
             var checkedBrand = [];
             // Iterate through each checkbox
-            $(".category-brand input[type='checkbox']").each(function () {
+            $(".category-brand-f input[type='checkbox']").each(function () {
                if ($(this).is(":checked")) {
                   // Get the label text for the checked checkbox
-                  var labelText = $(this).val();
-                  checkedBrand.push(labelText);
+                  var labelBrand = $(this).val();
+                  checkedBrand.push(labelBrand);
                }
             });
+            return checkedBrand;
 
          }
 
@@ -491,6 +493,7 @@
          // Handle pagination
          $('.pagination a').click(function (e) {
             e.preventDefault();
+            var category = document.getElementById('product-category').value;
 
             // Get the page number from the link's href attribute
             const page = $(this).attr('href').split('=')[1];
@@ -498,7 +501,7 @@
             domain = window.location.origin;
             // Make an AJAX request to get the requested page of products
             $.ajax({
-               url: domain + '/products/apparel/'+category+'/?web=True', // Replace with your product list URL
+               url: domain + '/products/apparels/'+category+'/?web=True', // Replace with your product list URL
                type: 'GET',
                data: {
                   page: page,

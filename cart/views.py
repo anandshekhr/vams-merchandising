@@ -573,8 +573,9 @@ class CartAddView(APIView):
         product_pk = data.get("product")
         quantity = int(data.get("quantity"))
         req_size = data.get("size")
+
         item = get_object_or_404(
-            Products, pk=product_pk, available_sizes__contains=[req_size]
+            Products, pk=product_pk, available_sizes__in=ProductSize.objects.filter(code=req_size)
         )
         order_item, created = Cart.objects.get_or_create(
             item=item, size=req_size, user=request.user, ordered=False
@@ -644,7 +645,7 @@ class CartRemoveView(APIView):
         req_size = data.get("size")
 
         item = get_object_or_404(
-            Products, pk=product_pk, available_sizes__contains=[req_size]
+            Products, pk=product_pk, available_sizes__in=ProductSize.objects.filter(code=req_size)
         )
 
         order_qs = Order.objects.filter(user=request.user, ordered=False)
