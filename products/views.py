@@ -260,7 +260,7 @@ def products_list(request,subcategory=None):
     # Retrieve all products or filter by category
     products = Products.objects.all()
     if subcategory:
-        products = products.filter(Q(category__in=Categories.objects.filter(category_code=subcategory)))
+        products = products.filter(Q(category__in=Categories.objects.filter(category_code=subcategory))|Q(subcategory__in=CategorySubCategories.objects.filter(subcategory_code=subcategory)))
 
     if category:
         products = products.filter(subcategory=category)
