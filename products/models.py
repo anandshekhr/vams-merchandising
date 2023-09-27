@@ -102,6 +102,10 @@ class Categories(models.Model):  # ----Category Details----#
 
     def __str__(self):
         return self.category_name
+    
+    def save(self, *args, **kwargs):
+        self.category_code = slugify(self.category_name)
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = "Categories"
@@ -120,6 +124,10 @@ class CategorySubCategories(models.Model):
     
     def category_name(self):
         return self.category.category_name
+    
+    def save(self, *args, **kwargs):
+        self.subcategory_code = slugify(self.subcategory)
+        super().save(*args, **kwargs)
 
     class Meta:
         db_table = "SubCategories"
@@ -140,6 +148,10 @@ class ProductSize(models.Model):
 
     def __str__(self):
         return "{}".format(self.code)
+    
+    def save(self, *args, **kwargs):
+        self.code = slugify(self.name)
+        super().save(*args, **kwargs)
     
     def subCategoryName(self):
         return ",".join([category.subcategory for category in self.subcategory.all()])
