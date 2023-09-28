@@ -263,7 +263,7 @@ def products_list(request,subcategory=None):
         products = products.filter(Q(category__in=Categories.objects.filter(category_code=subcategory))|Q(subcategory__in=CategorySubCategories.objects.filter(subcategory_code=subcategory)))
 
     if category:
-        products = products.filter(subcategory=category)
+        products = products.filter(subcategory__in=CategorySubCategories.objects.filter(subcategory_code=category))
     
     if size:
         size = size.split(',')
