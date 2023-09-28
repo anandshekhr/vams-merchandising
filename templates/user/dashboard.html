@@ -76,10 +76,10 @@
                                 <td class="product-thumbnail text-start ps-0">
                                     {% if order.ordered %}
                                     <a href="{% url 'orderhistorydetail' order.id %}"><img src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="product-image"
-                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
+                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6" width="100px" height="100px" style="object-fit: scale-down;"></a>
                                     {% else %}
                                     <a href="#"><img src="data: image/png; base64, {{item.item.binaryToStringImage1|safe}}" alt="product-image"
-                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6"></a>
+                                        class="w-80 d-inline-block pt-3 pb-3 bg-greylight rounded-6" width="100px" height="100px" style="object-fit: scale-down;"></a>
                                     {% endif %}
                                 </td>
                                 {% endfor %}
