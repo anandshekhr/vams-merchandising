@@ -1115,7 +1115,7 @@ only screen and (min-width: 576px) and (max-width: 767px),
   height: 30px;
   text-align: center;
   line-height: 20px;
-  background: var(--clr-bg-footer);
+  /* background: var(--clr-bg-footer); */
   border-radius: 50%;
 }
 

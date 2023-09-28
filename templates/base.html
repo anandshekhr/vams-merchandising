@@ -146,6 +146,17 @@
    z-index: 2;
    padding: 0px;
 }
+.action-text {
+    color: #000;
+    position: absolute;
+    bottom: -7px;
+    left: -3px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+    padding-top: 10px;
+    line-height: 6px;
+}
    </style>
 </head>
 
@@ -201,7 +212,7 @@
                                              <div class="a1 m">
                                                  <ul>
                                                      <li class="toggle-siblings">Topwear</li>
-                                                     <li>T-Shirts</li>
+                                                     <li><a href="{% url 'show-all-products' subcategory="casual-t-shirt-men" %}">T-Shirts</li>
                                                      <li>Casual Shirts</li>
                                                      <li>Formal Shirts</li>
                                                      <li>Sweatshirts</li>
@@ -811,6 +822,7 @@
                            <div class="action-item action-item-cart">
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-shopping-bag"></i>
+                                 <span class="action-text" id="cart-underlying-text">Cart</span>
                                  {% if cart.get_quantity %}
                                  <span class="action-item-number" id="cart-number">{{cart.get_quantity}}</span>
 
@@ -822,6 +834,7 @@
                            <div class="action-item action-item-wishlist">
                               <a href="javascript:void(0)" class="view-wishlist-button">
                                  <i class="fal fa-heart"></i>
+                                 <span class="action-text" id="wishlist-underlying-text" style="left:-6px;">Wishlist</span>
                                  {% if wishlist.get_quantity %}
                                  <span class="action-item-number" id="wishlist-number">{{wishlist.get_quantity}}</span>
                                  {% else %}
@@ -834,7 +847,14 @@
                               <a href="{% url 'logout' %}">
                                  <div class="user-icon">
                                     <i class="flaticon-avatar"></i>
+                                    
                                  </div>
+                                 <span class="action-text-profile" id="profile-underlying-text" style="
+    bottom: 60px;
+    font-size: 12px;
+    font-weight: 700;
+    position: absolute;
+">Profile</span>
                                  <span>Sign Out</span>
                               </a>
                            </div>
@@ -843,7 +863,14 @@
                               <a href="{% url 'login' %}">
                                  <div class="user-icon">
                                     <i class="flaticon-avatar"></i>
+                                    
                                  </div>
+                                 <span class="action-text-profile" id="prodfile-underlying-text" style="
+    bottom: 60px;
+    font-size: 12px;
+    font-weight: 700;
+    position: absolute;
+">Profile</span>
                                  <span>Sign In</span>
                               </a>
                            </div>
@@ -924,6 +951,8 @@
                         <div class="action-item action-item-cart">
                            <a href="javascript:void(0)" class="view-cart-button">
                               <i class="fal fa-shopping-bag"></i>
+                             <span class="action-text" id="cart-underlying-text">Cart</span>
+
                               {% if cart.get_quantity %}
                               <span class="action-item-number">{{cart.get_quantity}}</span></a>
                               {% else %}
@@ -933,6 +962,8 @@
                         <div class="action-item action-item-wishlist">
                            <a href="javascript:void(0)" class="view-wishlist-button">
                               <i class="fal fa-heart"></i>
+                             <span class="action-text" id="wishlist-underlying-text">Wishlist</span>
+
                               {% if wishlist.get_quantity %}
                               <span class="action-item-number">{{wishlist.get_quantity}}</span></a>
                               {% else %}
@@ -1509,7 +1540,7 @@
       function showSearchItems(value){
       //var g_csrftoken_p = getCookie('csrftoken')//
       //var csrftoken = Cookies.get('csrftoken');
-      console.log(value);
+      //console.log(value);
       domain = window.location.origin
       path_name = '/products/all' //change-this url
       if(value.length < 3){
@@ -1533,9 +1564,9 @@
                   if (response.length > 0){
                     $('.suggestProduct').show()
                     $.each(response,function(index, item){
-                      //console.log(response[index].id)
+                      console.log(response[index])
                       $('.suggestProduct').append(`
-                      <div class="suggest-product d-flex col-12" onclick='window.location.href="/details/`+response[index].id+`"' >
+                      <div class="suggest-product d-flex col-12" onclick='window.location.href="/products/apparels/`+response[index].subcategory[0].subcategory_code+`/`+response[index].slug+`"' >
                         {% comment %} <div class="col-2 ">
                           <img src="data: image/png; base64, `+response[index].image+`" alt=""  >
                         </div> {% endcomment %}
