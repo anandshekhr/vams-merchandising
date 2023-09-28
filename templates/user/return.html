@@ -16,7 +16,7 @@
 {% endif %}
 <div class="row col-lg-8 pb-5 pt-4 ps-4">
     <div class="container mt-5">
-        <div>
+        <div class="card border-0">
             {% if orders.refund_requested %}
             <h2 style="text-align:left;">Refund Status:</h2>
             <p>Order Number: {{orders.sid}}</p>
@@ -47,7 +47,7 @@
             </div>
             {% endif %}
 
-            {% if orders.refund_requested == false %}
+            {% if orders.refund_requested == False %}
             <div class="row">
                 <div class="col-md-12">
                     <h2 style="text-align:center;">Request for Return:</h2>
