@@ -9,7 +9,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-
+from vams_merchandise.utils import send_welcome_email,welcome_user_email
 from rest_framework.views import APIView
 from products.serializer import userSerializer
 from cart.models import Order
@@ -71,16 +71,22 @@ def register(request):
                         password=password,
                     )
                     user.save()
+                    send_welcome_email('Welcome to VamsCentral - Your Ultimate Shopping Destination!',welcome_user_email,email,user)
                     token, created = Token.objects.get_or_create(user=user)
                     messages.success(
                         request, f"Account Registered, Please Login Again!"
                     )
+
                     return redirect("login")
         else:
             messages.info(request, "Password didn;t matched!")
             return redirect("register")
     else:
-        policies = PoliciesDetails.objects.get()
+        try:
+            policies = PoliciesDetails.objects.all()
+        except PoliciesDetails.DoesNotExist:
+            policies = []
+
         context = {'policy': policies}
         return render(request, "register.html",context)
 
@@ -372,7 +378,9 @@ def user_coupon(request):
 
 
 def refund_page(request, pk):
+    print(pk)
     order = Order.objects.get(pk=pk)
+    print(order)
     if request.method == "POST":
         order_number = request.POST.get("orderNumber")
         reason = request.POST.get("returnReason")

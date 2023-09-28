@@ -122,11 +122,11 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentral3",
+            "NAME": "vamscentralnew",
             "USER": "postgres",
-            "PASSWORD": "prune",
+            "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
-            "PORT": "5433",
+            "PORT": "5432",
         }
     }
 else:
@@ -240,6 +240,8 @@ EMAIL_HOST_PASSWORD = "1$Onemanarmy$2023"
 EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = "www.vamscentral.com <vamscentral@hotmail.com>"
+
+ADMIN_EMAIL = "shekharanand7773@gmail.com"
 
 
 
