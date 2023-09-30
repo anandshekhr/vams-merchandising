@@ -26,6 +26,11 @@ def shipping_and_delivery_policy(request):
     context = {'policy': policies}
     return render(request, 'policies/shipping_and_delivery_policy.html', context)
 
+def terms_of_service_policy(request):
+    policies = PoliciesDetails.objects.get()
+    context = {'policy': policies}
+    return render(request, 'policies/terms_of_use.html', context)
+
 
 def payment_terms_and_conditions_policy(request):
     policies = PoliciesDetails.objects.get()
