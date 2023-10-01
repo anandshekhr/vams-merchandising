@@ -42,6 +42,7 @@ urlpatterns = [
     path("accounts/", include("dj_rest_auth.urls")),
     path("accounts/registration/",
          include("dj_rest_auth.registration.urls")),
+    path("bank/", include("bankdetails.urls")),
     path(
         'rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/',
         PasswordResetConfirmView.as_view(), name='password_reset_confirm'

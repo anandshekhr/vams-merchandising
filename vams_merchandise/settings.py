@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     "blogs.apps.BlogsConfig",
     # wishlist app
     "wishlist.apps.WishlistConfig",
+    # Bank Details app
+    "bankdetails.apps.BankdetailsConfig",
     # Third-party App
     "rest_framework",
     "corsheaders",
@@ -122,7 +124,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentralnew",
+            "NAME": "vamscentraltest",
             "USER": "postgres",
             "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
@@ -196,6 +198,8 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
 }
 
 AUTH_USER_MODEL = env.str("AUTH_USER_MODEL")
