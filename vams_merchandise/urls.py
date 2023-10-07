@@ -31,22 +31,21 @@ admin.site.index_title = env.str('ADMIN_INDEX_TITLE')
 admin.site.site_title = env.str('ADMIN_SITE_TITLE')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', include('Home.urls')),
+    path('admin/', admin.site.urls),
     path('about/', include('about.urls')),
-    path('cart/', include('cart.urls')),
-    path('stores/', include('stores.urls')),
-    path('products/', include('products.urls')),
-    path('user/', include('user.urls')),
-    path('wishlist/', include('wishlist.urls')),
     path("accounts/", include("dj_rest_auth.urls")),
-    path("accounts/registration/",
-         include("dj_rest_auth.registration.urls")),
     path("bank/", include("bankdetails.urls")),
-    path(
-        'rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/',
-        PasswordResetConfirmView.as_view(), name='password_reset_confirm'
-    ),
+    path('user/', include('user.urls')),
+    path('cart/', include('cart.urls')),
+    path('seller/', include('seller.urls')),
+    path('stores/', include('stores.urls')),
+    path('phone/',include('phoneverification.urls')),
+    path('products/', include('products.urls')),
+    path('wishlist/', include('wishlist.urls')),
+    path('accounts/registration/',
+         include("dj_rest_auth.registration.urls")),
+    path('rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/',PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
     path('account/password/reset/',
          include('django_rest_passwordreset.urls', namespace='password_reset')),
 

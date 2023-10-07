@@ -46,25 +46,18 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "django.contrib.sites",
     "django_rest_passwordreset",
-    # About app
     "about.apps.AboutConfig",
-    # home app
     "Home.apps.HomeConfig",
-    # account App
     "user.apps.AccountConfig",
-    # products APP
     "products.apps.ProductsConfig",
-    # store App
     "stores.apps.StoresConfig",
-    # cart app
     "cart.apps.CartConfig",
-    # blogs app
     "blogs.apps.BlogsConfig",
-    # wishlist app
     "wishlist.apps.WishlistConfig",
-    # Bank Details app
     "bankdetails.apps.BankdetailsConfig",
-    # Third-party App
+    "phoneverification.apps.PhoneverificationConfig",
+    "seller.apps.SellerConfig",
+
     "rest_framework",
     "corsheaders",
     "rest_framework.authtoken",
@@ -124,7 +117,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentraltest",
+            "NAME": "vamscentral",
             "USER": "postgres",
             "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
