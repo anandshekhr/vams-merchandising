@@ -122,7 +122,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentral3",
+            "NAME": "vamscentralnew",
             "USER": "postgres",
             "PASSWORD": "prune",
             "HOST": "localhost",
