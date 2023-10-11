@@ -9,7 +9,7 @@ def renderFAQPage(request):
     context = {'faq_details_five': faq_details_five,
                'faq_details_last_six': faq_details_last_six}
 
-    return render(request,'faq.html',context)
+    return render(request,'policies/faq.html',context)
 
 def refund_policy(request):
     policies = PoliciesDetails.objects.get()

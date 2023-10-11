@@ -36,7 +36,7 @@ User = get_user_model()
 def wishlistView(request):
     items = Wishlist.objects.get(user=request.user)
     context = {"items": items}
-    return render(request, "wishlist.html", context)
+    return render(request, "wishlist/wishlist.html", context)
 
 
 def deleteItemFromWishlist(request, pk):

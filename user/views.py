@@ -88,7 +88,7 @@ def register(request):
             policies = []
 
         context = {'policy': policies}
-        return render(request, "register.html",context)
+        return render(request, "user/register.html",context)
 
 
 def set_token_cookie(response, token):
@@ -119,7 +119,7 @@ def login(request):
             messages.info(request, "Mobile Number or Password incorrect.")
             return redirect("login")
     else:
-        return render(request, "login.html")
+        return render(request, "user/login.html")
 
 
 def logout(request):
@@ -143,11 +143,7 @@ def forgot_password(request):
 
 
 def password_reset_method(request):
-    print("yaha aaya")
-    # if request.method == 'POST':
-    #     password = request.POST.get('password')
-
-    return render(request, "reset-password.html")
+    return render(request, "user/reset-password.html")
 
 
 class UpdateProfileView(generics.UpdateAPIView):
@@ -173,14 +169,14 @@ def profileUser(request):
     if request.user:
         userdetails = User.objects.get(pk=request.user.id)
         context = {"user": userdetails}
-    return render(request, "profile.html", context)
+    return render(request, "user/profile.html", context)
 
 
 def userOrderDetail(request):
     if request.user:
         orders = Order.objects.filter(user=request.user.id, ordered=True)
         context = {"orders": orders}
-    return render(request, "user-order-detail.html", context)
+    return render(request, "user/user-order-detail.html", context)
 
 
 def userOrderDetailExpanded(request, pk):

@@ -252,3 +252,8 @@ ABOVE_AMOUNT = 600
 
 # Hashing 
 HASHIDS_SALT = 'jkqbdvaiacobaowr27834691230jnfbqoey92tribhwefq8w9r1@E23jr23r!3hrg81t43r1r'
+
+
+# razorpay test mode
+RAZORPAY_API_KEY = env('RAZORPAY_API_KEY')
+RAZORPAY_API_KEY_SECRET = env('RAZORPAY_API_KEY_SECRET')

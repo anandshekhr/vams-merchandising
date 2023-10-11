@@ -25,12 +25,15 @@ from wishlist.models import *
 from user.models import UserAddresses
 from instamojo_wrapper import Instamojo
 import requests
+import razorpay
 
 api = Instamojo(
     api_key=settings.API_KEY,
     auth_token=settings.AUTH_TOKEN,
     endpoint="https://test.instamojo.com/api/1.1/",
 )
+
+razorpay_api = razorpay.Client(auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_KEY_SECRET))
 
 User = get_user_model()
 
@@ -62,7 +65,7 @@ def cartCheckoutPageView(request):
         }
     except Order.DoesNotExist:
         context = {"object": 0, "delivery": 0, "totalquantity": 0, "grandtotal": 0}
-    return render(request, "cart.html", context)
+    return render(request, "cart/cart.html", context)
 
 
 @login_required(login_url="login")
@@ -366,6 +369,7 @@ def orderPaymentRequest(request, amount):
             if orderNotes:
                 order.orderNote = orderNotes
         domain_name = request.get_host()
+        # request_data = {"amount":amount,"currency":"INR","receipt":order.sid}
         response = api.payment_request_create(
             amount=str(amount),
             purpose="test_purchase",
@@ -377,16 +381,17 @@ def orderPaymentRequest(request, amount):
             redirect_url=settings.PAYMENT_SUCCESS_REDIRECT_URL,
             allow_repeated_payments=False,
         )
-        # print(response)
+        
         order.ref_code = response["payment_request"]["id"]
         order.shipping_address = request.COOKIES.get("shipping_address")
         order.billing_address = request.COOKIES.get("shipping_address")
 
         order.save()
         payment_redirect_url = response["payment_request"]["longurl"]
+
         if payment_redirect_url:
             context = {"payment_url": payment_redirect_url}
-            return render(request, "paymentredirect.html", context)
+            return render(request, "checkout/paymentredirect.html", context)
         else:
             return redirect("cartview")
     else:
@@ -395,6 +400,8 @@ def orderPaymentRequest(request, amount):
 
 @login_required(login_url="login")
 def paymentStatusAndOrderStatusUpdate(request):
+    if request.method == "POST":
+        print(request.data)
     if request.user:
         user = User.objects.get(pk=request.user.id)
         order = Order.objects.get(user=request.user.id, ordered=False)
@@ -526,7 +533,7 @@ def paymentStatusAndOrderStatusUpdate(request):
 
 @login_required(login_url="login")
 def checkoutPage(request):
-    items = Order.objects.get(user=request.user, ordered=False)
+    order = Order.objects.get(user=request.user, ordered=False)
     try:
         address = UserAddresses.objects.filter(user=request.user)
         primary_address = UserAddresses.objects.get(user=request.user, set_default=True)
@@ -534,20 +541,30 @@ def checkoutPage(request):
         address = []
         primary_address = ""
 
-    totalAmount = round(items.get_total(), 2)
+    totalAmount = round(order.get_total(), 2)
     ShippingCharges = 40
     if totalAmount > 600:
         ShippingCharges = 0
     totalAmount += ShippingCharges
+
+    # razorpay api call data collect
+    request_data = {"amount": int(order.total_amount_at_checkout()*100),"currency":"INR","receipt":order.sid}
+    razorpay_response = razorpay_api.order.create(data=request_data)
+    order.razorpay_order_id = razorpay_response['id']
+    order.save()
+
+
     context = {
-        "orderItems": items,
-        "totalAmount": items.total_amount_at_checkout(),
+        "orderItems": order,
+        "totalAmount": order.total_amount_at_checkout(),
         "shippingCharges": ShippingCharges,
         "address": address,
-        "gst_amount": items.gst_amount(),
+        "gst_amount": order.gst_amount(),
         "primary_address": primary_address,
+        "razorpay_order_id": razorpay_response['id'],
+        "razorpay_key_id":settings.RAZORPAY_API_KEY,
     }
-    return render(request, "checkout.html", context)
+    return render(request, "checkout/checkout.html", context)
 
 
 class CartAddView(APIView):
@@ -722,7 +739,7 @@ def order_summary(request, pk):
         order = Order.objects.get(user=request.user.id, pk=pk)
 
     context = {"order": order}
-    return render(request, "thankyou.html", context)
+    return render(request, "checkout/thankyou.html", context)
 
 
 def pending_payment_page(request, pk):
@@ -730,7 +747,7 @@ def pending_payment_page(request, pk):
         order = Order.objects.get(user=request.user.id, pk=pk)
 
     context = {"order": order}
-    return render(request, "payment-failed.html", context)
+    return render(request, "checkout/payment-failed.html", context)
 
 
 def failed_payment_page(request, pk):
@@ -738,7 +755,7 @@ def failed_payment_page(request, pk):
         order = Order.objects.get(user=request.user.id, pk=pk)
 
     context = {"order": order}
-    return render(request, "payment-failed.html", context)
+    return render(request, "checkout/payment-failed.html", context)
 
 
 @login_required(login_url="login")
@@ -765,3 +782,28 @@ def addToCartWithSizeQuantity(request, pk):
 
     messages.info(request, "Item Added to Cart Successfully!")
     return redirect(previous_page)
+
+
+@login_required(login_url="login")
+def razorpay_success_redirect(request):
+    razorpay_order_id = request.GET.get('razorpay_order_id')
+    razorpay_payment_id = request.GET.get('razorpay_payment_id')
+    if request.user:
+        order = Order.objects.get(user=request.user.id, ordered=False)
+    # order = Order.objects.get(razorpay_order_id=razorpay_order_id, ordered=False)
+
+        order.ordered = True
+        order.status = "ordered"
+        order.ordered_date = datetime.now()
+        order_items = order.items.all()
+        order_items.update(ordered=True)
+        for item in order_items:
+            item.save()
+
+        order.razorpay_payment_id = razorpay_payment_id
+        order.save()
+
+    messages.success(request, "Your order was successful!")
+    return redirect("ordersummary", pk=order.id)
+
+        

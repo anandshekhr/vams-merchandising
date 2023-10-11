@@ -82,9 +82,7 @@ class RomanNumeralConverter:
     def to_url(self, value):
         return '{}'.format(value)
 
-import asyncio
-from celery import shared_task
-@shared_task
+
 def send_welcome_email(subject, message, recipient_email,user=None):
     # Send email to admin
     admin_email = settings.ADMIN_EMAIL
