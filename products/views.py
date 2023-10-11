@@ -75,7 +75,7 @@ def showAllProducts(request):
     products = Products.objects.all()
     # paginator = Paginator(products, 10)
     context = {"products": products}
-    return render(request, "shop.html", context)
+    return render(request, "shop/shop.html", context)
 
 def handle_messages(request):
     message_type = request.GET.get('type')
@@ -122,7 +122,7 @@ def productDetailsPageView(request,subcategory,slug):
         "total_reviews_count":total_reviews_count,
     }
 
-    return render(request, "shop-details.html", context)
+    return render(request, "shop/shop-details.html", context)
 
 
 class ProductAPI(generics.ListAPIView):
@@ -263,7 +263,7 @@ def products_list(request,subcategory=None):
         products = products.filter(Q(category__in=Categories.objects.filter(category_code=subcategory))|Q(subcategory__in=CategorySubCategories.objects.filter(subcategory_code=subcategory)))
 
     if category:
-        products = products.filter(subcategory=category)
+        products = products.filter(subcategory__in=CategorySubCategories.objects.filter(subcategory_code=category))
     
     if size:
         size = size.split(',')
@@ -311,7 +311,7 @@ def products_list(request,subcategory=None):
     else:
         context = {'products': product_page}
         # For regular requests, return the HTML template
-        return render(request, 'shop.html', context=context)
+        return render(request, 'shop/shop.html', context=context)
 
 def products_list_tags(request,tags=None):
     page = 1
@@ -330,7 +330,7 @@ def products_list_tags(request,tags=None):
     
     context = {'products': product_page}
         # For regular requests, return the HTML template
-    return render(request, 'shop.html', context=context)
+    return render(request, 'shop/shop.html', context=context)
 
 
 

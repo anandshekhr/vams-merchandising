@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Terms & Conditions{% endblock title %}
+{% block body %}
+   <!-- Add your site or application content here -->
+   <main>
+
+      <!-- page title area start  -->
+      <div class="breadcrumb-menu-edit">
+         <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
+            <li class="breadcrumb-item active"><span>Terms & Cconditions</span></li>
+         </ol>
+      </div>
+      <!-- page title area end  -->
+
+      <!-- faq area start -->
+      <section class="faq-area pt-120 pb-40 bg-grey fix">
+         <div class="container container-small">
+            <div class="row">
+               <p>{{policy.terms_of_use.html|safe}}</p>
+            </div>
+         </div>
+      </section>
+      <!-- faq area end -->
+
+   </main>
+{% endblock body %}
+
+

@@ -106,6 +106,9 @@ class Order(models.Model):
         auto_now_add=True)
     
     refund_request_cancelled = models.BooleanField(default=False)
+    razorpay_order_id = models.CharField(_("Razorpay Order id"), max_length=500,null=True,blank=True)
+    razorpay_payment_id = models.CharField(_("Razorpay Payment id"), max_length=500,null=True,blank=True)
+    razorpay_payment_signature = models.CharField(_("Razorpay Payment Signature"), max_length=500,null=True,blank=True)
 
 
     '''

@@ -46,23 +46,18 @@ INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
     "django.contrib.sites",
     "django_rest_passwordreset",
-    # About app
     "about.apps.AboutConfig",
-    # home app
     "Home.apps.HomeConfig",
-    # account App
     "user.apps.AccountConfig",
-    # products APP
     "products.apps.ProductsConfig",
-    # store App
     "stores.apps.StoresConfig",
-    # cart app
     "cart.apps.CartConfig",
-    # blogs app
     "blogs.apps.BlogsConfig",
-    # wishlist app
     "wishlist.apps.WishlistConfig",
-    # Third-party App
+    "bankdetails.apps.BankdetailsConfig",
+    "phoneverification.apps.PhoneverificationConfig",
+    "seller.apps.SellerConfig",
+
     "rest_framework",
     "corsheaders",
     "rest_framework.authtoken",
@@ -124,9 +119,9 @@ if DEBUG:
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "vamscentralnew",
             "USER": "postgres",
-            "PASSWORD": "prune",
+            "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
-            "PORT": "5433",
+            "PORT": "5432",
         }
     }
 else:
@@ -196,6 +191,8 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
 }
 
 AUTH_USER_MODEL = env.str("AUTH_USER_MODEL")
@@ -241,6 +238,8 @@ EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = "www.vamscentral.com <vamscentral@hotmail.com>"
 
+ADMIN_EMAIL = "shekharanand7773@gmail.com"
+
 
 
 # GST
@@ -253,3 +252,8 @@ ABOVE_AMOUNT = 600
 
 # Hashing 
 HASHIDS_SALT = 'jkqbdvaiacobaowr27834691230jnfbqoey92tribhwefq8w9r1@E23jr23r!3hrg81t43r1r'
+
+
+# razorpay test mode
+RAZORPAY_API_KEY = env('RAZORPAY_API_KEY')
+RAZORPAY_API_KEY_SECRET = env('RAZORPAY_API_KEY_SECRET')

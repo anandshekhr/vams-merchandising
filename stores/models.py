@@ -41,6 +41,9 @@ class PoliciesDetails(models.Model):
     shipping_and_delivery_policy = QuillField(null=True,blank=True)
     payment_type = QuillField(null=True,blank=True)
     privacy_policy = QuillField(null=True,blank=True)
+    terms_of_use = QuillField(null=True,blank=True)
+    created_at = models.DateTimeField(_("Created Date"), auto_now_add=True)
+    modified_at = models.DateTimeField(_("Modified Date"), auto_now=True)
 
     
     class Meta:
