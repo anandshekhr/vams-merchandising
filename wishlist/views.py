@@ -21,6 +21,7 @@ from django.utils import timezone
 from user.models import UserAddresses
 from instamojo_wrapper import Instamojo
 from django.contrib.sites.shortcuts import get_current_site
+from Home.views import get_meta_data
 
 api = Instamojo(
     api_key=settings.API_KEY,
@@ -34,8 +35,13 @@ User = get_user_model()
 
 @login_required(login_url="login")
 def wishlistView(request):
+    title, desc, key, canonical = get_meta_data(request.path)
+
     items = Wishlist.objects.get(user=request.user)
-    context = {"items": items}
+    context = {"items": items,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
     return render(request, "wishlist/wishlist.html", context)
 
 

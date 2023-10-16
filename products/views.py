@@ -19,6 +19,7 @@ from django.db.models import Max, Min, Count, Avg
 from django.template.loader import render_to_string
 from blogs.models import *
 from django.shortcuts import get_object_or_404
+from Home.views import get_meta_data
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters,pagination
@@ -74,7 +75,12 @@ class ProductsFilter(FilterSet):
 def showAllProducts(request):
     products = Products.objects.all()
     # paginator = Paginator(products, 10)
-    context = {"products": products}
+    title, desc, key, canonical = get_meta_data(request.path)
+
+    context = {"products": products,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
     return render(request, "shop/shop.html", context)
 
 def handle_messages(request):
@@ -107,6 +113,8 @@ def productDetailsPageView(request,subcategory,slug):
     nonrating = 5 - int(
         rating["ratings__avg"] if rating["ratings__avg"] is not None else 0
     )
+    title, desc, key, canonical = get_meta_data(request.path)
+
     context = {
         "total_stars": range(5),
         "product": product,
@@ -120,6 +128,10 @@ def productDetailsPageView(request,subcategory,slug):
         "reviews": reviews,
         "related_products": related_products,
         "total_reviews_count":total_reviews_count,
+        'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical
     }
 
     return render(request, "shop/shop-details.html", context)
@@ -300,6 +312,7 @@ def products_list(request,subcategory=None):
     product_list_html = render(request, 'shop/products.html', {'products': product_page})
     pagination_html = render(request, 'shop/pagination.html', {'products': product_page, 'page': page})
     product_list_pagination_html = render(request, 'shop/product-list.html',{'products':product_page})
+    title, desc, key, canonical = get_meta_data(request.path)
 
     if web:
         # If it's an AJAX request, return JSON response
@@ -309,7 +322,10 @@ def products_list(request,subcategory=None):
             'pagination_product_list':product_list_pagination_html.content.decode(),
         })
     else:
-        context = {'products': product_page}
+        context = {'products': product_page,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
         # For regular requests, return the HTML template
         return render(request, 'shop/shop.html', context=context)
 
@@ -320,6 +336,7 @@ def products_list_tags(request,tags=None):
     
     # Paginate the products
     paginator = Paginator(products, 24)
+    title, desc, key, canonical = get_meta_data(request.path)
     
     try:
         product_page = paginator.get_page(page)
@@ -328,7 +345,10 @@ def products_list_tags(request,tags=None):
     except EmptyPage:
         product_page = paginator.page(paginator.num_pages)
     
-    context = {'products': product_page}
+    context = {'products': product_page,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
         # For regular requests, return the HTML template
     return render(request, 'shop/shop.html', context=context)
 

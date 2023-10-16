@@ -38,6 +38,7 @@ class CustomUser(AbstractUser):
         "%Y%m%d")).uploadImage, height_field=None, width_field=None, max_length=None, null=True, blank=True)
     timeline_image = models.ImageField(_("Cover Photo"), upload_to="user/profile/timelineImages/%Y/%m/%d",
                                        height_field=None, width_field=None, max_length=None, null=True, blank=True,default="")
+    is_seller = models.BooleanField(default=False)
     created_at = models.DateTimeField(_("User Created Date"), auto_now_add=True)
     modified_at = models.DateTimeField(_("User Modified Date"), auto_now=True)
     USERNAME_FIELD: str = 'mobileno'

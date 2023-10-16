@@ -26,10 +26,29 @@
    <meta http-equiv="x-ua-compatible" content="ie=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>{% block title %}{% endblock title %} - vamscentral</title>
-   <meta name="description" content="Online Shopping Site for Fashion & Lifestyle in India. India's Fashion Expert brings you a variety of footwear, Clothing, Accessories and lifestyle products for women & men. Best Online Fashion Store *Easy returns and exchanges.">
+   {% if description %}
+   <meta property="og:description" content="{{description}}">
+   <meta property="description" content="{{description}}">
+   <meta name="description" content="{{description}}">
+   {% endif %}
+
+   {% if meta_image %}
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
+    <meta property="og:image" content="{{meta_image}}">
+    <meta name="twitter:image" content="{{meta_image}}">
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    {% endif %}
+
    <meta name="robots" content="noindex" >
-   <meta name="Keywords" content="online shopping, online shopping sites, online shopping india, india shopping, Online shopping site">
+   {% if keyword %}
+   <meta name="Keywords" content="{{keyword}}">
+   {% endif %}
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   {% if conanical %}
+   <link rel="canonical" href="{{conanical}}" />
+   {% endif %}
    {% comment %} <meta name="viewport" content="width=device-width, initial-scale=1"> {% endcomment %}
    <!-- Place favicon.ico in the root directory -->
    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">

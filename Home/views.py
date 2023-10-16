@@ -1,10 +1,19 @@
 from django.shortcuts import render
 from products.models import *
+from .models import *
 from about.models import VCReview
+from django.shortcuts import get_object_or_404
+ 
 
 
 # Create your views here.
-
+def get_meta_data(path_name):
+    meta_data = get_object_or_404(MetaDetail,page =path_name)
+    title = meta_data.meta_title
+    key = meta_data.meta_tag
+    desc = meta_data.meta_description
+    canonical = meta_data.canonical
+    return title, desc, key,canonical
 
 def home(request):
     banners = Banners.objects.all()
@@ -20,13 +29,46 @@ def home(request):
     products_na = Products.objects.filter(
         category__in=Categories.objects.filter(category_code='new-arrival'),display_home=True)
     len_na = len(products_na)
-    context = {'Banners': banners, 'Products_hc': products_hc,'Products_bs':products_bs,'Products_tr':products_tr,'Products_na':products_na,'len_hc':len_hc,'len_bs':len_bs,'len_tr':len_tr,'len_na':len_na}
+
+    # metadata
+
+    title, desc, key, canonical = get_meta_data(request.path)
+
+
+    context = {
+                'Banners': banners,
+                'Products_hc': products_hc,
+                'Products_bs':products_bs,
+                'Products_tr':products_tr,
+                'Products_na':products_na,
+                'len_hc':len_hc,
+                'len_bs':len_bs,
+                'len_tr':len_tr,
+                'len_na':len_na,
+                'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical
+            }
     return render(request, 'index.html', context)
 
 
 def err_500(request):
-    return render(request, '500.html')
+    # metadata
+
+    title, desc, key, canonical = get_meta_data(request.path)
+    context = {'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
+    return render(request, '500.html',context)
 
 def aboutUs(request):
     reviews = VCReview.objects.filter(active=True)
-    return render(request,'about.html',{'reviews': reviews})
+    # metadata
+
+    title, desc, key, canonical = get_meta_data(request.path)
+    return render(request,'about.html',{'reviews': reviews,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical})

@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from .models import *
 from .serializer import *
 from user.models import *
+from Home.views import get_meta_data
 
 # Create your views here.
 defaultLocationpincode = 201301
@@ -69,5 +70,10 @@ class StoreVerifyAtLocation(APIView):
             pass
 
 def about(request):
-    return render(request,"about/about.html")
+    title, desc, key, canonical = get_meta_data(request.path)
+    context = {'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
+    return render(request,"about/about.html",context)
 

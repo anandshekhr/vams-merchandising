@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from stores.models import *
 from wishlist.models import *
+from Home.views import get_meta_data
 from user.models import UserAddresses
 from instamojo_wrapper import Instamojo
 import requests
@@ -43,6 +44,7 @@ def cartCheckoutPageView(request):
     counter = 0
     a = 0
     b = 0
+    title, desc, key, canonical = get_meta_data(request.path)
     try:
         if request.user:
             itemsForCartPage = Order.objects.get(user=request.user.id, ordered=False)
@@ -61,10 +63,17 @@ def cartCheckoutPageView(request):
             "object": itemsForCartPage,
             "delivery": delivery_charges,
             "totalquantity": counter,
-            "grandtotal": grandtotal,
+            "grandtotal": grandtotal,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical,
         }
     except Order.DoesNotExist:
-        context = {"object": 0, "delivery": 0, "totalquantity": 0, "grandtotal": 0}
+        context = {"object": 0, "delivery": 0, "totalquantity": 0, "grandtotal": 0,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
+    
     return render(request, "cart/cart.html", context)
 
 
@@ -390,7 +399,12 @@ def orderPaymentRequest(request, amount):
         payment_redirect_url = response["payment_request"]["longurl"]
 
         if payment_redirect_url:
-            context = {"payment_url": payment_redirect_url}
+            title, desc, key, canonical = get_meta_data(request.path)
+            context = {"payment_url": payment_redirect_url,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
+
             return render(request, "checkout/paymentredirect.html", context)
         else:
             return redirect("cartview")
@@ -553,6 +567,7 @@ def checkoutPage(request):
     order.razorpay_order_id = razorpay_response['id']
     order.save()
 
+    title, desc, key, canonical = get_meta_data(request.path)
 
     context = {
         "orderItems": order,
@@ -562,7 +577,10 @@ def checkoutPage(request):
         "gst_amount": order.gst_amount(),
         "primary_address": primary_address,
         "razorpay_order_id": razorpay_response['id'],
-        "razorpay_key_id":settings.RAZORPAY_API_KEY,
+        "razorpay_key_id":settings.RAZORPAY_API_KEY,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical,
     }
     return render(request, "checkout/checkout.html", context)
 
@@ -737,24 +755,36 @@ class CartRemoveView(APIView):
 def order_summary(request, pk):
     if request.user:
         order = Order.objects.get(user=request.user.id, pk=pk)
+    title, desc, key, canonical = get_meta_data(request.path)
 
-    context = {"order": order}
+    context = {"order": order,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
     return render(request, "checkout/thankyou.html", context)
 
 
 def pending_payment_page(request, pk):
     if request.user:
         order = Order.objects.get(user=request.user.id, pk=pk)
+    title, desc, key, canonical = get_meta_data(request.path)
 
-    context = {"order": order}
+    context = {"order": order,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
     return render(request, "checkout/payment-failed.html", context)
 
 
 def failed_payment_page(request, pk):
     if request.user:
         order = Order.objects.get(user=request.user.id, pk=pk)
+    title, desc, key, canonical = get_meta_data(request.path)
 
-    context = {"order": order}
+    context = {"order": order,'page_title':title,
+                'description':desc,
+                'keyword':key,
+                'canonical':canonical}
     return render(request, "checkout/payment-failed.html", context)
 
 
