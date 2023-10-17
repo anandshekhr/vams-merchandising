@@ -113,28 +113,17 @@ WSGI_APPLICATION = "vams_merchandise.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentral",
-            "USER": "postgres",
-            "PASSWORD": "Shekhar123#",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("DATABASE_NAME"),
+        "USER": env("DATABASE_USERNAME"),
+        "PASSWORD": env("PASSWORD"),
+        "HOST": env("DATABASE_URL"),
+        "PORT": env("DATABASE_PORT"),
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("DATABASE_NAME"),
-            "USER": env("DATABASE_USERNAME"),
-            "PASSWORD": env("PASSWORD"),
-            "HOST": env("DATABASE_URL"),
-            "PORT": env("DATABASE_PORT"),
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
