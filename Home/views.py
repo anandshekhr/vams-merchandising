@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 # Create your views here.
 def get_meta_data(path_name):
-    meta_data = get_object_or_404(MetaDetail,page =path_name)
+    meta_data, _ = MetaDetail.objects.get_or_create(page=path_name)
     title = meta_data.meta_title
     key = meta_data.meta_tag
     desc = meta_data.meta_description
@@ -61,14 +61,14 @@ def err_500(request):
                 'description':desc,
                 'keyword':key,
                 'canonical':canonical}
-    return render(request, '500.html',context)
+    return render(request, 'error/500.html',context)
 
 def aboutUs(request):
     reviews = VCReview.objects.filter(active=True)
     # metadata
 
     title, desc, key, canonical = get_meta_data(request.path)
-    return render(request,'about.html',{'reviews': reviews,'page_title':title,
+    return render(request,'about/about.html',{'reviews': reviews,'page_title':title,
                 'description':desc,
                 'keyword':key,
                 'canonical':canonical})
