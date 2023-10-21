@@ -157,7 +157,7 @@
 .suggestProduct {
    position: absolute;
    background-color: white;
-   width: 27%;
+   width: 29%;
    height: max-content;
    max-height: 300px;
    overflow: hidden;
@@ -1550,7 +1550,7 @@
  </script>
  
    <script>
-      {% comment %} var getCookie = function (name) {
+      var getCookie = function (name) {
       var cookieValue = null;
       if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
@@ -1564,18 +1564,17 @@
         }
       }
       return cookieValue;
-    }; {% endcomment %}
+    };
   
       //const g_csrftoken = getCookie('csrftoken');
       function showSearchItems(value){
-      //var g_csrftoken_p = getCookie('csrftoken')//
-      //var csrftoken = Cookies.get('csrftoken');
       //console.log(value);
-      domain = window.location.origin
-      path_name = '/products/all' //change-this url
+      var g_csrftoken = getCookie('csrftoken');
+      domain = window.location.origin;
+      path_name = '/products/all/'; //change-this url
       if(value.length < 3){
-        $('.suggestProduct').empty()
-        $('.suggestProduct').hide()
+        $('.suggestProduct').empty();
+        $('.suggestProduct').hide();
       }
       else{
         $.ajax({
@@ -1583,42 +1582,42 @@
             url: domain+path_name,
             data: {
                 //"csrfmiddlewaretoken":g_csrftoken,
-                "products" : value,
+               "search" : value,
                 
             },
             success: function(response) {
-                if (response){
-                  //console.log(response);
-                  $('.suggestProduct').empty()
-                  
-                  if (response.length > 0){
-                    $('.suggestProduct').show()
-                    $.each(response,function(index, item){
-                      console.log(response[index])
-                      $('.suggestProduct').append(`
-                      <div class="suggest-product d-flex col-12" onclick='window.location.href="/products/apparels/`+response[index].subcategory[0].subcategory_code+`/`+response[index].slug+`"' >
-                        {% comment %} <div class="col-2 ">
-                          <img src="data: image/png; base64, `+response[index].image+`" alt=""  >
-                        </div> {% endcomment %}
-                        <div class="product_name col-8 align-self-center">
-                          <p class="product_names " style="font-size:14px;" >`+response[index].name+`</p>
-                        </div>
-                        {% comment %} <div class="align-self-center">
-                          <div class="product_pirce "><span class="pro_mrp" style="font-size:14px;">₹`+response[index].discounted_price+`</span></div>
-                          <!-- <a href="#" class="btn btn-style1 btn-padding">ADD</a> -->
-                        </div> {% endcomment %}
-                      </div>
-                      `)
-                    })
-                  }
-                }
-                else{
-                  $('.suggestProduct').empty()
-                  $('.suggestProduct').show()
-                  $('.suggestProduct').append(`
-                  <p style="color: red;">Sorry! we regret but we don't have that product, that you search for.</p>
-                  `)
-                }
+               if (response){
+               //console.log(response);
+               $('.suggestProduct').empty();
+               
+               if (response.count > 0){
+                  $('.suggestProduct').show();
+                  $.each(response.results,function(index, item){
+                     //console.log(response.results[index])
+                     $('.suggestProduct').append(`
+                     <div class="suggest-product d-flex col-12" onclick='window.location.href="/products/apparels/`+response.results[index].subcategory[0].subcategory_code+`/`+response.results[index].slug+`"' >
+                     {% comment %} <div class="col-2 ">
+                        <img src="data: image/png; base64, `+response.results[index].image+`" alt=""  >
+                     </div> {% endcomment %}
+                     <div class="product_name col-8 align-self-center">
+                        <p class="product_names " style="font-size:14px;" >`+response.results[index].name+`</p>
+                     </div>
+                     {% comment %} <div class="align-self-center">
+                        <div class="product_pirce "><span class="pro_mrp" style="font-size:14px;">₹`+response.results[index].discounted_price+`</span></div>
+                        <!-- <a href="#" class="btn btn-style1 btn-padding">ADD</a> -->
+                     </div> {% endcomment %}
+                     </div>
+                     `)
+                  })
+               }
+               }
+               else{
+               $('.suggestProduct').empty();
+               $('.suggestProduct').show();
+               $('.suggestProduct').append(`
+               <p style="color: red;">Sorry! we regret but we don't have that product, that you search for.</p>
+               `);
+               }
             }
             
         });

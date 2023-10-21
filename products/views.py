@@ -136,12 +136,12 @@ def productDetailsPageView(request,subcategory,slug):
 
     return render(request, "shop/shop-details.html", context)
 
-
+from rest_framework import viewsets
 class ProductAPI(generics.ListAPIView):
     queryset = Products.objects.all()
-    serializer_class = ProductsSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, ProductsFilter]
-    search_fields = ["id", "name", "longname", "desc", "brand", "tags", "discount"]
+    serializer_class = ProductSearchSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name','category__category_name','subcategory__subcategory','tags__name']
     permission_classes = (AllowAny,)
     # pagination_class = [StandardResultsSetPagination]
     # authentication_classes = (AllowAny,)
