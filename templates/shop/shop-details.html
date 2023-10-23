@@ -261,14 +261,14 @@
                function getPincodeDeliveryValidation(value) {
                    var domain = window.location.origin;
                    $.ajax({
-                       url: domain + '/stores/location-availability/',
+                       url: domain + '/delivery/pincode/get/',
                        type: 'GET',
                        data: {
                            pincode: value
                        },
                        success: function (response) {
                            document.getElementById("pincode-availability-message").textContent = "";
-                           if (response.available == true) {
+                           if (response.results[0].can_deliver_here == true) {
                                document.getElementById("pincode-availability-message").textContent = "Hurray! We are delivering at this location.";
                            }
                            else {

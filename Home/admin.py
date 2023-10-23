@@ -4,5 +4,6 @@ from .models import *
 admin.site.register(Notification)
 @admin.register(MetaDetail)
 class MetaDetailAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('page','meta_title')
+    search_fields = ('page','meta_title')
     

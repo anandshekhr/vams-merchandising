@@ -1,6 +1,8 @@
 from hashids import Hashids
 from django.conf import settings
 from django.core.mail import send_mail
+from celery import shared_task
+from .celery import app
 
 hashids = Hashids(settings.HASHIDS_SALT, min_length=8)
 
@@ -82,7 +84,7 @@ class RomanNumeralConverter:
     def to_url(self, value):
         return '{}'.format(value)
 
-
+@app.task
 def send_welcome_email(subject, message, recipient_email,user=None):
     # Send email to admin
     admin_email = settings.ADMIN_EMAIL

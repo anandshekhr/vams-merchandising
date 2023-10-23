@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     "bankdetails.apps.BankdetailsConfig",
     "phoneverification.apps.PhoneverificationConfig",
     "seller.apps.SellerConfig",
+    "delivery.apps.DeliveryConfig",
+    "emailapp.apps.EmailappConfig",
 
     "rest_framework",
     "corsheaders",
@@ -71,7 +73,8 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "django_quill",
     "django_filters",
-]
+    "django_celery_results",
+    "django_celery_beat"]
 
 
 MIDDLEWARE = [
@@ -117,7 +120,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentralnew",
+            "NAME": "vamscentral-1",
             "USER": "postgres",
             "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
@@ -227,6 +230,18 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
+
+# CELERY_BACKENDS
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT=['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
+CELERY_RESULT_BACKEND = 'django-db'
+
+# celery beat
+CELERY_BEAT_SCHEDULER ='django_celery_beat.schedulers:DatabaseSchedulers'
 
 # Email server for reset password
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

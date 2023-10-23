@@ -36,6 +36,7 @@ urlpatterns = [
     path('about/', include('about.urls')),
     path("accounts/", include("dj_rest_auth.urls")),
     path("bank/", include("bankdetails.urls")),
+    path("delivery/", include("delivery.urls")),
     path('user/', include('user.urls')),
     path('cart/', include('cart.urls')),
     path('seller/', include('seller.urls')),
