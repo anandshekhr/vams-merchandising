@@ -1,4 +1,5 @@
 {% load cache %}
+{% load custom_template_tags %}
 
 <!-- Before -->
 {% cache 300 my_cache_key %}
@@ -857,23 +858,15 @@
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-shopping-bag"></i>
                                  <span class="action-text" id="cart-underlying-text">Cart</span>
-                                 {% if cart.get_quantity %}
-                                 <span class="action-item-number" id="cart-number">{{cart.get_quantity}}</span>
-
-                                 {% else %}
-                                 <span class="action-item-number" id="cart-number">0</span>
-                                 {% endif %}
+                                 <span class="action-item-number" id="cart-number">{{request.user|cart_item_count}}</span>
                               </a>
                            </div>
                            <div class="action-item action-item-wishlist">
                               <a href="javascript:void(0)" class="view-wishlist-button">
                                  <i class="fal fa-heart"></i>
                                  <span class="action-text" id="wishlist-underlying-text" style="left:-6px;">Wishlist</span>
-                                 {% if wishlist.get_quantity %}
-                                 <span class="action-item-number" id="wishlist-number">{{wishlist.get_quantity}}</span>
-                                 {% else %}
-                                 <span class="action-item-number" id="wishlist-number">0</span>
-                                 {% endif %}
+                                 <span class="action-item-number" id="wishlist-number">{{request.user|wishlist_item_count}}</span>
+                                 
                               </a>
                            </div>
                            {% if request.user.is_authenticated %}
