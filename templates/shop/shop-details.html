@@ -131,9 +131,9 @@
                   <div class="product-side-info mb-30">
                      <div class="product-name" style="color:grey;">{{product.brand}}</div>
                      <h4 class="product-name mb-10">{{product.name}}</h4>
-                     <span class="product-price">₹{{product.list_price|floatformat:2}}</span>&nbsp;&nbsp;
+                     <span class="product-price">₹{{product.list_price}}</span>&nbsp;&nbsp;
                      <span class="product-price" style="color: grey;
-    text-decoration: line-through;">₹{{product.max_retail_price|floatformat:2}}</span>&nbsp;&nbsp;
+    text-decoration: line-through;">₹{{product.max_retail_price}}</span>&nbsp;&nbsp;
                      <span class="product-price" style="color: green;    font-size: medium;">({{product.discount|floatformat:0}}% off)</span>
                      <div class="course-start-icon">
                         {% for i in total_stars %}
@@ -432,8 +432,8 @@
                               <div class="product-name" style="color:grey;">{{product.brand}}</div>
                               <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}">{{product.name}}</a></div>
                               <div class="product-price">
-                                 <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-                                 <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>
+                                 <span class="price-now">₹{{product.list_price}}</span>
+                                 <span class="price-old">₹{{product.max_retail_price}}</span>
                               </div>
                               <ul class="product-color-nav">
                                  {% for image in pr_images %}

@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from datetime import date
 import decimal
+from math import ceil
 
 
 User = get_user_model()
@@ -30,21 +31,21 @@ class Cart(models.Model):
         return f"{self.quantity} Size:{self.size} of {self.item.name}"
 
     def get_total_item_price(self):
-        return self.quantity * self.item.max_retail_price
+        return ceil(self.quantity * self.item.max_retail_price)
 
     def get_total_discount_item_price(self):
-        return self.quantity * ((self.item.discount/100)*self.item.max_retail_price)
+        return ceil(self.quantity * ((self.item.discount/100)*self.item.max_retail_price))
 
     def get_amount_saved(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
+        return ceil(self.get_total_item_price() - self.get_total_discount_item_price())
     
     def amount_after_applying_discount(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
+        return ceil(self.get_total_item_price() - self.get_total_discount_item_price())
 
     def get_final_price(self):
         if self.item.discount:
-            return self.amount_after_applying_discount()
-        return self.get_total_item_price()
+            return ceil(self.amount_after_applying_discount())
+        return ceil(self.get_total_item_price())
     
     def get_product_name(self):
         return self.item.name
@@ -131,13 +132,13 @@ class Order(models.Model):
             total += order_item.get_final_price()
         if self.coupon:
             total -= self.coupon.amount
-        return total
+        return ceil(total)
     
     def get_max_total(self):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_total_item_price()
-        return total
+        return ceil(total)
     
     def get_order_name(self):
         name = ''
@@ -171,16 +172,16 @@ class Order(models.Model):
 
         if amount > settings.ABOVE_AMOUNT:
             amount += settings.DELIVERY
-        return amount
+        return ceil(amount)
     
     def gst_amount(self):
         gst_amount = (float(self.amount_with_shipping()) * (settings.GST_STICHED/100))
-        return round(gst_amount,2)
+        return ceil(gst_amount)
 
     
     def total_amount_at_checkout(self):
         total_amount = float(self.amount_with_shipping()) + self.gst_amount()
-        return round(total_amount,2)
+        return ceil(total_amount)
     
 
 

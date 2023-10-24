@@ -413,8 +413,8 @@
                                     <div style=" padding: 16px 0px;">
                                        <span style="color: #282c3f; font-weight: 700; text-align: left;">Price: </span>
          
-                                       <span class="product-price"><span class="amount">₹{{order.item.list_price|floatformat:2}}</span></span>
-                                       <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{order.item.max_retail_price|floatformat:2}}</span>
+                                       <span class="product-price"><span class="amount">₹{{order.item.list_price}}</span></span>
+                                       <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{order.item.max_retail_price}}</span>
                                     </div>
                                     <div class="price_quantity">
                                        <span class="product-quantity text-center">
@@ -466,7 +466,7 @@
                                        {{order.item.name}} <strong class="product-quantity" id="checkout-product-qty-{{order.item.id}}"> × {{order.quantity}}</strong>
                                     </td>
                                     <td class="product-total" id="product-total-{{order.item.id}}">
-                                       <span class="amount">₹{{order.get_final_price|floatformat:2}}</span>
+                                       <span class="amount">₹{{order.get_final_price}}</span>
                                     </td>
                                  </tr>
                               </tbody>
@@ -474,7 +474,7 @@
                               <tfoot>
                                  <tr class="cart-subtotal" id="card-subtotal">
                                     <th>Cart Subtotal</th>
-                                    <td><span class="amount">₹{{orderItems.get_total|floatformat:2}}</span></td>
+                                    <td><span class="amount">₹{{orderItems.get_total}}</span></td>
                                  </tr>
                                  {% if shippingCharges > 0 %}
                                  <tr class="shipping" id="shipping-amount">
@@ -519,7 +519,7 @@
                                  </tr>
                                  <tr class="order-total" id="order-total">
                                     <th>Order Total</th>
-                                    <td><strong><span class="amount">₹{{totalAmount|floatformat:2}}</span></strong>
+                                    <td><strong><span class="amount">₹{{totalAmount}}</span></strong>
                                     </td>
                                  </tr>
                               </tfoot>

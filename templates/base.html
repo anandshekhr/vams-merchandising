@@ -1042,8 +1042,8 @@
                      <div class="product-size">Size: {{cart_items.size}}</div>
                      <div class="product-pricing">
                         <span class="item-number">Qty: {{cart_items.quantity}} </span><br>
-                        <span class="price-now">₹{{cart_items.get_final_price|floatformat:2}}</span>
-                        <span class="price-old" style="color:#17171766;">₹{{cart_items.get_total_item_price|floatformat:2}}</span>
+                        <span class="price-now">&nbsp;₹{{cart_items.get_final_price}}</span>
+                        <span class="price-old" style="color:#17171766;">&nbsp;₹{{cart_items.get_total_item_price}}</span>
                      </div>
                      <a href="{% url 'delete-from-cart' cart_items.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
@@ -1057,7 +1057,7 @@
             <div class="product-price-total">
                <span>Subtotal :</span>
                {% if cart.get_total %}
-               <span class="subtotal-price">₹{{cart.get_total|floatformat:2}}</span>
+               <span class="subtotal-price">₹{{cart.get_total}}</span>
                {% else %}
                 <span class="subtotal-price">₹0.00</span>
                {% endif %}
@@ -1083,8 +1083,8 @@
                      {% comment %} <div class="product-size">Size: {{item.size}}</div> {% endcomment %}
                      <div class="product-quantity">Quantity: {{item.quantity}}</div>
                      <div class="product-pricing">
-                        <span class="price-now">₹{{item.item.list_price|floatformat:2}}</span>
-                        <span class="price-old" style="color:#17171766;">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                        <span class="price-now">&nbsp;₹{{item.item.list_price}}</span>
+                        <span class="price-old" style="color:#17171766;">&nbsp;₹{{item.item.max_retail_price}}</span>
                      </div>
                      <a href="{% url 'delete-item-from-wishlist' item.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
@@ -1098,7 +1098,7 @@
             <div class="product-price-total">
                <span>Subtotal :</span>
                {% if wishlist.get_total %}
-               <span class="subtotal-price">₹{{wishlist.get_total|floatformat:2}}</span>
+               <span class="subtotal-price">₹{{wishlist.get_total}}</span>
                {% else %}
                 <span class="subtotal-price">₹0.00</span>
                {% endif %}

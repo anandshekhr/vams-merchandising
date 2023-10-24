@@ -28,8 +28,8 @@
       <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}">{{product.name}}</a>
       </div>
       <div class="product-price">
-         <span class="price-now">₹{{product.list_price|floatformat:2}}</span>
-         <span class="price-old">₹{{product.max_retail_price|floatformat:2}}</span>
+         <span class="price-now">₹{{product.list_price}}</span>
+         <span class="price-old">₹{{product.max_retail_price}}</span>
       </div>
    </div>
 </div>

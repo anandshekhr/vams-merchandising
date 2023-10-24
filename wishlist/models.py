@@ -3,7 +3,7 @@ from django.conf import settings
 from stores.models import *
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-
+from math import ceil
 
 User = get_user_model()
 
@@ -22,21 +22,21 @@ class WishlistItems(models.Model):
         return f"{self.quantity} of {self.item.name}"
 
     def get_total_item_price(self):
-        return self.quantity * self.item.max_retail_price
+        return ceil(self.quantity * self.item.max_retail_price)
 
     def get_total_discount_item_price(self):
-        return self.quantity * ((self.item.discount/100)*self.item.max_retail_price)
+        return ceil(self.quantity * ((self.item.discount/100)*self.item.max_retail_price))
 
     def get_amount_saved(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
+        return ceil(self.get_total_item_price() - self.get_total_discount_item_price())
 
     def amount_after_applying_discount(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
+        return ceil(self.get_total_item_price() - self.get_total_discount_item_price())
 
     def get_final_price(self):
         if self.item.discount:
-            return self.amount_after_applying_discount()
-        return self.get_total_item_price()
+            return ceil(self.amount_after_applying_discount())
+        return ceil(self.get_total_item_price())
 
     def get_product_name(self):
         return self.item.name
@@ -57,13 +57,13 @@ class Wishlist(models.Model):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_final_price()
-        return total
+        return ceil(total)
 
     def get_max_total(self):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_total_item_price()
-        return total
+        return ceil(total)
 
     def get_order_name(self):
         name = ''
@@ -82,4 +82,4 @@ class Wishlist(models.Model):
         return qty
 
     def get_total_discount(self):
-        return self.get_max_total() - self.get_total()
+        return ceil(self.get_max_total() - self.get_total())

@@ -49,8 +49,8 @@
                               <div style="border-bottom: 1px solid #d9d9d9; padding: 16px 0px;">
                                  <span style="color: #282c3f; font-weight: 700; text-align: left;">Price: </span>
    
-                                 <span class="product-price"><span class="amount">₹{{obj.item.list_price|floatformat:2}}</span></span>
-                                 <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{obj.item.max_retail_price|floatformat:2}}</span>
+                                 <span class="product-price"><span class="amount">&nbsp;₹{{obj.item.list_price}}</span></span>
+                                 <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">&nbsp;₹{{obj.item.max_retail_price}}</span>
                               </div>
                               <div class="price_quantity">
                                  <span class="product-quantity text-center">
@@ -71,7 +71,7 @@
                               </div>
                               <div>
                                  <span style="color: #282c3f; font-weight: 700; text-align: left;">Total: </span>
-                                 <span class="product-subtotal" id="product-subtotal"><span class="amount" id="{{obj.item.id}}-product-subtotal-save">₹{{obj.get_final_price|floatformat:2}}</span></span>
+                                 <span class="product-subtotal" id="product-subtotal"><span class="amount" id="{{obj.item.id}}-product-subtotal-save">&nbsp;₹{{obj.get_final_price}}</span></span>
                               </div>
                            </div>
                            
@@ -102,8 +102,8 @@
                      <div class="cart-page-total">
                         <h2>Cart totals</h2>
                         <ul class="mb-20">
-                           <li id="grand-subtotal">Subtotal <span>₹{{object.get_total|floatformat:2}}</span></li>
-                           <li id="grand-total">Total <span>₹{{object.get_total|floatformat:2}}</span></li>
+                           <li id="grand-subtotal">Subtotal <span>₹{{object.get_total}}</span></li>
+                           <li id="grand-total">Total <span>₹{{object.get_total}}</span></li>
                         </ul>
                         <a class="border-btn" href="{% url 'payment-checkout' %}">Proceed to checkout</a>
                      </div>
@@ -135,9 +135,9 @@
                   },
                   success: function(response) {
                      if (response){
-                     document.getElementById("grand-subtotal").innerHTML ="Subtotal <span>"+"₹"+response['amount']+".00</span>";
-                     document.getElementById("grand-total").innerHTML ="Total <span>"+ "₹"+response['amount']+".00</span>";
-                     document.getElementById(elementId+"-product-subtotal-save").innerHTML = "₹"+response['item_dprice']+".00" ;
+                     document.getElementById("grand-subtotal").innerHTML ="Subtotal <span>"+"₹"+response['amount']+"</span>";
+                     document.getElementById("grand-total").innerHTML ="Total <span>"+ "₹"+response['amount']+"</span>";
+                     document.getElementById(elementId+"-product-subtotal-save").innerHTML = "₹"+response['item_dprice'] ;
                      document.getElementById("cart-number").innerHTML = response['qty'];
 
                      }
@@ -164,9 +164,9 @@
                   },
                   success: function(response) {
                      if (response){
-                     document.getElementById("grand-subtotal").innerHTML ="Subtotal <span>"+"₹"+response['amount']+".00</span>";
-                     document.getElementById("grand-total").innerHTML ="Total <span>"+ "₹"+response['amount']+".00</span>";
-                     document.getElementById(elementId+"-product-subtotal-save").innerHTML = "₹"+response['item_dprice']+".00";
+                     document.getElementById("grand-subtotal").innerHTML ="Subtotal <span>"+"₹"+response['amount']+"</span>";
+                     document.getElementById("grand-total").innerHTML ="Total <span>"+ "₹"+response['amount']+"</span>";
+                     document.getElementById(elementId+"-product-subtotal-save").innerHTML = "₹"+response['item_dprice'];
                      document.getElementById("cart-number").innerHTML = response['qty'];
 
                      if (response['item_qty'] == 0){

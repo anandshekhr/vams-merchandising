@@ -49,7 +49,7 @@ def cartCheckoutPageView(request):
         if request.user:
             itemsForCartPage = Order.objects.get(user=request.user.id, ordered=False)
 
-        a = round(itemsForCartPage.get_total(), 2)
+        a = ceil(itemsForCartPage.get_total())
         counter = len(itemsForCartPage.items.all())
 
         if a > 599:
@@ -61,9 +61,9 @@ def cartCheckoutPageView(request):
 
         context = {
             "object": itemsForCartPage,
-            "delivery": delivery_charges,
+            "delivery": ceil(delivery_charges),
             "totalquantity": counter,
-            "grandtotal": grandtotal,'page_title':title,
+            "grandtotal": ceil(grandtotal),'page_title':title,
                 'description':desc,
                 'keyword':key,
                 'canonical':canonical,
@@ -571,10 +571,10 @@ def checkoutPage(request):
 
     context = {
         "orderItems": order,
-        "totalAmount": order.total_amount_at_checkout(),
-        "shippingCharges": ShippingCharges,
+        "totalAmount": ceil(order.total_amount_at_checkout()),
+        "shippingCharges": ceil(ShippingCharges),
         "address": address,
-        "gst_amount": order.gst_amount(),
+        "gst_amount": ceil(order.gst_amount()),
         "primary_address": primary_address,
         "razorpay_order_id": razorpay_response['id'],
         "razorpay_key_id":settings.RAZORPAY_API_KEY,'page_title':title,
@@ -651,15 +651,15 @@ class CartAddView(APIView):
         return Response(
             {
                 "cart": serializer.data,
-                "amount": order.get_total(),
-                "tmax_amount": order.get_max_total(),
+                "amount": ceil(order.get_total()),
+                "tmax_amount": ceil(order.get_max_total()),
                 "qty": order.get_quantity(),
                 "item_qty": order_item.quantity,
-                "item_tprice": order_item.get_total_item_price(),
-                "item_dprice": round(order_item.get_amount_saved(), 2),
-                "amount_at_checkout": order.total_amount_at_checkout(),
-                "shipping": order.shipping_charge(),
-                "gst_amount": order.gst_amount(),
+                "item_tprice": ceil(order_item.get_total_item_price()),
+                "item_dprice": ceil(order_item.get_amount_saved()),
+                "amount_at_checkout": ceil(order.total_amount_at_checkout()),
+                "shipping": ceil(order.shipping_charge()),
+                "gst_amount": ceil(order.gst_amount()),
             },
             status=status.HTTP_200_OK,
         )
@@ -699,15 +699,15 @@ class CartRemoveView(APIView):
                     return Response(
                         {
                             "cart": "Item updated",
-                            "amount": order.get_total(),
-                            "tmax_amount": order.get_max_total(),
-                            "qty": order.get_quantity(),
-                            "item_qty": order_item.quantity,
-                            "item_tprice": order_item.get_total_item_price(),
-                            "item_dprice": order_item.get_amount_saved(),
-                            "amount_at_checkout": order.total_amount_at_checkout(),
-                            "shipping": order.shipping_charge(),
-                            "gst_amount": order.gst_amount(),
+                            "amount": ceil(order.get_total()),
+                "tmax_amount": ceil(order.get_max_total()),
+                "qty": order.get_quantity(),
+                "item_qty": order_item.quantity,
+                "item_tprice": ceil(order_item.get_total_item_price()),
+                "item_dprice": ceil(order_item.get_amount_saved()),
+                "amount_at_checkout": ceil(order.total_amount_at_checkout()),
+                "shipping": ceil(order.shipping_charge()),
+                "gst_amount": ceil(order.gst_amount()),
                         },
                         status=status.HTTP_200_OK,
                     )
@@ -719,15 +719,15 @@ class CartRemoveView(APIView):
                     return Response(
                         {
                             "cart": "Item updated",
-                            "amount": order.get_total(),
-                            "tmax_amount": order.get_max_total(),
+                            "amount": ceil(order.get_total()),
+                            "tmax_amount": ceil(order.get_max_total()),
                             "qty": order.get_quantity(),
                             "item_qty": 0,
                             "item_tprice": 0,
                             "item_dprice": 0,
-                            "amount_at_checkout": order.total_amount_at_checkout(),
-                            "shipping": order.shipping_charge(),
-                            "gst_amount": order.gst_amount(),
+                            "amount_at_checkout": ceil(order.total_amount_at_checkout()),
+                            "shipping": ceil(order.shipping_charge()),
+                            "gst_amount": ceil(order.gst_amount()),
                         },
                         status=status.HTTP_200_OK,
                     )
@@ -735,15 +735,15 @@ class CartRemoveView(APIView):
                 return Response(
                     {
                         "cart": "Item not available in cart",
-                        "amount": order.get_total(),
-                        "tmax_amount": order.get_max_total(),
-                        "qty": order.get_quantity(),
+                        "amount": ceil(order.get_total()),
+                        "tmax_amount": ceil(order.get_max_total()),
+                        "qty": ceil(order.get_quantity()),
                         "item_qty": 0,
                         "item_tprice": 0,
                         "item_dprice": 0,
-                        "amount_at_checkout": order.total_amount_at_checkout(),
-                        "shipping": order.shipping_charge(),
-                        "gst_amount": order.gst_amount(),
+                        "amount_at_checkout": ceil(order.total_amount_at_checkout()),
+                        "shipping": ceil(order.shipping_charge()),
+                        "gst_amount": ceil(order.gst_amount()),
                     },
                     status=status.HTTP_200_OK,
                 )
