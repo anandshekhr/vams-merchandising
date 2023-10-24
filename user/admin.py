@@ -10,5 +10,13 @@ class CustomUserAdmin(admin.ModelAdmin):
 admin.site.register(CustomUser,CustomUserAdmin)
 
 admin.site.register(UserAddresses)
-admin.site.register(Country)
+
 admin.site.register(DeviceOtp)
+
+@admin.register(Country)
+class CountryAdmin(admin.ModelAdmin):
+    list_display = ('country_code','nick_name','country_name')
+    ordering = ['-country_code','-nick_name']
+    search_fields = ('country_code','country_name')
+    
+

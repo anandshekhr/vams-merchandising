@@ -4,11 +4,17 @@
         <div class="card border-0">
             {% for addr in address %}
             <div class="card-body mb-3 bg-lightblue p-4 rounded-10 form-check">
-                <a href="{% url 'set-primary-profile-address' addr.id %}"><input class="mx-1 mt-2 form-check-input" type="radio" value="{% url 'set-primary-profile-address' addr.id %}" name="primaryAddressCheckbox" id="primary-{{addr.id}}" {% if addr.set_default %}checked{% endif %}></a>
-                <h4 class="fw-700 mt-2 font-xss text-grey-900 d-flex mb-0">{{addr.name}}<span class="bg-primary text-white font-xsssss fw-600 ls-3 p-2 rounded-6 ms-auto">{{addr.address_type}}</span></h4>
+                <a href="{% url 'set-primary-profile-address' addr.id %}">
+                    <input class="mx-1 mt-2 form-check-input" type="radio" value="{% url 'set-primary-profile-address' addr.id %}" name="primaryAddressCheckbox" id="primary-{{addr.id}}" {% if addr.set_default %}checked{% endif %}>
+                </a>
+                <h4 class="fw-700 mt-2 font-xss text-grey-900 d-flex mb-0">{{addr.name}}
+                    <span class="bg-primary text-white font-xsssss fw-600 ls-3 p-2 rounded-6 ms-auto">{{addr.address_type}}</span>
+                </h4>
                 <h6 class="fw-500 font-xssss text-grey-600 lh-22 mb-0">{{addr.user_address}}</h6>
-                <a href="{% url 'delete-profile-address' pk=addr.id %}"><i class="ti-trash me-1 d-flex justify-content-end font-xss ms-auto text-grey-500"></i></a>
-                {% comment %} </td> {% endcomment %}
+                <a href="{% url 'delete-profile-address' pk=addr.id %}">
+                    <i class="ti-trash me-1 d-flex justify-content-end font-xss ms-auto text-grey-500"></i>
+                </a>
+                
             </div>
             {% endfor %}
             {% comment %} <form id="save-address" method="post" action="{% url 'profile-address' %}">

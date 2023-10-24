@@ -115,7 +115,7 @@ class Country(models.Model):
     created_date = models.DateTimeField(_('created date'), auto_now_add=True)
 
     def __str__(self):
-        return self.country_name
+        return self.country_code
 
 
 class DeviceOtp(models.Model):

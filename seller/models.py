@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from phoneverification.models import Country
+from user.models import Country
 
 # Create your models here.
 class Seller(models.Model):

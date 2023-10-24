@@ -9,7 +9,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from vams_merchandise.utils import send_welcome_email,welcome_user_email
+from vams_merchandise.utils import *
 from rest_framework.views import APIView
 from products.serializer import userSerializer
 from cart.models import Order
@@ -72,7 +72,9 @@ def register(request):
                         password=password,
                     )
                     user.save()
-                    send_welcome_email('Welcome to VamsCentral - Your Ultimate Shopping Destination!',welcome_user_email,email,user)
+                    mail_data = {'customername':first_name + ' ' + last_name,
+                                 'useremail':email,'usermobile':phone_number,'username':username}
+                    send_email_task.apply_async(args = [mail_data],countdown = 10)
                     token, created = Token.objects.get_or_create(user=user)
                     messages.success(
                         request, f"Account Registered, Please Login Again!"
@@ -225,61 +227,67 @@ def userOrderDetailExpanded(request, pk):
     return render(request, "user/order-detail.html", context)
 
 
-@api_view(["POST"])
-@permission_classes((permissions.AllowAny,))
-def get_otp(request):
-    try:
-        # device = Device.objects.get(auth_token=request.data.get('auth_token'))
-        country_code = request.data.get("country_code")
-        phone_number = request.data.get("phone_number")
-        fake_otp = bool(request.data.get("fake_otp"))
-
+class getOTP(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request, *args, **kwargs):
         try:
-            last_sms = DeviceOtp.objects.filter(number=phone_number).latest(
-                "created_date"
-            )
-            if last_sms:
-                timediff = datetime.now(timezone.utc) - last_sms.created_date
-                if timediff.total_seconds() < 15:
-                    return JsonResponse({"Status": "Sent"})
+            # device = Device.objects.get(auth_token=request.data.get('auth_token'))
+            country_code = request.data.get("country_code")
+            phone_number = request.data.get("mobile")
+            fake_otp = bool(request.data.get("fake_otp"))
+
+            try:
+                last_sms = DeviceOtp.objects.filter(number=phone_number).latest(
+                    "created_date"
+                )
+                if last_sms:
+                    timediff = datetime.now(timezone.utc) - last_sms.created_date
+                    if timediff.total_seconds() < 15:
+                        return JsonResponse({"Status": "Sent"})
+            except Exception as e:
+                print(e)
+                pass
+
+            if OTPManager.send_otp(
+                fake_otp,
+                int(request.data.get("otp")) if fake_otp else randint(1000, 9999),
+                country_code,
+                phone_number,
+            ):
+                return Response({"Status": "Sent"}, status=status.HTTP_200_OK)
+            return JsonResponse({"Error": "You have exceeded your attempts."})
         except Exception as e:
             print(e)
-            pass
-
-        if OTPManager.send_otp(
-            fake_otp,
-            int(request.data.get("otp")) if fake_otp else randint(100000, 999999),
-            country_code,
-            phone_number,
-        ):
-            return Response({"Status": "Sent"}, status=status.HTTP_200_OK)
-        return JsonResponse({"Error": "You have exceeded your attempts."})
-    except Exception as e:
-        print(e)
-        return Response({"Error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["POST"])
-@permission_classes((permissions.AllowAny,))
-def verify_otp(request):
-    try:
-        # Device.objects.get(auth_token=request.data.get('auth_token'))
-        phone_number = request.data.get("phone_number")
-        country_code = request.data.get("country_code")
-        web = bool(request.data.get("web"))
-        otp = request.data.get("otp")
-        print("otp is - ", otp)
-        if not web:
-            return OTPManager.verify_otp(otp, country_code, phone_number, web)
-        else:
-            user_r = OTPManager.verify_otp(otp, country_code, phone_number, web)
-            auth.login(request, user_r)
-            return Response({"status": "OK"}, status=status.HTTP_200_OK)
+class VerifyOTP(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request, *args, **kwargs):
+        try:
+            # Device.objects.get(auth_token=request.data.get('auth_token'))
+            phone_number = request.data.get("mobile")
+            country_code = request.data.get("country_code")
+            web = bool(request.data.get("web"))
+            otp = request.data.get("otp")
+            print("otp is - ", otp)
+            
+            if not web:
+                return OTPManager.verify_otp(otp, country_code, phone_number, web)
+            
+            else:
+                user_r = OTPManager.verify_otp(otp, country_code, phone_number, web)
+                auth.login(request, user_r)
+                return Response({"status": "OK"}, status=status.HTTP_200_OK)
 
-    except Exception as e:
-        print(e)
-        return Response({"Error": "Invalid Data"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({"Error": "Invalid Data"}, status=status.HTTP_200_OK)
 
+class CustomerRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    permission_classes = (AllowAny,)
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 def profileDashboard(request):
     title, desc, key, canonical = get_meta_data(request.path)

@@ -5,8 +5,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
-urlpatterns = (
-    [
+urlpatterns = [   
+        # Login & Signup using OTP
+        path("accounts/register/get_otp/", views.getOTP.as_view(), name="get_otp"),
+        path("accounts/register/verify/", views.VerifyOTP.as_view(), name="verify_otp"),
+
+        # login & signup using mobileno and password
+        path("accounts/register", views.register, name="register"),
+        path("accounts/login/", views.login, name="login"),
+        path("accounts/logout/", views.logout, name="logout"),
+        
+        # Update user information
+        path('accounts/update/<int:pk>', views.CustomerRetrieveUpdateView.as_view(), name='customer-retrieve-update'),
+
+        # reset password using email
         path(
             "accounts/reset_password/",
             auth_views.PasswordResetView.as_view(
@@ -34,9 +46,6 @@ urlpatterns = (
             ),
             name="password_reset_complete",
         ),
-        path("accounts/register", views.register, name="register"),
-        path("accounts/login/", views.login, name="login"),
-        path("accounts/logout/", views.logout, name="logout"),
         
         path(
             "accounts/update/user/profile/",
@@ -49,6 +58,8 @@ urlpatterns = (
             name="user_profile",
         ),
         path("accounts/profilepage/", views.profileUser, name="userprofilepage"),
+
+        # User order, order-detail, profile,address, coupon, refund
         path(
             "accounts/user/ordershistory/",
             views.userOrderDetail,
@@ -59,8 +70,7 @@ urlpatterns = (
             views.userOrderDetailExpanded,
             name="orderhistorydetail",
         ),
-        path("accounts/register/get_otp/", views.get_otp, name="get_otp"),
-        path("accounts/register/verify/", views.verify_otp, name="verify_otp"),
+        
         path(
             "accounts/profile/dashboard/",
             views.profileDashboard,
@@ -88,7 +98,5 @@ urlpatterns = (
         path("accounts/profile/refund/<hashid:pk>",views.refund_page,name="refund-status"),
         path("accounts/user-exists/", views.UserExistView.as_view(), name="user-exists"),
         path("accounts/address/", views.UserAddressAPI.as_view(), name="user-address"),
-    ]
-    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-)
+    ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
