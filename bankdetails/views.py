@@ -11,23 +11,24 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 # Create your views here.
 from .serializer import *
+from delivery.models import PincodeDetail
 
 
-def writeExcelToSQL(request,total):
-    total = int(total)
+def writeExcelToSQL(request):
+    # total = int(total)
     
-    
-    
-        # if i < 9:
-        #     filename= f"bankdetails/india-ifsc-codes-1-1510j/IFCB2009_0{i+1}.xls"
-        # else:
-    filename= "bankdetails/68774.xlsx"
-    df = pd.read_excel(os.path.join(os.getcwd(),filename))
-    for index,row in df.iterrows():
+    # filename= "bankdetails/68774.xlsx"
+    # df = pd.read_excel(os.path.join(os.getcwd(),filename))
+    # for index,row in df.iterrows():
         
-        ifsc = ifscCodeDetails(bank=row[0],ifsc=row[1],branch=row[2],address=row[3],contact=row[8],city1=row[4],city2=row[5],state=row[6],std_code=row[7],active=True,created_at=datetime.now(),modified_at=datetime.now(),bank_code=row[1][:4])
-        ifsc.save()
-        # ifscCodeDetails.objects.filter(bank=row[0]).update(bank_code=row[1][:4])
+    #     ifsc = ifscCodeDetails(bank=row[0],ifsc=row[1],branch=row[2],address=row[3],contact=row[8],city1=row[4],city2=row[5],state=row[6],std_code=row[7],active=True,created_at=datetime.now(),modified_at=datetime.now(),bank_code=row[1][:4])
+    #     ifsc.save()
+    filename = "bankdetails/pincodes.csv"
+    df = pd.read_csv(os.path.join(os.getcwd(),filename))
+    for index,row in df.iterrows():
+        pincode = PincodeDetail(pincode=row[1],locality=row[5],city=row[8],state=row[9],can_deliver_here = True if row[3] == 'Delivery' else False)
+        pincode.save()
+
         
             
     return HttpResponse('success')

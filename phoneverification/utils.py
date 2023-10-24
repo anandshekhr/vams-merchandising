@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import DeviceOtp, Country
+from user.models import DeviceOtp, Country
 from django.http import JsonResponse
 from datetime import date
 from django.contrib import auth

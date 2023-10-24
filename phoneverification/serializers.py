@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.fields import CurrentUserDefault
-from .models import *
+from user.models import *
 try:
     from allauth.account import app_settings as allauth_settings
     from allauth.utils import (email_address_exists,

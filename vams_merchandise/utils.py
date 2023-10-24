@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from celery import shared_task
 from .celery import app
+from emailapp.models import *
 
 hashids = Hashids(settings.HASHIDS_SALT, min_length=8)
 
@@ -84,54 +85,38 @@ class RomanNumeralConverter:
     def to_url(self, value):
         return '{}'.format(value)
 
-@app.task
-def send_welcome_email(subject, message, recipient_email,user=None):
+
+def send_welcome_email(maildata):
     # Send email to admin
-    admin_email = settings.ADMIN_EMAIL
-    if user:
-        admin_message = f"""
-        Dear Admin,
-
-        I hope this message finds you well. I wanted to inform you that we have a new member who has recently joined our circle.
-
-        User Information:
-        - Name: {user.first_name +' '+user.last_name}
-        - Email: {user.email}
-        - Username: {user.username}
-        - Role: Customer
-        - Contact Number: {user.mobileno}
-
-        Please join us in extending a warm welcome to {user.username}. They bring valuable skills and perspectives to our circle, and we believe their presence will greatly contribute to our goals and objectives.
-
-        As the admin, your guidance and support are highly appreciated in helping {user.username} integrate smoothly into our community. If you have any specific onboarding procedures or tasks that you would like to assign to them, please feel free to communicate that to them or delegate accordingly.
-
-        If you have any questions or need further information about the new member, please don't hesitate to reach out to me or directly contact {user.username} at {user.email} or {user.mobileno}.
-
-        Thank you for your continued dedication to our circle, and let's look forward to a fruitful collaboration with our new member.
-
-        Best regards,
-
-        Anand S.
-        Director
-        VAMSCentral"""
-        
     try:
-        send_mail(
-            subject,
-            admin_message,
-            settings.DEFAULT_FROM_EMAIL,
-            [admin_email],
-            fail_silently=False,
-        )
+        # Send email to customer
+        email_data = UserRegisteredEmails.objects.get(category='New Registration')
+        sender = str(email_data.sender)
+        subject = str(email_data.subject).replace('_customername_',maildata.get('customername'))
+        body = str(email_data.body).replace('_customername_',maildata.get('customername'))
+        to = [maildata.get('useremail')]
 
-        # Send email to user
-        send_mail(
-            subject,
-            message,
-            settings.DEFAULT_FROM_EMAIL,
-            [recipient_email],
-            fail_silently=False,
-        )
+        send_mail(subject,"",sender,to,fail_silently=False, auth_user=None, auth_password=None,connection=None, html_message=body)
+
+
+        # send email to admin
+
+        email_data_admin = UserRegisteredEmails.objects.get(category='New Registration to admin')
+        sender_admin = str(email_data_admin.sender)
+        subject_admin = str(email_data_admin.subject)
+        body_admin = str(email_data_admin.body).replace('_fullname_',maildata.get('customername')).replace('_usermobile_',maildata.get('usermobile')).replace('_useremail_',maildata.get('useremail'))
+        to_admin = sender_admin
+
+        send_mail(subject_admin,"",sender_admin,to_admin,fail_silently=False, auth_user=None, auth_password=None,connection=None, html_message=body_admin)
+
+
+
+
         return True
     except:
         return False
+
+
+@shared_task
+def send_email_task(maildata):
+    send_welcome_email(maildata)
