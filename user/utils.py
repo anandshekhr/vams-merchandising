@@ -1,3 +1,5 @@
+
+from django.conf import settings
 from django.http import JsonResponse
 from .models import DeviceOtp, Country
 from django.http import JsonResponse
@@ -10,7 +12,13 @@ from django.utils.translation import gettext_lazy as _
 import requests
 from .serializers import UserSerializer
 from django.contrib.auth import authenticate, get_user_model
-
+from infobip_channels.whatsapp.channel import WhatsAppChannel
+import uuid
+from random import randint as rand
+c = WhatsAppChannel.from_auth_params({
+    "base_url": settings.IB_BASE_URL,
+    "api_key": settings.IB_API_KEY
+})
 user_model = get_user_model()
 
 
@@ -38,6 +46,20 @@ class OTPManager:
         country, _ = Country.objects.get_or_create(
             country_code=int(country_code))
         if not fake_otp:
+            response = c.send_text_message(
+                        {
+                        "from": str(settings.SENDER_PHONE_NUMBER),
+                        "to": str(country_code+phone_number),
+                        "messageId": str(uuid.uuid1),
+                        "content": {
+                            "text": f"Hi, Your VAMSCentral One-Time Password is {otp}. Please don't share this with anyone else. Regards, VAMSCentral"
+                        },
+                        
+                        }
+            )
+            if response.status_code == 200:
+                print(response )
+                print('sent')
             msgtxt = str(otp) + ' is the OTP for Glovo Food Delivery App.'
             msgtxt = msgtxt.replace(" ", "%20")
             # url = "https://9rd3vd.api.infobip.com/sms/1/text/query?username=MudStudio&password=Prune@2022&from=IPrune&to=91" + \

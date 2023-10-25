@@ -272,3 +272,8 @@ HASHIDS_SALT = 'jkqbdvaiacobaowr27834691230jnfbqoey92tribhwefq8w9r1@E23jr23r!3hr
 # razorpay test mode
 RAZORPAY_API_KEY = env('RAZORPAY_API_KEY')
 RAZORPAY_API_KEY_SECRET = env('RAZORPAY_API_KEY_SECRET')
+
+# Infobip whatsapp information
+SENDER_PHONE_NUMBER = env('SENDER_PHONE_NUMBER')
+IB_API_KEY = env('INFOBIP_API_KEY')
+IB_BASE_URL = env('INFOBIP_BASE_URL')
