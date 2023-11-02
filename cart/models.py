@@ -64,6 +64,8 @@ class DeliveryPartnerDetails(models.Model):
 
     def __str__(self) -> str:
         return f"Name: {self.name} Ph. No: {self.contact_no}"
+
+
 class Order(models.Model):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE)
@@ -110,6 +112,9 @@ class Order(models.Model):
     razorpay_order_id = models.CharField(_("Razorpay Order id"), max_length=500,null=True,blank=True)
     razorpay_payment_id = models.CharField(_("Razorpay Payment id"), max_length=500,null=True,blank=True)
     razorpay_payment_signature = models.CharField(_("Razorpay Payment Signature"), max_length=500,null=True,blank=True)
+
+    phonepe_id = models.CharField(_("PhonePe Payment Id"), max_length=100,null=True,blank=True)
+    phonepe_merchant_transaction_id = models.CharField(_("PhonePe Transaction Id"),max_length=36,null=True,blank=True)
 
 
     '''
@@ -195,6 +200,59 @@ class Payment(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class PhonePePaymentRequestDetail(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.SET_NULL, blank=True, null=True)
+    order_id = models.ForeignKey(Order, verbose_name=_("Order id"), on_delete=models.CASCADE,blank=True,null=True)
+    amount = models.CharField(_("amount"), max_length=50,null=True,blank=True)
+    success = models.BooleanField(_("Success"),default=False)
+    code = models.CharField(_("Code"), max_length=50, blank=True, null=True)
+    message = models.TextField(_("Message"))
+    merchant_transaction_id = models.CharField(_("Merchant Transaction Id"), max_length=200,null=True, blank=True)
+    transaction_id = models.CharField(_("Transaction Id"), max_length=200,null=True, blank=True)
+    redirect_url = models.TextField(_("URL"))
+    created_at = models.DateTimeField(_("created at"), auto_now=True, auto_now_add=False)
+
+    class Meta:
+        verbose_name = _("PhonePePaymentRequestDetail")
+        verbose_name_plural = _("PhonePePaymentRequestDetails")
+
+    def __str__(self):
+        return "Order Id: "
+
+    def get_absolute_url(self):
+        return reverse("PhonePePaymentDetail_detail", kwargs={"pk": self.pk})
+    
+    def get_order_sid(self):
+        return self.order_id.sid
+
+class PhonePePaymentCallbackDetail(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.SET_NULL, blank=True, null=True)
+    order_id = models.ForeignKey(Order, verbose_name=_("Order id"), on_delete=models.CASCADE,blank=True,null=True)
+    amount = models.CharField(_("amount"), max_length=50,null=True,blank=True)
+    code = models.CharField(_("Code"), max_length=50, blank=True, null=True)
+
+    merchant_transaction_id = models.CharField(_("Transaction Id"), max_length=200,null=True, blank=True)
+    provider_reference_id = models.CharField(_("Provider Reference Id"), max_length=200,null=True,blank=True)
+    checksum = models.TextField(_("checksum"))
+
+
+    
+
+    class Meta:
+        verbose_name = _("PhonePePaymentCallbackDetail")
+        verbose_name_plural = _("PhonePePaymentCallbackDetails")
+
+    def __str__(self):
+        return "Order Id: "
+
+    def get_absolute_url(self):
+        return reverse("PhonePePaymentCallbackDetail_detail", kwargs={"pk": self.pk})
+    
+    def get_order_sid(self):
+        return self.order_id.sid
+
+
 
 
 class Coupon(models.Model):

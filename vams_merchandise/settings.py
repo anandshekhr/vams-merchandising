@@ -34,6 +34,16 @@ ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
 admin_volt = "admin_volt.apps.AdminVoltConfig"
 
+# Allow all origins during development for testing
+CORS_ALLOW_ALL_ORIGINS = False
+
+# Add allowed origins to this list (use ['*'] to allow all)
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8000",  # Add your trusted origins here
+    "https://vamscentral.com",
+    "null",
+]
+
 # Application definition
 INSTALLED_APPS = [
     # admin_volt,  # Make sure 'admin_volt' is a string or variable
@@ -80,6 +90,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -120,7 +131,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentral-1",
+            "NAME": "vamscentral-5",
             "USER": "postgres",
             "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
@@ -277,3 +288,12 @@ RAZORPAY_API_KEY_SECRET = env('RAZORPAY_API_KEY_SECRET')
 SENDER_PHONE_NUMBER = env('SENDER_PHONE_NUMBER')
 IB_API_KEY = env('INFOBIP_API_KEY')
 IB_BASE_URL = env('INFOBIP_BASE_URL')
+
+
+# Phone pe Payment Gateway information
+
+PHONEPE_MERCHANT_ID = env('PHONEPE_MERCHANT_ID')
+PHONEPE_SALT_KEY = env('PHONEPE_SALT_KEY')
+PHONEPE_USER_ID = env('PHONEPE_USER_ID')
+
+
