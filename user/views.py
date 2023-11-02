@@ -72,9 +72,13 @@ def register(request):
                         password=password,
                     )
                     user.save()
-                    mail_data = {'customername':first_name + ' ' + last_name,
-                                 'useremail':email,'usermobile':phone_number,'username':username}
-                    send_email_task.apply_async(args = [mail_data],countdown = 10)
+                    mail_data = {
+                        "customername": first_name + " " + last_name,
+                        "useremail": email,
+                        "usermobile": phone_number,
+                        "username": username,
+                    }
+                    send_email_task.apply_async(args=[mail_data], countdown=10)
                     token, created = Token.objects.get_or_create(user=user)
                     messages.success(
                         request, f"Account Registered, Please Login Again!"
@@ -89,13 +93,16 @@ def register(request):
             policies = PoliciesDetails.objects.all()
         except PoliciesDetails.DoesNotExist:
             policies = []
-        title, desc, key, canonical = get_meta_data(request.path)
+        title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
-        context = {'policy': policies,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
-        return render(request, "user/register.html",context)
+        context = {
+            "policy": policies,
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        }
+        return render(request, "user/register.html", context)
 
 
 def set_token_cookie(response, token):
@@ -126,12 +133,14 @@ def login(request):
             messages.info(request, "Mobile Number or Password incorrect.")
             return redirect("login")
     else:
-        title, desc, key, canonical = get_meta_data(request.path)
-        context = {'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
-        return render(request, "user/login.html",context)
+        title, desc, key, canonical = get_meta_data(request.path, request.get_host())
+        context = {
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        }
+        return render(request, "user/login.html", context)
 
 
 def logout(request):
@@ -151,21 +160,25 @@ def forgot_password(request):
             return redirect("password-reset-web-page")
         else:
             print(password_reset_request.text)
-    title, desc, key, canonical = get_meta_data(request.path)
-    context = {'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
-    return render(request, "forgot-password.html",context)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
+    context = {
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    return render(request, "forgot-password.html", context)
 
 
 def password_reset_method(request):
-    title, desc, key, canonical = get_meta_data(request.path)
-    context = {'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
-    return render(request, "user/reset-password.html",context)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
+    context = {
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    return render(request, "user/reset-password.html", context)
 
 
 class UpdateProfileView(generics.UpdateAPIView):
@@ -188,47 +201,58 @@ class UserProfileView(APIView):
 
 
 def profileUser(request):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     if request.user:
         userdetails = User.objects.get(pk=request.user.id)
 
-        context = {"user": userdetails,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+        context = {
+            "user": userdetails,
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        }
     return render(request, "user/profile.html", context)
 
 
 def userOrderDetail(request):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     if request.user:
         orders = Order.objects.filter(user=request.user.id, ordered=True)
-        context = {"orders": orders,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+        context = {
+            "orders": orders,
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        }
     return render(request, "user/user-order-detail.html", context)
 
 
 def userOrderDetailExpanded(request, pk):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     if request.user:
         order_detail = Order.objects.get(user=request.user.id, pk=pk)
         expected_delivery = datetime.strptime(
             str(order_detail.ordered_date), "%Y-%m-%d %H:%M:%S.%f%z"
         ) + timedelta(days=6)
-    context = {"orders": order_detail, "expected_delivery_date": expected_delivery,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+    context = {
+        "orders": order_detail,
+        "expected_delivery_date": expected_delivery,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
     return render(request, "user/order-detail.html", context)
 
 
 class getOTP(APIView):
     permission_classes = (AllowAny,)
+
     def post(self, request, *args, **kwargs):
         try:
             # device = Device.objects.get(auth_token=request.data.get('auth_token'))
@@ -258,11 +282,14 @@ class getOTP(APIView):
             return JsonResponse({"Error": "You have exceeded your attempts."})
         except Exception as e:
             print(e)
-            return Response({"Error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"Error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class VerifyOTP(APIView):
     permission_classes = (AllowAny,)
+
     def post(self, request, *args, **kwargs):
         try:
             # Device.objects.get(auth_token=request.data.get('auth_token'))
@@ -271,10 +298,10 @@ class VerifyOTP(APIView):
             web = bool(request.data.get("web"))
             otp = request.data.get("otp")
             print("otp is - ", otp)
-            
+
             if not web:
                 return OTPManager.verify_otp(otp, country_code, phone_number, web)
-            
+
             else:
                 user_r = OTPManager.verify_otp(otp, country_code, phone_number, web)
                 auth.login(request, user_r)
@@ -284,13 +311,15 @@ class VerifyOTP(APIView):
             print(e)
             return Response({"Error": "Invalid Data"}, status=status.HTTP_200_OK)
 
+
 class CustomerRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     permission_classes = (AllowAny,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 def profileDashboard(request):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     try:
         orders = Order.objects.filter(user=request.user.id)
@@ -318,23 +347,27 @@ def profileDashboard(request):
             "orders": orders,
             "page_orders": page_obj,
             "completed_orders": completed_orders_count,
-            "pending_orders": pending_orders.count(),'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical,
+            "pending_orders": pending_orders.count(),
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
         }
         return render(request, "user/dashboard.html", context)
     except Exception as e:
         print(e)
-        context = {"page_orders": [0],'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+        context = {
+            "page_orders": [0],
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        }
         return render(request, "user/dashboard.html", context)
 
 
 def user_address(request):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     if request.method == "POST":
         first_name = request.POST.get("first-name")
@@ -366,16 +399,19 @@ def user_address(request):
         )
         s_address.save()
     address = UserAddresses.objects.filter(user=request.user.id)
-    context = {"address": address,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+    context = {
+        "address": address,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
     return render(request, "user/address.html", context)
 
 
 @login_required(login_url="login")
 def user_orders(request):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     if request.user:
         # fetching all post objects from database
@@ -396,10 +432,13 @@ def user_orders(request):
 
         except Exception as e:
             return HttpResponse(e)
-        context = {"page_orders": page_obj,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+        context = {
+            "page_orders": page_obj,
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        }
 
         # else:
         #     context = {'page_orders': orders}
@@ -408,7 +447,7 @@ def user_orders(request):
 
 
 def user_payment(request):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     if request.method == "POST":
         card_number = request.POST.get("card-number")
@@ -430,23 +469,32 @@ def user_payment(request):
         )
         save_model.save()
     saved_cards = Cards.objects.filter(user=request.user)
-    return render(request, "user/payment.html", {"cards": saved_cards,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical})
+    return render(
+        request,
+        "user/payment.html",
+        {
+            "cards": saved_cards,
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        },
+    )
 
 
 def user_coupon(request):
-    title, desc, key, canonical = get_meta_data(request.path)
-    context = {'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
-    return render(request, "user/coupon.html",context)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
+    context = {
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    return render(request, "user/coupon.html", context)
 
 
 def refund_page(request, pk):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     print(pk)
     order = Order.objects.get(pk=pk)
@@ -479,21 +527,31 @@ def refund_page(request, pk):
         order.refund_requested_date = datetime.now()
         order.save()
         messages.success(request, "Refund Details Saved.")
-    context = {"orders": order,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+    context = {
+        "orders": order,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
     return render(request, "user/return.html", context)
 
 
 def user_notification(request):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     notifications = request.user.notifications.filter(is_read=False)
-    return render(request, "user/notification.html", {"notifications": notifications,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical})
+    return render(
+        request,
+        "user/notification.html",
+        {
+            "notifications": notifications,
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        },
+    )
 
 
 def delete_user_address(request, pk):
@@ -511,12 +569,14 @@ def set_primary_address(request, pk):
 
 
 def userDashboard(request):
-    title, desc, key, canonical = get_meta_data(request.path)
-    context = {'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
-    return render(request, "user/dashboard.html",context)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
+    context = {
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    return render(request, "user/dashboard.html", context)
 
 
 class CustomPasswordResetView(PasswordResetView):

@@ -2,7 +2,7 @@ import json
 from django.shortcuts import render
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib import auth,messages
+from django.contrib import auth, messages
 from rest_framework import generics, status, authentication, permissions
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -22,16 +22,19 @@ from django.shortcuts import get_object_or_404
 from Home.views import get_meta_data
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters,pagination
+from rest_framework import filters, pagination
 from django_filters import FilterSet
 from django.db.models import Q
 
 
 User = get_user_model()
+
+
 class StandardResultsSetPagination(pagination.PageNumberPagination):
     page_size = 100
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 1000
+
 
 # adding filters to API
 class ProductsFilter(FilterSet):
@@ -44,76 +47,80 @@ class ProductsFilter(FilterSet):
         price_begin = request.query_params.get("price_begin")
         price_end = request.query_params.get("price_end")
 
-
-
         if category_value:
-            queryset = queryset.filter(category__contains=category_value.split(','))
+            queryset = queryset.filter(category__contains=category_value.split(","))
 
         if sizes_value:
             queryset = queryset.filter(available_sizes__contains__in=sizes_value)
 
         if tags_value:
-            queryset = queryset.filter(tags__contains=tags_value.split(','))
-        
+            queryset = queryset.filter(tags__contains=tags_value.split(","))
+
         if ratings_value:
             queryset = queryset.filter(average_rating__contains=str(ratings_value))
-        
+
         if brand:
             queryset = queryset.filter(brand__icontains=str(brand))
-        
+
         if price_begin or price_end:
-            queryset = queryset.filter(max_retail_price__range=[str(price_begin),str(price_end)])
+            queryset = queryset.filter(
+                max_retail_price__range=[str(price_begin), str(price_end)]
+            )
 
         return queryset
 
     class Meta:
         model = Products
-        fields = (
-            "subcategory",
-        )
+        fields = ("subcategory",)
+
 
 def showAllProducts(request):
     products = Products.objects.all()
     # paginator = Paginator(products, 10)
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
-    context = {"products": products,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+    context = {
+        "products": products,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
     return render(request, "shop/shop.html", context)
 
+
 def handle_messages(request):
-    message_type = request.GET.get('type')
-    
-    message = request.GET.get('message')
-    
+    message_type = request.GET.get("type")
+
+    message = request.GET.get("message")
 
     if message_type and message:
-        if message_type == 'success':
+        if message_type == "success":
             messages.success(request, message)
-        elif message_type == 'error':
+        elif message_type == "error":
             messages.error(request, message)
 
-    return JsonResponse({'status': 'ok'})
+    return JsonResponse({"status": "ok"})
 
-def productDetailsPageView(request,subcategory,slug):
-   
+
+def productDetailsPageView(request, subcategory, slug):
     # filter product for images, reviews and ratings
     product = Products.objects.get(slug=slug)
-    
+
     rating = ProductReviewAndRatings.objects.filter(product=product).aggregate(
         Avg("ratings")
     )
     reviews = ProductReviewAndRatings.objects.filter(product=product, is_approved=True)
     total_reviews_count = reviews.count()
-    related_products = Products.objects.filter(subcategory__in=product.subcategory.all())
+    related_products = Products.objects.filter(
+        subcategory__in=product.subcategory.all()
+    )
 
     # for greyed stars
     nonrating = 5 - int(
         rating["ratings__avg"] if rating["ratings__avg"] is not None else 0
     )
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     context = {
         "total_stars": range(5),
@@ -127,21 +134,29 @@ def productDetailsPageView(request,subcategory,slug):
         "nonratingr": [*range(nonrating)],
         "reviews": reviews,
         "related_products": related_products,
-        "total_reviews_count":total_reviews_count,
-        'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical
+        "total_reviews_count": total_reviews_count,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
     }
 
     return render(request, "shop/shop-details.html", context)
 
+
 from rest_framework import viewsets
+
+
 class ProductAPI(generics.ListAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductSearchSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name','category__category_name','subcategory__subcategory','tags__name']
+    search_fields = [
+        "name",
+        "category__category_name",
+        "subcategory__subcategory",
+        "tags__name",
+    ]
     permission_classes = (AllowAny,)
     # pagination_class = [StandardResultsSetPagination]
     # authentication_classes = (AllowAny,)
@@ -162,8 +177,8 @@ class ProductDetailsAPI(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, format=None):
-        product_id = request.data.get('id')
-        
+        product_id = request.data.get("id")
+
         # filter product for images, reviews and ratings
         product = get_object_or_404(Products, id=product_id)
         images = ProductImages.objects.filter(product=product)
@@ -214,6 +229,7 @@ class ProductDetailsAPI(APIView):
             status=status.HTTP_200_OK,
         )
 
+
 class BannersAPIView(APIView):
     permission_classes = (AllowAny,)
 
@@ -222,6 +238,7 @@ class BannersAPIView(APIView):
         serializer = BannersSerializer(instance=banners, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class CategoriesAPI(APIView):
     permission_classes = (AllowAny,)
 
@@ -229,6 +246,7 @@ class CategoriesAPI(APIView):
         categories = Categories.objects.all()
         serializer = CategoriesSerializer(instance=categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class CategoryProductsAPI(generics.ListAPIView):
     serializer_class = ProductsSerializer
@@ -240,6 +258,7 @@ class CategoryProductsAPI(generics.ListAPIView):
             category = Categories.objects.get(pk=category_id)
             queryset = queryset.filter(category__contains=[category.category_name])
         return queryset
+
 
 class ProductReviewsAPI(APIView):
     permission_classes = (IsAuthenticated,)
@@ -257,50 +276,62 @@ class ProductReviewsAPI(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def products_list(request,subcategory=None):
-    
+
+def products_list(request, subcategory=None):
     # Get filter options from request (e.g., category)
-    category = request.GET.get('category')
-    size = request.GET.get('size')
-    web = request.GET.get('web')
-    page = request.GET.get('page')
-    ratings = request.GET.get('ratings')
-    discount = request.GET.get('discount')
-    brand = request.GET.get('brand')
-    price = request.GET.get('price')
+    category = request.GET.get("category")
+    size = request.GET.get("size")
+    web = request.GET.get("web")
+    page = request.GET.get("page")
+    ratings = request.GET.get("ratings")
+    discount = request.GET.get("discount")
+    brand = request.GET.get("brand")
+    price = request.GET.get("price")
 
     # Retrieve all products or filter by category
     products = Products.objects.all()
     if subcategory:
-        products = products.filter(Q(category__in=Categories.objects.filter(category_code=subcategory))|Q(subcategory__in=CategorySubCategories.objects.filter(subcategory_code=subcategory)))
+        products = products.filter(
+            Q(category__in=Categories.objects.filter(category_code=subcategory))
+            | Q(
+                subcategory__in=CategorySubCategories.objects.filter(
+                    subcategory_code=subcategory
+                )
+            )
+        )
 
     if category:
-        products = products.filter(subcategory__in=CategorySubCategories.objects.filter(subcategory_code=category))
-    
-    if size:
-        size = size.split(',')
-        products = products.filter(available_sizes__in=ProductSize.objects.filter(code__in=size))
-    
-    if ratings != "None" and ratings != None:
-        products = products.filter(average_rating=ratings) 
-    
-    if discount != "0.0" and discount != None:
-        discount_1 = float(discount.split(' TO ')[0])
-        discount_2 = float(discount.split(' TO ')[1])
-        products = products.filter(discount__range=[discount_1,discount_2])
-    
-    if brand:
-        brand = brand.split(',')
-        products = products.filter(brand__contains=brand)
-    
-    if price:
-        price = price.split(',')
-        products = products.filter(max_retail_price__range = price)
+        products = products.filter(
+            subcategory__in=CategorySubCategories.objects.filter(
+                subcategory_code=category
+            )
+        )
 
+    if size:
+        size = size.split(",")
+        products = products.filter(
+            available_sizes__in=ProductSize.objects.filter(code__in=size)
+        )
+
+    if ratings != "None" and ratings != None:
+        products = products.filter(average_rating=ratings)
+
+    if discount != "0.0" and discount != None:
+        discount_1 = float(discount.split(" TO ")[0])
+        discount_2 = float(discount.split(" TO ")[1])
+        products = products.filter(discount__range=[discount_1, discount_2])
+
+    if brand:
+        brand = brand.split(",")
+        products = products.filter(brand__contains=brand)
+
+    if price:
+        price = price.split(",")
+        products = products.filter(max_retail_price__range=price)
 
     # Paginate the products
     paginator = Paginator(products, 24)
-    
+
     try:
         product_page = paginator.get_page(page)
     except PageNotAnInteger:
@@ -309,60 +340,74 @@ def products_list(request,subcategory=None):
         product_page = paginator.page(paginator.num_pages)
 
     # Generate HTML for product list and pagination
-    product_list_html = render(request, 'shop/products.html', {'products': product_page})
-    pagination_html = render(request, 'shop/pagination.html', {'products': product_page, 'page': page})
-    product_list_pagination_html = render(request, 'shop/product-list.html',{'products':product_page})
-    title, desc, key, canonical = get_meta_data(request.path)
+    product_list_html = render(
+        request, "shop/products.html", {"products": product_page}
+    )
+    pagination_html = render(
+        request, "shop/pagination.html", {"products": product_page, "page": page}
+    )
+    product_list_pagination_html = render(
+        request, "shop/product-list.html", {"products": product_page}
+    )
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     if web:
         # If it's an AJAX request, return JSON response
-        return JsonResponse({
-            'product_list': product_list_html.content.decode(),
-            'pagination': pagination_html.content.decode(),
-            'pagination_product_list':product_list_pagination_html.content.decode(),
-        })
+        return JsonResponse(
+            {
+                "product_list": product_list_html.content.decode(),
+                "pagination": pagination_html.content.decode(),
+                "pagination_product_list": product_list_pagination_html.content.decode(),
+            }
+        )
     else:
-        context = {'products': product_page,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+        context = {
+            "products": product_page,
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        }
         # For regular requests, return the HTML template
-        return render(request, 'shop/shop.html', context=context)
+        return render(request, "shop/shop.html", context=context)
 
-def products_list_tags(request,tags=None):
+
+def products_list_tags(request, tags=None):
     page = 1
-    
+
     products = Products.objects.filter(tags=ProductTag.objects.filter(code=tags))
-    
+
     # Paginate the products
     paginator = Paginator(products, 24)
-    title, desc, key, canonical = get_meta_data(request.path)
-    
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
+
     try:
         product_page = paginator.get_page(page)
     except PageNotAnInteger:
         product_page = paginator.page(1)
     except EmptyPage:
         product_page = paginator.page(paginator.num_pages)
-    
-    context = {'products': product_page,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
-        # For regular requests, return the HTML template
-    return render(request, 'shop/shop.html', context=context)
 
+    context = {
+        "products": product_page,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    # For regular requests, return the HTML template
+    return render(request, "shop/shop.html", context=context)
 
 
 class GetFilteredSubCategoryAPI(APIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (SessionAuthentication, TokenAuthentication)
 
-    def get(self, request,format=None):
-        category_id = request.GET.get('category_id',[''])
+    def get(self, request, format=None):
+        category_id = request.GET.get("category_id", [""])
         # if category_id:
-        category_id = category_id.split(',')
+        category_id = category_id.split(",")
         subcategory = CategorySubCategories.objects.filter(category__in=category_id)
-    
-        serializer = SubCategorySerializer(subcategory,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+
+        serializer = SubCategorySerializer(subcategory, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
