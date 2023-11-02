@@ -177,8 +177,8 @@
                         <p class="title_delivery">Delivery Option</p>
                      </div>
                      <div class="custom-search">
-                        <input class="custom-search-input" type="text" name="pincode" id="pincode" onkeyup="getPincodeDeliveryValidation(this.value);" placeholder="Enter pincode">
-                        <a class="custom-search-botton" type="submit"  onclick="checkPincode()">Check</a>  
+                        <input class="custom-search-input" type="text" name="pincode" id="pincode" placeholder="Enter pincode">
+                        <a class="custom-search-botton" type="submit"  onclick="getPincodeDeliveryValidation(this.value);">Check</a>  
                         <div id="pincode-availability-message" class="error-message"></div>
                      </div>
                    
@@ -194,7 +194,7 @@
                         <br><br>
                         <div>
                             <ul>
-                                <li>100% Original Products</li>
+                                <li><img src="{% static "admin/img/original-logo.png" %}" width="25px" height="25px" />100% Original Products</li>
                                 <li>Pay on delivery might be available</li>
                                 <li>Easy 14 days returns and exchanges</li>
                                 <li>Try & Buy might be available</li>
@@ -239,7 +239,7 @@
                </div>
             </div>
             
-               <script>
+               {% comment %} <script>
                   function checkPincode() {
                       var pincode = document.getElementById("pincode").value;
                       var pincodeResult = document.getElementById("pincodeResult");
@@ -256,10 +256,13 @@
                           pincodeMessage.style.display = "block";
                       }
                   }
-              </script>
+              </script> {% endcomment %}
               <script>
                function getPincodeDeliveryValidation(value) {
-                   var domain = window.location.origin;
+                  var pincode = value;
+                  var pincodeResult = document.getElementById("pincodeResult");
+                  var pincodeMessage = document.getElementById("pincodeMessage");
+                  var domain = window.location.origin;
                    $.ajax({
                        url: domain + '/delivery/pincode/get/',
                        type: 'GET',
@@ -269,7 +272,11 @@
                        success: function (response) {
                            document.getElementById("pincode-availability-message").textContent = "";
                            if (response.results[0].can_deliver_here == true) {
-                               document.getElementById("pincode-availability-message").textContent = "Hurray! We are delivering at this location.";
+                              pincodeResult.style.display = "block";
+                              pincodeMessage.style.display = "none";
+                              document.getElementById("pincode-availability-message").textContent = "Hurray! We are delivering at this location. "+response.results[0].delivery_by;
+                              document.getElementById("pincode-availability-message").style.color = "green";
+                              //document.getElementById("pincode-availability-message").style.text-size = "8";
                            }
                            else {
                                document.getElementById("pincode-availability-message").textContent = "OOPS! We are currently not delivering at this location.";
