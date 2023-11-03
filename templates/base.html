@@ -1083,8 +1083,8 @@
                      {% comment %} <div class="product-size">Size: {{item.size}}</div> {% endcomment %}
                      <div class="product-quantity">Quantity: {{item.quantity}}</div>
                      <div class="product-pricing">
-                        <span class="price-now">&nbsp;₹{{item.item.list_price}}</span>
-                        <span class="price-old" style="color:#17171766;">&nbsp;₹{{item.item.max_retail_price}}</span>
+                        <span class="price-now">&nbsp;₹{{item.item.price_gst_included}}</span>
+                        <span class="price-old" style="color:#17171766;">&nbsp;₹{{item.item.mrp_gst_included}}</span>
                      </div>
                      <a href="{% url 'delete-item-from-wishlist' item.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>

@@ -1,4 +1,6 @@
 from django.urls import reverse
+from django.conf import settings
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
@@ -11,6 +13,8 @@ from django.utils.safestring import mark_safe
 from base64 import b64encode
 from django.utils.text import slugify
 User = get_user_model()
+from math import ceil
+
 import os
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -234,6 +238,17 @@ class Products(models.Model):
         listprice = self.max_retail_price - \
             ((self.discount/100)*self.max_retail_price)
         return round(listprice,2)
+    
+    def price_gst_included(self):
+        gst_amount = (float(self.list_price()) * (settings.GST_STICHED/100))
+        total = ceil(gst_amount) + self.list_price()
+        return round(total)
+    
+    def mrp_gst_included(self):
+        gst_amount = (float(self.max_retail_price) * (settings.GST_STICHED/100))
+        total = ceil(gst_amount) + self.max_retail_price
+        return round(total)
+
 
     def cat_string(self):
         cat = ','.join(i for i in self.category)
