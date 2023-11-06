@@ -660,12 +660,13 @@ function onPlaceChanged() {
 // }); 
 
 function get_otp(elm) {
-    input = $('#' + elm).val()
-    domain = window.location.origin
-    //domain = 'https://ashekhar.pythonanywhere.com'
-    path_name = '/accounts/register/get_otp/'
-    $('#error_login').empty()
-    $('#button_submit').attr('disabled')
+    const input = $('#' + elm).val();
+    const domain = window.location.origin;
+    const path_name = '/accounts/register/get_otp/';
+    
+    $('#error_login').empty();
+    $('#button_submit').attr('disabled', true); // Disable the button while processing the request
+
     $.ajax({
         type: 'POST',
         url: domain + path_name,
@@ -678,48 +679,46 @@ function get_otp(elm) {
         },
         success: function (response) {
             if (response['Status'] == "Sent") {
-                $('#' + elm).hide()
-                $("#hide-num-text").hide()
-                $("#hide-91").hide()
-                $("#mobile").hide()
-                $('#button_submit').hide()
-                $("#hide-otp-text").show()
-                $("#otp").show()
-                $("#button_otp").show()
-            }
-            else {
-                $("#hide-num-text").hide()
-                $("#hide-91").hide()
-                $("#mobile").hide()
-                $('#button_submit').hide()
-                $("#hide-otp-text").show()
-                $("#otp").show()
-                $("#button_otp").show()
-                $('#error_login').css("color", "red").text("Limit exceeded").show()
-
+                $('#' + elm).hide();
+                $("#hide-num-text").hide();
+                $("#hide-91").hide();
+                $("#mobile").hide();
+                $('#button_submit').hide();
+                $("#hide-otp-text").show();
+                $("#otp").show();
+                $("#button_otp").show();
+            } else {
+                // Handle the case where OTP sending limit is exceeded
+                $("#hide-num-text").hide();
+                $("#hide-91").hide();
+                $("#mobile").hide();
+                $('#button_submit').hide();
+                $("#hide-otp-text").show();
+                $("#otp").show();
+                $("#button_otp").show();
+                $('#error_login').css("color", "red").text("Limit exceeded").show();
             }
         },
         error: function () {
-            $("#hide-num-text").show()
-            $("#hide-91").show()
-            $("#mobile").show()
-            $('#button_submit').show()
-            $("#hide-otp-text").hide()
-            $("#otp").hide()
-            $("#button_otp").hide()
+            // Handle AJAX error, show input fields again
+            $("#hide-num-text").show();
+            $("#hide-91").show();
+            $("#mobile").show();
+            $('#button_submit').show();
+            $("#hide-otp-text").hide();
+            $("#otp").hide();
+            $("#button_otp").hide();
         }
     });
 }
-
 function verify_otp(input_id) {
-    //console.log("verify otp call")
-    input = $('#' + input_id).val()
-    phone_number = $('#mobile').val()
-    if (input.length == 6) {
-        $('#error_otp').hide()
-        domain = window.location.origin
-        //domain = 'https://ashekhar.pythonanywhere.com'
-        path_name = '/accounts/register/verify/'
+    const input = $('#' + input_id).val();
+    const phone_number = $('#phone_number').val();
+    if (input.length === 6) {
+        $('#error_otp').hide();
+        const domain = window.location.origin;
+        const path_name = '/accounts/register/verify/';
+
         $.ajax({
             type: 'POST',
             url: domain + path_name,
@@ -732,26 +731,25 @@ function verify_otp(input_id) {
             },
             success: function (response) {
                 if (response) {
-                    //console.log(response)
-                    $('#error_login').empty()
-                    $('#error_login').hide()
-
-                    location.reload(true);
-                }
-                else {
-                    $('#error_login').show().append('error') //change this to backend response error.
+                    $('#error_login').empty();
+                    $('#error_login').hide();
+                    
+                    // Show the "Verify" button and hide the OTP input field
+                    $("#verifyButtonWrapper").show();
+                    $("#otpInputWrapper").hide();
+                } else {
+                    // Handle the case where OTP verification failed
+                    $('#error_login').show().text('Error'); // Change this to handle backend response error.
                 }
             }
-
         });
-    }
-    else if (input.length == 0) {
-        $('#error_otp').css("color", "red").text("enter otp")
-    }
-    else {
-        $('#error_otp').css("color", "red").text("Length exceed")
+    } else if (input.length === 0) {
+        $('#error_otp').css("color", "red").text("Enter OTP");
+    } else {
+        $('#error_otp').css("color", "red").text("Invalid OTP Length");
     }
 }
+
 
 function hidePopsearch(em_id) {
     $('#' + em_id).hide()
