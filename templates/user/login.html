@@ -101,11 +101,15 @@
 <script>
    function getOTP() {
       const phone_number = document.getElementById("phone_number").value;
+      domain = window.location.origin;
 
       $.ajax({
-         url: "{% url 'get_otp' %}",
+         url: domain + "/user/accounts/register/get_otp/",
          type: "POST",
-         data: { mobile: phone_number },
+         data: { mobile: phone_number,
+         country_code: "+91",
+      fake_otp: true,
+   otp:"1234"},
          success: function (data) {
             if (data.Status === "Sent") {
                console.log("OTP Sent");
@@ -122,15 +126,20 @@
 
    function verifyOTP() {
       const otp = document.getElementById("otp").value;
-
+      const phone_number = document.getElementById("phone_number").value;
+      domain = window.location.origin;
       $.ajax({
-         url: "{% url 'login' %}",  
+         url: domain + "/user/accounts/register/verify/",  
          type: "POST",
-         data: { phone_number: phone_number, otp: otp },
+         data: { mobile: phone_number, otp: otp,country_code:"+91" },
          success: function (data) {
-            if (data.status === "OK") {
+            console.log(data);
+            if (data) {
                console.log("OTP Verified");
-               window.location.href = "{% url 'home' %}";  
+               // Store token in cookie here
+               
+               window.location.href = "{% url 'home' %}";
+
             } else {
                console.log("OTP Verification failed");
             }

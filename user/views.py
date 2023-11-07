@@ -269,7 +269,6 @@ class getOTP(APIView):
                     if timediff.total_seconds() < 15:
                         return JsonResponse({"Status": "Sent"})
             except Exception as e:
-                print(e)
                 pass
 
             if OTPManager.send_otp(
@@ -281,9 +280,8 @@ class getOTP(APIView):
                 return Response({"Status": "Sent"}, status=status.HTTP_200_OK)
             return JsonResponse({"Error": "You have exceeded your attempts."})
         except Exception as e:
-            print(e)
             return Response(
-                {"Error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST
+                {"Error": "Invalid Data","message":f"{e}"}, status=status.HTTP_400_BAD_REQUEST
             )
 
 
@@ -297,7 +295,6 @@ class VerifyOTP(APIView):
             country_code = request.data.get("country_code")
             web = bool(request.data.get("web"))
             otp = request.data.get("otp")
-            print("otp is - ", otp)
 
             if not web:
                 return OTPManager.verify_otp(otp, country_code, phone_number, web)
@@ -308,8 +305,7 @@ class VerifyOTP(APIView):
                 return Response({"status": "OK"}, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print(e)
-            return Response({"Error": "Invalid Data"}, status=status.HTTP_200_OK)
+            return Response({"Error": "Invalid Data","message":f"{e}"}, status=status.HTTP_200_OK)
 
 
 class CustomerRetrieveUpdateView(generics.RetrieveUpdateAPIView):
