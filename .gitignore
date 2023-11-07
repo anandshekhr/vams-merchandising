@@ -131,7 +131,8 @@ dmypy.json
 
 
 # 
-vams_merchandise/settings.py
+vams_merchandise/
+
 
 # Migrations
 about/migrations/
@@ -142,3 +143,5 @@ products/migrations/
 stores/migrations/
 user/migrations/
 wishlist/migrations/
+
+.vams-venv
