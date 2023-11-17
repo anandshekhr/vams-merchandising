@@ -35,13 +35,16 @@ User = get_user_model()
 
 @login_required(login_url="login")
 def wishlistView(request):
-    title, desc, key, canonical = get_meta_data(request.path)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
     items = Wishlist.objects.get(user=request.user)
-    context = {"items": items,'page_title':title,
-                'description':desc,
-                'keyword':key,
-                'canonical':canonical}
+    context = {
+        "items": items,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
     return render(request, "wishlist/wishlist.html", context)
 
 

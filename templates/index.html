@@ -221,8 +221,8 @@
                                           <div class="product-name"><a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
-                                             <span class="price-now">₹{{product.list_price}}</span>
-                                             <span class="price-old">₹{{product.max_retail_price}}</span>
+                                             <span class="price-now">₹{{product.price_gst_included}}</span>
+                                             <span class="price-old">₹{{product.mrp_gst_included}}</span>
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
@@ -297,8 +297,8 @@
                                           <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
-                                             <span class="price-now">₹{{product.list_price}}</span>
-                                             <span class="price-old">₹{{product.max_retail_price}}</span>
+                                             <span class="price-now">₹{{product.price_gst_included}}</span>
+                                             <span class="price-old">₹{{product.mrp_gst_included}}</span>
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
@@ -372,8 +372,8 @@
                                           <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
-                                             <span class="price-now">₹{{product.list_price}}</span>
-                                             <span class="price-old">₹{{product.max_retail_price}}</span>
+                                             <span class="price-now">₹{{product.price_gst_included}}</span>
+                                             <span class="price-old">₹{{product.mrp_gst_included}}</span>
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
@@ -447,8 +447,8 @@
                                           <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
-                                             <span class="price-now">₹{{product.list_price}}</span>
-                                             <span class="price-old">₹{{product.max_retail_price}}</span>
+                                             <span class="price-now">₹{{product.price_gst_included}}</span>
+                                             <span class="price-old">₹{{product.mrp_gst_included}}</span>
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
