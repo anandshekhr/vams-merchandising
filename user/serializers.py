@@ -10,8 +10,7 @@ from .models import *
 from rest_framework.fields import CurrentUserDefault
 try:
     from allauth.account import app_settings as allauth_settings
-    from allauth.utils import (email_address_exists,
-                               get_username_max_length)
+    from allauth.utils import get_username_max_length
     from allauth.account.adapter import get_adapter
     from allauth.account.utils import setup_user_email
     from allauth.socialaccount.helpers import complete_social_login
@@ -19,7 +18,10 @@ try:
     from allauth.socialaccount.providers.base import AuthProcess
 except ImportError:
     raise ImportError("allauth needs to be added to INSTALLED_APPS.")
+from allauth.account.models import EmailAddress
 
+def email_address_exists(email):
+    return EmailAddress.objects.filter(email=email, verified=True).exists()
 User = get_user_model()
 
 
@@ -49,6 +51,7 @@ class LoginSerializer(serializers.Serializer):
 
         data['user'] = user
         return data
+
 
 
 class RegisterSerializer(serializers.Serializer):

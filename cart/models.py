@@ -15,9 +15,9 @@ STATUS =(('Shipped','SHIPPED'),('Ordered','ORDERED'),('In-transit','IN TRANSIT')
 # Create your models here.
 class Cart(models.Model):
     user = models.ForeignKey(User,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,null=True,blank=True)
     ordered = models.BooleanField(default=False)
-    item = models.ForeignKey(Products, on_delete=models.CASCADE)
+    item = models.ForeignKey(Products, on_delete=models.CASCADE,null=True,blank=True)
     quantity = models.IntegerField(default=1)
     size = models.CharField(_("Item Size"), max_length=50,
                             null=True, blank=True, default="L")
@@ -68,7 +68,7 @@ class DeliveryPartnerDetails(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,null=True,blank=True)
     ref_code = models.CharField(max_length=200, blank=True, null=True)
     tracking_id = models.CharField(max_length=200, blank=True, null=True)
     items = models.ManyToManyField(Cart)
@@ -263,7 +263,7 @@ class Coupon(models.Model):
         return self.code
 
 class UserBankAccount(models.Model):
-    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE,null=True,blank=True)
     bank_account_number = models.CharField(_("Bank Account No."), max_length=100)
     ifsc_code = models.CharField(_("IFSC Code"), max_length=50)
     account_name = models.CharField(_("Account Holder Name"), max_length=250,null=True,blank=True)
@@ -283,7 +283,7 @@ class UserBankAccount(models.Model):
 
 
 class Refund(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE,null=True,blank=True)
     order_sid = models.CharField(_("Order Reference Id"), max_length=50,default="")
     reason = models.TextField()
     accepted = models.BooleanField(default=False)
@@ -322,9 +322,9 @@ class PendingPayment(models.Model):
 
 
 class VendorOrderDetail(models.Model):
-    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
+    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE,null=True,blank=True)
     order_id = models.CharField(_("Order ID"), max_length=50)
-    order_item = models.ForeignKey(Products, verbose_name=_("Order Item"), on_delete=models.CASCADE)
+    order_item = models.ForeignKey(Products, verbose_name=_("Order Item"), on_delete=models.CASCADE,null=True,blank=True)
     order_item_size = models.CharField(_("Order Item Size"), max_length=50)
     order_item_qty = models.IntegerField(_("Order Item Qty"))
     order_amount = models.CharField(_("Order Amount"), max_length=50)
@@ -345,7 +345,7 @@ class VendorOrderDetail(models.Model):
 
 PAYMENT_STATUS = (('Pending', 'Pending'),('Approved', 'Approved'),('Cancelled', 'Cancelled'),('Transferred', 'Transferred'))
 class VendorTransactionDetail(models.Model):
-    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
+    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE,null=True,blank=True)
     order_id = models.CharField(_("Order ID"), max_length=50)
     order_receiving_date = models.DateTimeField(_("Order Received on"), auto_now=True, auto_now_add=False,null=True,blank=True)
     order_completed_date = models.DateTimeField(_("Order Completed on"), auto_now=False, auto_now_add=False,null=True, blank=True)
