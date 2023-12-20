@@ -74,11 +74,11 @@ INSTALLED_APPS = [
     "dj_rest_auth",
     "allauth",
     "allauth.utils",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.apple",
-    "allauth.socialaccount.providers.facebook",
-    "allauth.socialaccount.providers.google",
+    # "allauth.account",
+    # "allauth.socialaccount",
+    # "allauth.socialaccount.providers.apple",
+    # "allauth.socialaccount.providers.facebook",
+    # "allauth.socialaccount.providers.google",
     "dj_rest_auth.registration",
     "django_quill",
     "django_filters",
@@ -96,7 +96,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "vams_merchandise.urls"
@@ -128,38 +127,38 @@ WSGI_APPLICATION = "vams_merchandise.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-# if DEBUG:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": "vamscentral-5",
-#             "USER": "postgres",
-#             "PASSWORD": "Shekhar123#",
-#             "HOST": "localhost",
-#             "PORT": "5432",
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": env("DATABASE_NAME"),
-#             "USER": env("DATABASE_USERNAME"),
-#             "PASSWORD": env("PASSWORD"),
-#             "HOST": env("DATABASE_URL"),
-#             "PORT": env("DATABASE_PORT"),
-#         }
-#     }
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_NAME"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": "db",
-        "PORT": 5432,
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "vamscentral-5",
+            "USER": "postgres",
+            "PASSWORD": "Shekhar123#",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DATABASE_NAME"),
+            "USER": env("DATABASE_USERNAME"),
+            "PASSWORD": env("PASSWORD"),
+            "HOST": env("DATABASE_URL"),
+            "PORT": env("DATABASE_PORT"),
+        }
+    }
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": os.environ.get("POSTGRES_NAME"),
+#         "USER": os.environ.get("POSTGRES_USER"),
+#         "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+#         "HOST": "db",
+#         "PORT": 5432,
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -250,7 +249,7 @@ AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend",
+    # "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 # CELERY_BACKENDS
