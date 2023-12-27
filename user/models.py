@@ -28,8 +28,8 @@ TAGS = (('Home', 'Home'), ('Office',
                                      'Office'), ('Other', 'Other'),)
 
 class CustomUser(AbstractUser):
-    first_name = models.CharField(null=True, blank=True, max_length=100)
-    last_name = models.CharField(null=True, blank=True, max_length=100)
+    first_name = models.CharField(default="Central", max_length=100)
+    last_name = models.CharField(default="User", max_length=100)
     email = models.EmailField(null=True,unique=True)
     mobileno = models.CharField(verbose_name="Mobile Number",
                               null=False, max_length=10, default="", unique=True)
