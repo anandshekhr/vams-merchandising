@@ -1,0 +1,244 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Register{% endblock title %}
+{% block body %}
+<!-- Add your site or application content here -->
+<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+<main>
+   <style>
+       /* Styling for the popup */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            width: 400px; /* Set the fixed width of the popup */
+            max-height: 80%; /* Set the maximum height for scrolling */
+            overflow-y: auto; /* Enable vertical scroll if content overflows */
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .getVeribtn{
+         border: 1.5px solid black;
+         font-weight: 600;
+         width: max-content;
+         padding: 10px;
+         border-radius: 10px;
+         font-family: 'Lato';
+         font-size: 16px;
+        }
+        
+        body {
+         font-family: 'Lato';
+         overflow-x: hidden;
+        }
+
+    </style>
+   {% if messages %}
+   {% for message in messages %}
+   <div class="alert alert-{{ message.tags }} auto-dismiss">
+      {{ message }}
+   </div>
+   {% endfor %}
+   <script>
+      setTimeout(function () {
+         $('.auto-dismiss').fadeOut('slow');
+      }, 3000);
+   </script>
+   {% endif %}
+   <!-- page title area start  -->
+   <div class="breadcrumb-menu-edit">
+      <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
+         <li class="breadcrumb-item active"><span>Register</span></li>
+      </ol>
+   </div>
+   <!-- page title area end  -->
+
+   <!-- register area start  -->
+   <div class="page-title-wrapper text-center">
+      <h1 class="page-title mb-10">Register</h1>
+   </div>
+   <div class="register-area pt-120 pb-120">
+      <div class="container container-small">
+         <div class="row justify-content-center">
+            <div class="col-lg-8">
+               <form method="post" action="{% url 'register' %}">{% csrf_token %}
+                  <div class="signup-form-wrapper">
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="signup-wrapper">
+                              <input type="text" placeholder="First Name" name="first_name" id="first_name">
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="signup-wrapper">
+                              <input type="text" placeholder="Last Name" name="last_name" id="last_name">
+                           </div>
+                        </div>
+                        <div class="col-md-12">
+                           <div class="signup-wrapper">
+                              <input type="text" placeholder="Username" name="username" id="username">
+                           </div>
+                        </div>
+                        <div class="col-md-12">
+                           <div class="signup-wrapper">
+                              <input type="text" placeholder="Email" name="email" id="email">
+                           </div>
+                        </div>
+                        <div class="col-md-12">
+                           <div class="signup-wrapper">
+                              <input type="text" placeholder="Phone Number" name="phone_number" id="phone_number">
+                           </div>
+                        </div>
+                        <div class="col-md-12">
+                           <div class="signup-wrapper">
+                              <button class="getVeribtn" type="button" id="getOTPButton" onclick="getOTP()">Get OTP</button>
+                           </div>
+                        </div>
+                        <div class="col-md-12" id="otpInputWrapper" style="display: none;">
+                           <div class="signup-wrapper">
+                              <input type="text" placeholder="Enter OTP" name="otp" id="otp">
+                           </div>
+                        </div>
+                        <div class="col-md-12" id="getOTPButtonWrapper">
+                           <div class="signup-wrapper">
+                              <button class="getVeribtn" type="button" id="verifyOTPButton" onclick="verifyOTP()" style="display: none;">Verify</button>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="signup-action">
+                        <div class="course-sidebar-list">
+                           <input class="signup-checkbo" type="checkbox" id="sign-up" name="sign-up">
+                           <label class="sign-check" for="sign-up" onclick="showTerms()"><span>Accept the terms and <a href="#" role="button">Privacy Policy</a></span></label>
+                        </div>
+                     </div>
+                     <div class="sing-buttom mb-20">
+                        <button class="sing-btn" onclick="registerUser()">Register now</button>
+                     </div>
+                     <div class="acount-login text-center">
+                        <span>Already have an account? <a href="{% url 'login' %}">Log in</a></span>
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- register area end  -->
+
+   <!-- Popup container -->
+   <div id="termsPopup" class="popup">
+      <div class="popup-content">
+          <h2>Terms and Conditions</h2>
+          <!-- Add your terms and conditions content here -->
+          <p>{{ policy.privacy_policy.html|safe }}</p>
+          <button id="closePopupBtn">Close</button>
+      </div>
+  </div>
+  <script>
+   // JavaScript to handle popup display and other functions
+
+   function showTerms() {
+       termsPopup.style.display = "block";
+   }
+
+   closePopupBtn.addEventListener("click", () => {
+       termsPopup.style.display = "none";
+   });
+
+   function getOTP() {
+       const phone_number = document.getElementById("phone_number").value;
+
+       $.ajax({
+           url: "api/accounts/register/get_otp/",
+           type: "POST",
+           data: { mobile: phone_number },
+           success: function (data) {
+               if (data.Status === "Sent") {
+                   // OTP sent successfully, update the UI as needed
+                   document.getElementById("otpInputWrapper").style.display = "block";
+                   document.getElementById("getOTPButtonWrapper").style.display = "none";
+                   document.getElementById("verifyOTPButton").style.display = "block";
+               } else {
+                   // Handle error if OTP sending failed
+                   console.log("Failed to send OTP");
+               }
+           },
+           error: function () {
+               // Handle AJAX error
+               console.log("AJAX error");
+           }
+       });
+   }
+
+   function verifyOTP() {
+       const otp = document.getElementById("otp").value;
+       const phone_number = document.getElementById("phone_number").value;
+
+       $.ajax({
+           url: "api/accounts/register/verify/",
+           type: "POST",
+           data: { mobile: phone_number, otp: otp },
+           success: function (data) {
+               if (data.status === "OK") {
+                   console.log("OTP Verified");
+               } else {
+                   console.log("OTP Verification failed");
+               }
+           },
+           error: function () {
+               // Handle AJAX error
+               console.log("AJAX error");
+           }
+       });
+   }
+
+   function registerUser() {
+       const first_name = document.getElementById("first_name").value;
+       const last_name = document.getElementById("last_name").value;
+       const username = document.getElementById("username").value;
+       const email = document.getElementById("email").value;
+       const phone_number = document.getElementById("phone_number").value;
+       const otp = document.getElementById("otp").value;
+
+       $.ajax({
+           url: "api/accounts/register",
+           type: "POST",
+           data: {
+               first_name: first_name,
+               last_name: last_name,
+               username: username,
+               email: email,
+               phone_number: phone_number,
+               otp: otp
+           },
+           success: function (data) {
+               if (data.success) {
+                   console.log("User registered successfully");
+               } else {
+                   console.log("User registration failed");
+               }
+           },
+           error: function () {
+               console.log("AJAX error");
+           }
+       });
+   }
+   </script>
+</main>
+{% endblock body %}

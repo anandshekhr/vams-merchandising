@@ -22,14 +22,38 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from stores.models import *
 from wishlist.models import *
+from Home.views import get_meta_data
 from user.models import UserAddresses
 from instamojo_wrapper import Instamojo
 import requests
+import razorpay
+import uuid
+from phonepe.sdk.pg.payments.v1.models.request.pg_pay_request import PgPayRequest
+from phonepe.sdk.pg.payments.v1.payment_client import PhonePePaymentClient
+from phonepe.sdk.pg.env import Env
+from django.views.decorators.csrf import csrf_protect,csrf_exempt
+
+s2s_callback_url = settings.PAYMENT_SUCCESS_REDIRECT_URL
+id_assigned_to_user_by_merchant = settings.PHONEPE_USER_ID
 
 api = Instamojo(
     api_key=settings.API_KEY,
     auth_token=settings.AUTH_TOKEN,
     endpoint="https://test.instamojo.com/api/1.1/",
+)
+
+razorpay_api = razorpay.Client(
+    auth=(settings.RAZORPAY_API_KEY, settings.RAZORPAY_API_KEY_SECRET)
+)
+
+
+merchant_id = settings.PHONEPE_MERCHANT_ID
+salt_key = settings.PHONEPE_SALT_KEY
+salt_index = 1
+env = Env.UAT  # Change to Env.PROD when you go live
+
+phonepe_client = PhonePePaymentClient(
+    merchant_id=merchant_id, salt_key=salt_key, salt_index=salt_index, env=env
 )
 
 User = get_user_model()
@@ -40,11 +64,12 @@ def cartCheckoutPageView(request):
     counter = 0
     a = 0
     b = 0
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
     try:
         if request.user:
             itemsForCartPage = Order.objects.get(user=request.user.id, ordered=False)
 
-        a = round(itemsForCartPage.get_total(), 2)
+        a = ceil(itemsForCartPage.get_total())
         counter = len(itemsForCartPage.items.all())
 
         if a > 599:
@@ -56,13 +81,27 @@ def cartCheckoutPageView(request):
 
         context = {
             "object": itemsForCartPage,
-            "delivery": delivery_charges,
+            "delivery": ceil(delivery_charges),
             "totalquantity": counter,
-            "grandtotal": grandtotal,
+            "grandtotal": ceil(grandtotal),
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
         }
     except Order.DoesNotExist:
-        context = {"object": 0, "delivery": 0, "totalquantity": 0, "grandtotal": 0}
-    return render(request, "cart.html", context)
+        context = {
+            "object": 0,
+            "delivery": 0,
+            "totalquantity": 0,
+            "grandtotal": 0,
+            "page_title": title,
+            "description": desc,
+            "keyword": key,
+            "canonical": canonical,
+        }
+
+    return render(request, "cart/cart.html", context)
 
 
 @login_required(login_url="login")
@@ -156,6 +195,73 @@ class moveToCart(APIView):
                 {"status": "Item Out of Stock"}, status=status.HTTP_403_FORBIDDEN
             )
 
+@csrf_exempt
+def PhonePePaymentCallbackAPI(request):
+    if request.method == "POST":
+        status  = request.POST.get('code')
+        if status == 'PAYMENT_SUCCESS':
+            print(request.POST.dict())
+            transaction_id = request.POST.get('transactionId')
+            order = Order.objects.get(phonepe_merchant_transaction_id=transaction_id, ordered=False)
+
+            print("Order: ",order)
+            order.ref_code = request.POST.get('providerReferenceId')
+            order.ordered = True
+            order.status = "ordered"
+            order.ordered_date = datetime.now()
+
+            order_items = order.items.all()
+            order_items.update(ordered=True)
+            for item in order_items:
+                item.save()
+            
+            payment_success_details = PhonePePaymentCallbackDetail()
+            payment_success_details.user = order.user
+            payment_success_details.order_id = order
+            payment_success_details.amount = str(int(request.POST.get('amount'))/100)
+            payment_success_details.code = status
+            payment_success_details.merchant_transaction_id = request.POST.get('transactionId')
+            payment_success_details.provider_reference_id = request.POST.get('providerReferenceId')
+            payment_success_details.checksum = request.POST.get('checksum')
+            payment_success_details.save()
+            order.phonepe_id = payment_success_details.pk
+            order.save()
+
+            # for item in order_items:
+            #     # Vendor Order Details
+            #     vender_order = VendorOrderDetail()
+            #     vender_order.vendor = item.item.vendor
+
+            #     vender_order.order_id = order.sid
+            #     product_id = Products.objects.get(id=item.item.id)
+            #     vender_order.order_item = product_id
+            #     vender_order.order_item_size = item.size
+            #     vender_order.order_item_qty = item.quantity
+            #     vender_order.order_amount = item.get_final_price()
+            #     vender_order.delivery_address = order.shipping_address
+            #     vender_order.payment_status = "Paid"
+            #     vender_order.save()
+
+            #     # vendor transaction detail
+            #     (
+            #         vender_transaction,
+            #         created,
+            #     ) = VendorTransactionDetail.objects.get_or_create(
+            #         vendor=item.item.vendor,
+            #         order_id=order.sid,
+            #     )
+            #     if created:
+            #         vender_transaction.total_order_amount = item.get_final_price()
+            #         vender_transaction.order_receiving_date = datetime.now()
+            #         vender_transaction.save()
+
+            #     else:
+            #         vender_transaction.total_order_amount += item.get_final_price()
+            #         vender_transaction.save()
+        
+    return redirect('payment-status-update-phonepe')
+
+
 
 def deleteItemFromCart(request, pk):
     """Delete Items from Wishlist
@@ -221,7 +327,13 @@ def removeSingleItemFromCart(request, pk):
 
 
 @login_required(login_url="login")
-def orderPaymentRequest(request, amount):
+def orderPaymentRequestInstamojo(request, amount):
+    """Request for Order Payment using Instamojo Payment Gateway
+
+    Args:
+        amount (int): request amount to be collected
+    """
+
     if request.user.is_authenticated:
         user = User.objects.get(pk=request.user.id)
         order = Order.objects.get(user=request.user.id, ordered=False)
@@ -365,7 +477,7 @@ def orderPaymentRequest(request, amount):
 
             if orderNotes:
                 order.orderNote = orderNotes
-        domain_name = request.get_host()
+
         response = api.payment_request_create(
             amount=str(amount),
             purpose="test_purchase",
@@ -377,16 +489,222 @@ def orderPaymentRequest(request, amount):
             redirect_url=settings.PAYMENT_SUCCESS_REDIRECT_URL,
             allow_repeated_payments=False,
         )
-        # print(response)
+
         order.ref_code = response["payment_request"]["id"]
         order.shipping_address = request.COOKIES.get("shipping_address")
         order.billing_address = request.COOKIES.get("shipping_address")
 
         order.save()
-        payment_redirect_url = response["payment_request"]["longurl"]
-        if payment_redirect_url:
-            context = {"payment_url": payment_redirect_url}
-            return render(request, "paymentredirect.html", context)
+        # payment_redirect_url = response["payment_request"]["longurl"]
+        unique_transaction_id = str(uuid.uuid4())
+        pay_page_request = PgPayRequest.pay_page_pay_request_builder(
+            merchant_transaction_id=unique_transaction_id,
+            amount=100,
+            merchant_user_id=id_assigned_to_user_by_merchant,
+            callback_url=s2s_callback_url,
+        )
+        pay_page_response = phonepe_client.pay(pay_page_request)
+        pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
+
+        if pay_page_url:
+            return redirect(pay_page_url)
+
+        else:
+            return redirect("cartview")
+    else:
+        return redirect("login")
+
+
+@login_required(login_url="login")
+def orderPaymentRequestPhonePe(request, amount):
+    """Request for Order Payment using Instamojo Payment Gateway
+
+    Args:
+        amount (int): request amount to be collected
+    """
+
+    if request.user.is_authenticated:
+
+        order = Order.objects.get(user=request.user.id, ordered=False)
+
+        if request.method == "POST":
+            firstName = request.POST.get("first_name")
+            lastName = request.POST.get("last_name")
+            area = (
+                request.POST.get("address_line_1")
+                + ","
+                + request.POST.get("address_line_2")
+            )
+            country = request.POST.get("country")
+            city = request.POST.get("city")
+            state = request.POST.get("state")
+            pincode = request.POST.get("pincode")
+            email = request.POST.get("email")
+            phoneNumber = request.POST.get("phone_number")
+
+            ifSaveAddress = request.POST.get("save-address")
+            ifShipToDifferentAddress = request.POST.get("ship-box")
+
+            BillingAddress = (
+                "Name: "
+                + firstName
+                + " "
+                + lastName
+                + ",\n Address: "
+                + area
+                + ", "
+                + city
+                + ", "
+                + state
+                + ", "
+                + country
+                + ",\n Pincode: "
+                + pincode
+                + ",\n Email: "
+                + email
+                + ",\n Ph: "
+                + phoneNumber
+                or None
+            )
+
+            if (
+                pincode != None
+                or area != None
+                or country != None
+                or city != None
+                or state != None
+            ):
+                order.billing_address = BillingAddress
+                if ifShipToDifferentAddress is not None:
+                    firstNameShip = request.POST.get("first_nameShip")
+                    lastNameShip = request.POST.get("last_nameShip")
+                    areaShip = (
+                        request.POST.get("address_line_1Ship")
+                        + ","
+                        + request.POST.get("address_line_2Ship")
+                    )
+                    countryShip = request.POST.get("countryShip")
+                    cityShip = request.POST.get("cityShip")
+                    stateShip = request.POST.get("stateShip")
+                    pincodeShip = request.POST.get("pincodeShip")
+                    emailShip = request.POST.get("emailShip")
+                    phoneNumberShip = request.POST.get("phone_numberShip")
+
+                    ShippingAddress = (
+                        "Name: "
+                        + firstNameShip
+                        + " "
+                        + lastNameShip
+                        + ",\n Address: "
+                        + areaShip
+                        + ", "
+                        + cityShip
+                        + ", "
+                        + stateShip
+                        + ", "
+                        + countryShip
+                        + ",\n Pincode: "
+                        + pincodeShip
+                        + ",\n Email: "
+                        + emailShip
+                        + ",\n Ph: "
+                        + phoneNumberShip
+                    )
+
+                    if ShippingAddress:
+                        order.shipping_address = ShippingAddress
+                else:
+                    order.shipping_address = BillingAddress
+
+                if ifSaveAddress:
+                    s_address = UserAddresses(
+                        user=request.user,
+                        name=firstName + " " + lastName,
+                        address=area,
+                        state=state,
+                        city=city,
+                        pincode=pincode,
+                        addPhoneNumber=phoneNumber,
+                        set_default=True,
+                        email=email,
+                        country=country,
+                        address_type="Home",
+                    )
+                    s_address.save()
+
+            else:
+                try:
+                    user_saved_address = UserAddresses.objects.get(
+                        user=request.user, set_default=True
+                    )
+                    BillingAddress_model = (
+                        "Name: "
+                        + user_saved_address.name
+                        + ",\n Address: "
+                        + user_saved_address.address
+                        + ", "
+                        + user_saved_address.city
+                        + ", "
+                        + user_saved_address.state
+                        + ", "
+                        + user_saved_address.country
+                        + ",\n Pincode: "
+                        + user_saved_address.pincode
+                        + ",\n Email: "
+                        + user_saved_address.email
+                        + ",\n Ph: "
+                        + user_saved_address.addPhoneNumber
+                        or None
+                    )
+                    order.billing_address = BillingAddress_model
+                    order.shipping_address = BillingAddress_model
+                except UserAddresses.DoesNotExist:
+                    messages.info(request, "Please Fill the delivery address")
+                    return redirect("payment-checkout")
+
+            orderNotes = request.POST.get("checkout-mess") or None
+
+            if orderNotes:
+                order.orderNote = orderNotes
+
+        order.shipping_address = request.COOKIES.get("shipping_address")
+        order.billing_address = request.COOKIES.get("shipping_address")
+
+
+        # payment_redirect_url = response["payment_request"]["longurl"]
+        unique_transaction_id = str(uuid.uuid4())
+        order.phonepe_merchant_transaction_id = unique_transaction_id
+        order.save()
+        pay_page_request = PgPayRequest.pay_page_pay_request_builder(
+            merchant_transaction_id=unique_transaction_id,
+            amount=100,
+            merchant_user_id=id_assigned_to_user_by_merchant,
+            merchant_order_id=order.sid,
+            redirect_mode="POST",
+            callback_url="http://127.0.0.1:8000/cart/payment/phonepe/success/callback/",
+            # redirect_mode="REDIRECT",
+            redirect_url="http://127.0.0.1:8000/cart/payment/phonepe/success/callback/",
+        )
+        pay_page_response = phonepe_client.pay(pay_page_request)
+        pay_page_url = pay_page_response.data.instrument_response.redirect_info.url
+        if pay_page_url:
+            # Add Payment Details
+            phonepe_transaction_record = PhonePePaymentRequestDetail()
+            phonepe_transaction_record.user = request.user
+            phonepe_transaction_record.order_id = order
+            phonepe_transaction_record.amount = amount
+            phonepe_transaction_record.success = pay_page_response.success
+            phonepe_transaction_record.code = pay_page_response.code
+            phonepe_transaction_record.message = pay_page_response.message
+            phonepe_transaction_record.merchant_transaction_id = (
+                pay_page_response.data.merchant_transaction_id
+            )
+            phonepe_transaction_record.transaction_id = (
+                pay_page_response.data.transaction_id
+            )
+            phonepe_transaction_record.redirect_url = pay_page_url
+            phonepe_transaction_record.save()
+            return redirect(pay_page_url)
         else:
             return redirect("cartview")
     else:
@@ -395,6 +713,8 @@ def orderPaymentRequest(request, amount):
 
 @login_required(login_url="login")
 def paymentStatusAndOrderStatusUpdate(request):
+    if request.method == "POST":
+        print(request.data)
     if request.user:
         user = User.objects.get(pk=request.user.id)
         order = Order.objects.get(user=request.user.id, ordered=False)
@@ -525,8 +845,13 @@ def paymentStatusAndOrderStatusUpdate(request):
 
 
 @login_required(login_url="login")
+def paymentStatusAndOrderStatusUpdatePhonePe(request):
+    return render(request, "checkout/thankyou.html")
+
+
+@login_required(login_url="login")
 def checkoutPage(request):
-    items = Order.objects.get(user=request.user, ordered=False)
+    order = Order.objects.get(user=request.user, ordered=False)
     try:
         address = UserAddresses.objects.filter(user=request.user)
         primary_address = UserAddresses.objects.get(user=request.user, set_default=True)
@@ -534,20 +859,39 @@ def checkoutPage(request):
         address = []
         primary_address = ""
 
-    totalAmount = round(items.get_total(), 2)
+    totalAmount = round(order.get_total(), 2)
     ShippingCharges = 40
     if totalAmount > 600:
         ShippingCharges = 0
     totalAmount += ShippingCharges
-    context = {
-        "orderItems": items,
-        "totalAmount": items.total_amount_at_checkout(),
-        "shippingCharges": ShippingCharges,
-        "address": address,
-        "gst_amount": items.gst_amount(),
-        "primary_address": primary_address,
+
+    # razorpay api call data collect
+    request_data = {
+        "amount": int(order.total_amount_at_checkout() * 100),
+        "currency": "INR",
+        "receipt": order.sid,
     }
-    return render(request, "checkout.html", context)
+    razorpay_response = razorpay_api.order.create(data=request_data)
+    order.razorpay_order_id = razorpay_response["id"]
+    order.save()
+
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
+
+    context = {
+        "orderItems": order,
+        "totalAmount": ceil(order.total_amount_at_checkout()),
+        "shippingCharges": ceil(ShippingCharges),
+        "address": address,
+        "gst_amount": ceil(order.gst_amount()),
+        "primary_address": primary_address,
+        "razorpay_order_id": razorpay_response["id"],
+        "razorpay_key_id": settings.RAZORPAY_API_KEY,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    return render(request, "checkout/checkout.html", context)
 
 
 class CartAddView(APIView):
@@ -575,7 +919,9 @@ class CartAddView(APIView):
         req_size = data.get("size")
 
         item = get_object_or_404(
-            Products, pk=product_pk, available_sizes__in=ProductSize.objects.filter(code=req_size)
+            Products,
+            pk=product_pk,
+            available_sizes__in=ProductSize.objects.filter(code=req_size),
         )
         order_item, created = Cart.objects.get_or_create(
             item=item, size=req_size, user=request.user, ordered=False
@@ -616,15 +962,15 @@ class CartAddView(APIView):
         return Response(
             {
                 "cart": serializer.data,
-                "amount": order.get_total(),
-                "tmax_amount": order.get_max_total(),
+                "amount": ceil(order.get_total()),
+                "tmax_amount": ceil(order.get_max_total()),
                 "qty": order.get_quantity(),
                 "item_qty": order_item.quantity,
-                "item_tprice": order_item.get_total_item_price(),
-                "item_dprice": round(order_item.get_amount_saved(), 2),
-                "amount_at_checkout": order.total_amount_at_checkout(),
-                "shipping": order.shipping_charge(),
-                "gst_amount": order.gst_amount(),
+                "item_tprice": ceil(order_item.get_total_item_price()),
+                "item_dprice": ceil(order_item.get_amount_saved()),
+                "amount_at_checkout": ceil(order.total_amount_at_checkout()),
+                "shipping": ceil(order.shipping_charge()),
+                "gst_amount": ceil(order.gst_amount()),
             },
             status=status.HTTP_200_OK,
         )
@@ -645,7 +991,9 @@ class CartRemoveView(APIView):
         req_size = data.get("size")
 
         item = get_object_or_404(
-            Products, pk=product_pk, available_sizes__in=ProductSize.objects.filter(code=req_size)
+            Products,
+            pk=product_pk,
+            available_sizes__in=ProductSize.objects.filter(code=req_size),
         )
 
         order_qs = Order.objects.filter(user=request.user, ordered=False)
@@ -664,15 +1012,17 @@ class CartRemoveView(APIView):
                     return Response(
                         {
                             "cart": "Item updated",
-                            "amount": order.get_total(),
-                            "tmax_amount": order.get_max_total(),
+                            "amount": ceil(order.get_total()),
+                            "tmax_amount": ceil(order.get_max_total()),
                             "qty": order.get_quantity(),
                             "item_qty": order_item.quantity,
-                            "item_tprice": order_item.get_total_item_price(),
-                            "item_dprice": order_item.get_amount_saved(),
-                            "amount_at_checkout": order.total_amount_at_checkout(),
-                            "shipping": order.shipping_charge(),
-                            "gst_amount": order.gst_amount(),
+                            "item_tprice": ceil(order_item.get_total_item_price()),
+                            "item_dprice": ceil(order_item.get_amount_saved()),
+                            "amount_at_checkout": ceil(
+                                order.total_amount_at_checkout()
+                            ),
+                            "shipping": ceil(order.shipping_charge()),
+                            "gst_amount": ceil(order.gst_amount()),
                         },
                         status=status.HTTP_200_OK,
                     )
@@ -684,15 +1034,17 @@ class CartRemoveView(APIView):
                     return Response(
                         {
                             "cart": "Item updated",
-                            "amount": order.get_total(),
-                            "tmax_amount": order.get_max_total(),
+                            "amount": ceil(order.get_total()),
+                            "tmax_amount": ceil(order.get_max_total()),
                             "qty": order.get_quantity(),
                             "item_qty": 0,
                             "item_tprice": 0,
                             "item_dprice": 0,
-                            "amount_at_checkout": order.total_amount_at_checkout(),
-                            "shipping": order.shipping_charge(),
-                            "gst_amount": order.gst_amount(),
+                            "amount_at_checkout": ceil(
+                                order.total_amount_at_checkout()
+                            ),
+                            "shipping": ceil(order.shipping_charge()),
+                            "gst_amount": ceil(order.gst_amount()),
                         },
                         status=status.HTTP_200_OK,
                     )
@@ -700,15 +1052,15 @@ class CartRemoveView(APIView):
                 return Response(
                     {
                         "cart": "Item not available in cart",
-                        "amount": order.get_total(),
-                        "tmax_amount": order.get_max_total(),
-                        "qty": order.get_quantity(),
+                        "amount": ceil(order.get_total()),
+                        "tmax_amount": ceil(order.get_max_total()),
+                        "qty": ceil(order.get_quantity()),
                         "item_qty": 0,
                         "item_tprice": 0,
                         "item_dprice": 0,
-                        "amount_at_checkout": order.total_amount_at_checkout(),
-                        "shipping": order.shipping_charge(),
-                        "gst_amount": order.gst_amount(),
+                        "amount_at_checkout": ceil(order.total_amount_at_checkout()),
+                        "shipping": ceil(order.shipping_charge()),
+                        "gst_amount": ceil(order.gst_amount()),
                     },
                     status=status.HTTP_200_OK,
                 )
@@ -720,25 +1072,46 @@ class CartRemoveView(APIView):
 def order_summary(request, pk):
     if request.user:
         order = Order.objects.get(user=request.user.id, pk=pk)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
-    context = {"order": order}
-    return render(request, "thankyou.html", context)
+    context = {
+        "order": order,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    return render(request, "checkout/thankyou.html", context)
 
 
 def pending_payment_page(request, pk):
     if request.user:
         order = Order.objects.get(user=request.user.id, pk=pk)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
-    context = {"order": order}
-    return render(request, "payment-failed.html", context)
+    context = {
+        "order": order,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    return render(request, "checkout/payment-failed.html", context)
 
 
 def failed_payment_page(request, pk):
     if request.user:
         order = Order.objects.get(user=request.user.id, pk=pk)
+    title, desc, key, canonical = get_meta_data(request.path, request.get_host())
 
-    context = {"order": order}
-    return render(request, "payment-failed.html", context)
+    context = {
+        "order": order,
+        "page_title": title,
+        "description": desc,
+        "keyword": key,
+        "canonical": canonical,
+    }
+    return render(request, "checkout/payment-failed.html", context)
 
 
 @login_required(login_url="login")
@@ -765,3 +1138,26 @@ def addToCartWithSizeQuantity(request, pk):
 
     messages.info(request, "Item Added to Cart Successfully!")
     return redirect(previous_page)
+
+
+@login_required(login_url="login")
+def razorpay_success_redirect(request):
+    razorpay_order_id = request.GET.get("razorpay_order_id")
+    razorpay_payment_id = request.GET.get("razorpay_payment_id")
+    if request.user:
+        order = Order.objects.get(user=request.user.id, ordered=False)
+        # order = Order.objects.get(razorpay_order_id=razorpay_order_id, ordered=False)
+
+        order.ordered = True
+        order.status = "ordered"
+        order.ordered_date = datetime.now()
+        order_items = order.items.all()
+        order_items.update(ordered=True)
+        for item in order_items:
+            item.save()
+
+        order.razorpay_payment_id = razorpay_payment_id
+        order.save()
+
+    messages.success(request, "Your order was successful!")
+    return redirect("ordersummary", pk=order.id)

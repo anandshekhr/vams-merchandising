@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from products.serializer import userSerializer
 from cart.models import Order
 from rest_framework.decorators import api_view, permission_classes
-from .models import *
+from user.models import *
 from stores.models import *
 from datetime import datetime,timezone
 from django.http import JsonResponse
@@ -26,11 +26,8 @@ def get_otp(request):
     try:
         # device = Device.objects.get(auth_token=request.data.get('auth_token'))
         country_code = request.data.get('country_code')
-        print(country_code)
         phone_number = request.data.get('phone_number')
-        print(phone_number)
         fake_otp = bool(request.data.get('fake_otp'))
-        print(fake_otp)
 
         try:
             last_sms = DeviceOtp.objects.filter(

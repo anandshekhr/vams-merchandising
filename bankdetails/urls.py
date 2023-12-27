@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('write-to-xls/<str:total>',writeExcelToSQL,name='write-to-xls'),
+    path('write-to-xls',writeExcelToSQL,name='write-to-xls'),
     path('ifsc-code',IFSCCodeDetails.as_view(),name='ifsc-code'),
     path('get-ifsc-code',getIFSC.as_view(),name='get-ifsc-code'),
 

@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %} Wishlist {% endblock title %}
-{% block body %}
+{% block title %}{{page_title}}{% endblock title %}
 <link rel="stylesheet" href="{% static 'wishlist.css' %}">
+{% block body %}
 <style>
 .popup-overlay {
    display: none;
@@ -194,8 +194,8 @@
                                          <span class="product-name"><a href="{% url 'productdetail' subcategory=item.item.subcategory.all.first.subcategory_code slug=item.item.slug %}">{{item.item.name|slice:25}}</a></span>
                                          <span class="product-size"><a href="#">{{item.size}}</a></span>
                                          <div class="price_quantity">
-                                             <span class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
-                                             <span class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                                             <span class="product-price"><span class="amount">₹{{item.item.price_gst_included}}</span></span>
+                                             <span class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.mrp_gst_included}}</span>
                                          </div>
                                          <span class="product-quantity move_btn">
                                              <span class="border-btn" onclick="openPopup('{{ item.item.id }}', '{{ forloop.counter }}')">Move to Cart</span>
@@ -213,8 +213,8 @@
                                                          <div>
                                                              <span class="popup_price_list">
                                                                  <div class="price_quantity_popup">
-                                                                     <span style="color: #282c3f; font-weight: 700;" class="product-price"><span class="amount">₹{{item.item.list_price|floatformat:2}}</span></span>
-                                                                     <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                                                                     <span style="color: #282c3f; font-weight: 700;" class="product-price"><span class="amount">₹{{item.item.price_gst_included}}</span></span>
+                                                                     <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{item.item.mrp_gst_included}}</span>
                                                                      <div class="">
                                                                          <span style=" color: #ff905a; padding: 0 3px; font-size: 16px; font-weight: 700;" class="">({{item.item.discount|floatformat:0}}% OFF)</span>
                                                                      </div>

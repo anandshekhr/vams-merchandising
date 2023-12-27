@@ -1,4 +1,5 @@
 {% load cache %}
+{% load custom_template_tags %}
 
 <!-- Before -->
 {% cache 300 my_cache_key %}
@@ -26,10 +27,29 @@
    <meta http-equiv="x-ua-compatible" content="ie=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>{% block title %}{% endblock title %} - vamscentral</title>
-   <meta name="description" content="Online Shopping Site for Fashion & Lifestyle in India. India's Fashion Expert brings you a variety of footwear, Clothing, Accessories and lifestyle products for women & men. Best Online Fashion Store *Easy returns and exchanges.">
+   {% if description %}
+   <meta property="og:description" content="{{description}}">
+   <meta property="description" content="{{description}}">
+   <meta name="description" content="{{description}}">
+   {% endif %}
+
+   {% if meta_image %}
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"/>
+    <meta property="og:image" content="{{meta_image}}">
+    <meta name="twitter:image" content="{{meta_image}}">
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    {% endif %}
+
    <meta name="robots" content="noindex" >
-   <meta name="Keywords" content="online shopping, online shopping sites, online shopping india, india shopping, Online shopping site">
+   {% if keyword %}
+   <meta name="Keywords" content="{{keyword}}">
+   {% endif %}
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   {% if conanical %}
+   <link rel="canonical" href="{{conanical}}" />
+   {% endif %}
    {% comment %} <meta name="viewport" content="width=device-width, initial-scale=1"> {% endcomment %}
    <!-- Place favicon.ico in the root directory -->
    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}">
@@ -138,7 +158,7 @@
 .suggestProduct {
    position: absolute;
    background-color: white;
-   width: 27%;
+   width: 29%;
    height: max-content;
    max-height: 300px;
    overflow: hidden;
@@ -838,23 +858,15 @@
                               <a href="javascript:void(0)" class="view-cart-button">
                                  <i class="fal fa-shopping-bag"></i>
                                  <span class="action-text" id="cart-underlying-text">Cart</span>
-                                 {% if cart.get_quantity %}
-                                 <span class="action-item-number" id="cart-number">{{cart.get_quantity}}</span>
-
-                                 {% else %}
-                                 <span class="action-item-number" id="cart-number">0</span>
-                                 {% endif %}
+                                 <span class="action-item-number" id="cart-number">{{request.user|cart_item_count}}</span>
                               </a>
                            </div>
                            <div class="action-item action-item-wishlist">
                               <a href="javascript:void(0)" class="view-wishlist-button">
                                  <i class="fal fa-heart"></i>
                                  <span class="action-text" id="wishlist-underlying-text" style="left:-6px;">Wishlist</span>
-                                 {% if wishlist.get_quantity %}
-                                 <span class="action-item-number" id="wishlist-number">{{wishlist.get_quantity}}</span>
-                                 {% else %}
-                                 <span class="action-item-number" id="wishlist-number">0</span>
-                                 {% endif %}
+                                 <span class="action-item-number" id="wishlist-number">{{request.user|wishlist_item_count}}</span>
+                                 
                               </a>
                            </div>
                            {% if request.user.is_authenticated %}
@@ -922,7 +934,7 @@
                </div>
                <div>
                   <div class="card-body p-0 mt-4" id="myAccountDropdown">
-                      <span id="accountToggle">My Account</span>
+                      <span id="accountToggle" class="">My Account</span>
                       <ul class="list-inline mb-0">
                           <li class="list-inline-item d-block me-0">
                               <a href="{% url 'profile-address' %}" class="pt-2 pb-2 d-flex align-items-center">
@@ -1030,8 +1042,8 @@
                      <div class="product-size">Size: {{cart_items.size}}</div>
                      <div class="product-pricing">
                         <span class="item-number">Qty: {{cart_items.quantity}} </span><br>
-                        <span class="price-now">₹{{cart_items.get_final_price|floatformat:2}}</span>
-                        <span class="price-old" style="color:#17171766;">₹{{cart_items.get_total_item_price|floatformat:2}}</span>
+                        <span class="price-now">&nbsp;₹{{cart_items.get_final_price}}</span>
+                        <span class="price-old" style="color:#17171766;">&nbsp;₹{{cart_items.get_total_item_price}}</span>
                      </div>
                      <a href="{% url 'delete-from-cart' cart_items.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
@@ -1045,7 +1057,7 @@
             <div class="product-price-total">
                <span>Subtotal :</span>
                {% if cart.get_total %}
-               <span class="subtotal-price">₹{{cart.get_total|floatformat:2}}</span>
+               <span class="subtotal-price">₹{{cart.get_total}}</span>
                {% else %}
                 <span class="subtotal-price">₹0.00</span>
                {% endif %}
@@ -1071,8 +1083,8 @@
                      {% comment %} <div class="product-size">Size: {{item.size}}</div> {% endcomment %}
                      <div class="product-quantity">Quantity: {{item.quantity}}</div>
                      <div class="product-pricing">
-                        <span class="price-now">₹{{item.item.list_price|floatformat:2}}</span>
-                        <span class="price-old" style="color:#17171766;">₹{{item.item.max_retail_price|floatformat:2}}</span>
+                        <span class="price-now">&nbsp;₹{{item.item.price_gst_included}}</span>
+                        <span class="price-old" style="color:#17171766;">&nbsp;₹{{item.item.mrp_gst_included}}</span>
                      </div>
                      <a href="{% url 'delete-item-from-wishlist' item.item.id %}" class="remove-item"><i class="fal fa-times"></i></a>
                   </div>
@@ -1086,7 +1098,7 @@
             <div class="product-price-total">
                <span>Subtotal :</span>
                {% if wishlist.get_total %}
-               <span class="subtotal-price">₹{{wishlist.get_total|floatformat:2}}</span>
+               <span class="subtotal-price">₹{{wishlist.get_total}}</span>
                {% else %}
                 <span class="subtotal-price">₹0.00</span>
                {% endif %}
@@ -1531,7 +1543,7 @@
  </script>
  
    <script>
-      {% comment %} var getCookie = function (name) {
+      var getCookie = function (name) {
       var cookieValue = null;
       if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
@@ -1545,18 +1557,17 @@
         }
       }
       return cookieValue;
-    }; {% endcomment %}
+    };
   
       //const g_csrftoken = getCookie('csrftoken');
       function showSearchItems(value){
-      //var g_csrftoken_p = getCookie('csrftoken')//
-      //var csrftoken = Cookies.get('csrftoken');
       //console.log(value);
-      domain = window.location.origin
-      path_name = '/products/all' //change-this url
+      var g_csrftoken = getCookie('csrftoken');
+      domain = window.location.origin;
+      path_name = '/products/all/'; //change-this url
       if(value.length < 3){
-        $('.suggestProduct').empty()
-        $('.suggestProduct').hide()
+        $('.suggestProduct').empty();
+        $('.suggestProduct').hide();
       }
       else{
         $.ajax({
@@ -1564,42 +1575,42 @@
             url: domain+path_name,
             data: {
                 //"csrfmiddlewaretoken":g_csrftoken,
-                "products" : value,
+               "search" : value,
                 
             },
             success: function(response) {
-                if (response){
-                  //console.log(response);
-                  $('.suggestProduct').empty()
-                  
-                  if (response.length > 0){
-                    $('.suggestProduct').show()
-                    $.each(response,function(index, item){
-                      console.log(response[index])
-                      $('.suggestProduct').append(`
-                      <div class="suggest-product d-flex col-12" onclick='window.location.href="/products/apparels/`+response[index].subcategory[0].subcategory_code+`/`+response[index].slug+`"' >
-                        {% comment %} <div class="col-2 ">
-                          <img src="data: image/png; base64, `+response[index].image+`" alt=""  >
-                        </div> {% endcomment %}
-                        <div class="product_name col-8 align-self-center">
-                          <p class="product_names " style="font-size:14px;" >`+response[index].name+`</p>
-                        </div>
-                        {% comment %} <div class="align-self-center">
-                          <div class="product_pirce "><span class="pro_mrp" style="font-size:14px;">₹`+response[index].discounted_price+`</span></div>
-                          <!-- <a href="#" class="btn btn-style1 btn-padding">ADD</a> -->
-                        </div> {% endcomment %}
-                      </div>
-                      `)
-                    })
-                  }
-                }
-                else{
-                  $('.suggestProduct').empty()
-                  $('.suggestProduct').show()
-                  $('.suggestProduct').append(`
-                  <p style="color: red;">Sorry! we regret but we don't have that product, that you search for.</p>
-                  `)
-                }
+               if (response){
+               //console.log(response);
+               $('.suggestProduct').empty();
+               
+               if (response.count > 0){
+                  $('.suggestProduct').show();
+                  $.each(response.results,function(index, item){
+                     //console.log(response.results[index])
+                     $('.suggestProduct').append(`
+                     <div class="suggest-product d-flex col-12" onclick='window.location.href="/products/apparels/`+response.results[index].subcategory[0].subcategory_code+`/`+response.results[index].slug+`"' >
+                     {% comment %} <div class="col-2 ">
+                        <img src="data: image/png; base64, `+response.results[index].image+`" alt=""  >
+                     </div> {% endcomment %}
+                     <div class="product_name col-8 align-self-center">
+                        <p class="product_names " style="font-size:14px;" >`+response.results[index].name+`</p>
+                     </div>
+                     {% comment %} <div class="align-self-center">
+                        <div class="product_pirce "><span class="pro_mrp" style="font-size:14px;">₹`+response.results[index].discounted_price+`</span></div>
+                        <!-- <a href="#" class="btn btn-style1 btn-padding">ADD</a> -->
+                     </div> {% endcomment %}
+                     </div>
+                     `)
+                  })
+               }
+               }
+               else{
+               $('.suggestProduct').empty();
+               $('.suggestProduct').show();
+               $('.suggestProduct').append(`
+               <p style="color: red;">Sorry! we regret but we don't have that product, that you search for.</p>
+               `);
+               }
             }
             
         });

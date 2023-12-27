@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block body %}
+<main>
+    <style>
+        .login-signup-container {
+            background-color: rgb(213 224 224);
+            margin-left: 30%;
+            margin-right: 30%;
+            padding-right: 2%;
+            padding-left: 2%;
+            margin-top: 5%;
+            margin-bottom: 5%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+        }
+
+        .login-heading {
+
+            font-weight: 500;
+            font-size: 24px;
+        }
+        .help-link{
+            color: brown;
+            font-style: italic;
+        }
+        .partitioned {
+            padding-left: 15px;
+            letter-spacing: 42px;
+            border: 0;
+            background-image: linear-gradient(to left, black 70%, rgba(255, 255, 255, 0) 0%);
+            background-position: bottom;
+            background-size: 50px 1px;
+            background-repeat: repeat-x;
+            background-position-x: 35px;
+            width: 220px;
+            outline : none;
+        }
+    </style>
+    <div class="login-signup-container">
+        <h2 class="login-heading">Login <span style="font-weight: 100;">or</span> Signup</h2>
+        <div class="input-group mb-3 my-5">
+            <span class="input-group-text" id="basic-addon1">+91</span>
+            <input type="text" class="form-control" placeholder="Mobile Number" aria-label="Mobile Number"
+                aria-describedby="basic-addon1" id="login-mobileno">
+        </div>
+        <p style="margin-top: 10px;font-size: 14px;">By continuing, I agree to the <span class="help-link">Terms of Use</span> & <span class="help-link">Privacy Policy</span></p>
+        <a type="button" class="btn btn-dark" style="width: 100%;" onclick="loginSendOTP()" >Continue</a>
+        <p style="margin-top: 10px;font-size: 12px;">Having trouble logging in? <span class="help-link">Get help</span></p>
+    </div>
+</main>
+<script>
+    function loginSendOTP(){
+        var mobileno = document.getElementById('login-mobileno').value;
+        var domain = window.location.origin;
+        $.ajax({
+            url: domain + '/user/accounts/register/get_otp/', // Replace with your API endpoint
+            method: 'POST', // or 'GET' depending on your API
+            contentType: 'application/json',
+            data: JSON.stringify({ mobile:mobileno,country_code:'+91',"fake_otp":true,"otp":"1234" }),
+            success: function (data) {
+                // Store the username in sessionStorage
+                sessionStorage.setItem('mobileno', mobileno);
+
+                // Redirect to a new page upon success
+                window.location.href = '{% url "verify_otp_page" %}'; // Replace with your desired page
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+            }
+        });
+    }
+</script>
+{% endblock body %}

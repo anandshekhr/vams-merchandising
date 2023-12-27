@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block body %}
+<!-- Add your site or application content here -->
+<main>
+   <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+
+   <style>
+      .getVeribtn {
+         border: 1.5px solid black;
+         font-weight: 600;
+         width: max-content;
+         padding: 10px;
+         border-radius: 10px;
+         font-family: 'Lato';
+         font-size: 16px;
+         margin-top: 20px;
+      }
+
+      .signup-wrapper input {
+         margin-top: 20px;
+      }
+
+      .sing-buttom {
+         margin-top: 24px;
+      }
+   </style>
+
+   {% if messages %}
+   {% for message in messages %}
+   <div class="alert alert-{{ message.tags }} auto-dismiss">
+      {{ message }}
+   </div>
+   {% endfor %}
+   <script>
+      setTimeout(function() {
+         $('.auto-dismiss').fadeOut('slow');
+      }, 3000);
+   </script>
+   {% endif %}
+
+   <div class="breadcrumb-menu-edit">
+      <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
+         <li class="breadcrumb-item active"><span>Login</span></li>
+      </ol>
+   </div>
+   <!-- page title area end  -->
+
+   <!-- login area start  -->
+   <div class="page-title-wrapper text-center">
+      <h1 class="page-title mb-10">Login</h1>
+   </div>
+   <div class="login-area pt-120 pb-120">
+      <div class="container container-small">
+         <div class="row justify-content-center">
+            <div class="col-lg-8">
+               <div class="login-form-wrapper">
+                  <form method="post" action="{% url 'login' %}">{% csrf_token %}
+                     <div class="form-group">
+                        <div class="col-md-12">
+                           <div class="signup-wrapper">
+                              <input type="text" placeholder="Phone Number" name="phone_number" id="phone_number">
+                           </div>
+                        </div>
+                        <input type="hidden" name="next_url" id="next_url" value="{{next}}">
+                        <input type="hidden" name="choose-size" id="choose-size" value="{{choose_size}}">
+                        <input type="hidden" name="pro-qty" id="pro-qty" value="{{pro_qty}}">
+                     </div>
+                     <div class="login-action">
+                        <div class="form-group">
+                           <button class="getVeribtn" type="button" id="getOTPButton" onclick="getOTP()">Get OTP</button>
+                        </div>
+                        <div class="login-wrapper" id="otpInputWrapper" style="display: none;">
+                           <div class="col-md-12" id="otpInputWrapper">
+                              <div class="signup-wrapper">
+                                 <input type="text" placeholder="Enter OTP" name="otp" id="otp">
+                              </div>
+                           </div>
+                           <button class="getVeribtn" type="button" id="verifyOTPButton" onclick="verifyOTP()">Verify OTP</button>
+                        </div>
+                     </div>
+                     <div class="sing-buttom mb-20">
+                        <button class="sing-btn">Login now</button>
+                     </div>
+                  </form>
+                  <div class="registered wrapper">
+                     <div class="not-registered">
+                        <span>Not registered?</span><span><a href="{% url 'register' %}">Sign up</a></span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- login area end  -->
+</main>
+
+<script>
+   function getOTP() {
+      const phone_number = document.getElementById("phone_number").value;
+      domain = window.location.origin;
+
+      $.ajax({
+         url: domain + "/user/accounts/register/get_otp/",
+         type: "POST",
+         data: { mobile: phone_number,
+         country_code: "+91",
+      fake_otp: true,
+   otp:"1234"},
+         success: function (data) {
+            if (data.Status === "Sent") {
+               console.log("OTP Sent");
+               document.getElementById("otpInputWrapper").style.display = "block";
+            } else {
+               console.log("Failed to send OTP");
+            }
+         },
+         error: function () {
+            console.log("AJAX error");
+         }
+      });
+   }
+
+   function verifyOTP() {
+      const otp = document.getElementById("otp").value;
+      const phone_number = document.getElementById("phone_number").value;
+      domain = window.location.origin;
+      $.ajax({
+         url: domain + "/user/accounts/register/verify/",  
+         type: "POST",
+         data: { mobile: phone_number, otp: otp,country_code:"+91" },
+         success: function (data) {
+            console.log(data);
+            if (data) {
+               console.log("OTP Verified");
+               // Store token in cookie here
+               
+               window.location.href = "{% url 'home' %}";
+
+            } else {
+               console.log("OTP Verification failed");
+            }
+         },
+         error: function () {
+            console.log("AJAX error");
+         }
+      });
+   }
+</script>
+{% endblock %}

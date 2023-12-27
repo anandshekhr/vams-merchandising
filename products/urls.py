@@ -12,14 +12,16 @@ urlpatterns = [
     path('handle-messages/', handle_messages, name='handle_messages'),
 
     #APIs
-    path("all",ProductAPI.as_view(),name="allProducts"),
+    path("all/",ProductAPI.as_view(),name="allProducts"),
     path("details/", ProductDetailsAPI.as_view(), name="allproducts"),
+    path("reviews/",ProductReviewsAPI.as_view()),
+    
     path("banners/", BannersAPIView.as_view(), name="banners"),
+    
     path("categories/", CategoriesAPI.as_view(), name="categories"),
-    re_path('^category/items/(?P<pk>.+)/$',
-         CategoryProductsAPI.as_view(), name="category-products-api"),
-    path("reviews",ProductReviewsAPI.as_view()),
-    path("get-subcategory",GetFilteredSubCategoryAPI.as_view())
+    re_path('^category/items/(?P<pk>.+)/$',CategoryProductsAPI.as_view(), name="category-products-api"),
+    path("get-subcategory/",GetFilteredSubCategoryAPI.as_view())
+    
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL,

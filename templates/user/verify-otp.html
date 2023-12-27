@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block body %}
+<main>
+    <style>
+        .login-signup-container {
+            background-color: rgb(213 224 224);
+            margin-left: 30%;
+            margin-right: 30%;
+            padding-right: 2%;
+            padding-left: 2%;
+            margin-top: 5%;
+            margin-bottom: 5%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+        }
+
+        .login-heading {
+
+            font-weight: 500;
+            font-size: 24px;
+        }
+
+        .help-link {
+            color: brown;
+            font-style: italic;
+        }
+
+        @import url('https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css');
+
+        .form-control {
+            -webkit-transition: none;
+            transition: none;
+            width: 45px;
+            height: 40px;
+            text-align: center
+        }
+
+        .form-control:focus {
+            color: #3F4254;
+            background-color: #ffffff;
+            border-color: #884377;
+            outline: 0;
+        }
+
+        .form-control.form-control-solid {
+            background-color: #F3F6F9;
+            border-color: #F3F6F9;
+            color: #3F4254;
+            transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .form-control.form-control-solid:active,
+        .form-control.form-control-solid.active,
+        .form-control.form-control-solid:focus,
+        .form-control.form-control-solid.focus {
+            background-color: #EBEDF3;
+            border-color: #EBEDF3;
+            color: #3F4254;
+            transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+    </style>
+    <div class="login-signup-container">
+        <h2 class="login-heading">Verify with OTP</h2>
+        <p style="margin-top: 10px;font-size: 12px;">Sent via WHATSAPP to <span id="phone-number"></span></p>
+        <div class="mb-6 text-center">
+            <div id="otp" class="flex justify-center">
+                <input
+                    class="m-2 text-center form-control form-control-solid rounded focus:border-blue-400 focus:shadow-outline"
+                    type="text" id="first" maxlength="1" />
+                <input
+                    class="m-2 text-center form-control form-control-solid rounded focus:border-blue-400 focus:shadow-outline"
+                    type="text" id="second" maxlength="1" />
+                <input
+                    class="m-2 text-center form-control form-control-solid rounded focus:border-blue-400 focus:shadow-outline"
+                    type="text" id="third" maxlength="1" />
+                <input
+                    class="m-2 text-center form-control form-control-solid rounded focus:border-blue-400 focus:shadow-outline"
+                    type="text" id="fourth" maxlength="1" />
+
+            </div>
+        </div>
+        <p style="margin-top: 10px;font-size: 14px;">Didn't receive OTP? <span class="help-link"><a href="#">Resend OTP</a></span></p>
+        <p style="margin-top: 10px;font-size: 14px;">By continuing, I agree to the <span class="help-link">Terms of
+                Use</span> & <span class="help-link">Privacy Policy</span></p>
+        <button type="button" class="btn btn-dark" style="width: 100%;" onclick="verifyOTP()">Verify</button>
+        <p style="margin-top: 10px;font-size: 12px;">Having trouble logging in? <span class="help-link">Get help</span>
+        </p>
+    </div>
+</main>
+<script>
+    function OTPInput() {
+            const inputs = document.querySelectorAll('#otp > *[id]');
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener('keydown', function (event) {
+                    if (event.key === "Backspace") {
+                        inputs[i].value = '';
+                        if (i !== 0)
+                            inputs[i - 1].focus();
+                    } else {
+                        if (i === inputs.length - 1 && inputs[i].value !== '') {
+                            return true;
+                        } else if (event.keyCode > 47 && event.keyCode < 58) {
+                            inputs[i].value = event.key;
+                            if (i !== inputs.length - 1)
+                                inputs[i + 1].focus();
+                            event.preventDefault();
+                        } else if (event.keyCode > 64 && event.keyCode < 91) {
+                            inputs[i].value = String.fromCharCode(event.keyCode);
+                            if (i !== inputs.length - 1)
+                                inputs[i + 1].focus();
+                            event.preventDefault();
+                        }
+                    }
+                });
+            }
+        }
+        OTPInput();
+    
+    document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve the username from sessionStorage
+            var storedUsername = sessionStorage.getItem('mobileno');
+
+            // Display the username on the page
+            var usernameDisplay = document.getElementById('phone-number');
+            usernameDisplay.textContent = storedUsername;
+        });
+    
+    function verifyOTP() {
+        // Get the values of the input fields
+        var firstDigit = document.getElementById('first').value;
+        var secondDigit = document.getElementById('second').value;
+        var thirdDigit = document.getElementById('third').value;
+        var fourthDigit = document.getElementById('fourth').value;
+
+        // Concatenate the values into a single string
+        var otp = firstDigit + secondDigit + thirdDigit + fourthDigit;
+
+        var domain = window.location.origin;
+        var storedmobileno = sessionStorage.getItem('mobileno');
+        $.ajax({
+            url: domain + '/user/accounts/register/verify/', // Replace with your API endpoint
+            method: 'POST', // or 'GET' depending on your API
+            contentType: 'application/json',
+            data: JSON.stringify({ mobile: storedmobileno, country_code: '+91',"otp": otp,web:true }),
+            success: function (data) {
+                // console.log(data);
+                // Redirect to a new page upon success
+                window.location.href = '{% url "home" %}'; // Replace with your desired page
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+            }
+        });
+    }
+
+    
+</script>
+{% endblock body %}

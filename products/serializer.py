@@ -69,6 +69,13 @@ class ProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = "__all__"
+
+class ProductSearchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Products
+        fields = "__all__"
+    
     
 class BannersSerializer(serializers.ModelSerializer):
 

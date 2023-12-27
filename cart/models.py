@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from datetime import date
 import decimal
+from math import ceil
 
 
 User = get_user_model()
@@ -14,9 +15,9 @@ STATUS =(('Shipped','SHIPPED'),('Ordered','ORDERED'),('In-transit','IN TRANSIT')
 # Create your models here.
 class Cart(models.Model):
     user = models.ForeignKey(User,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,null=True,blank=True)
     ordered = models.BooleanField(default=False)
-    item = models.ForeignKey(Products, on_delete=models.CASCADE)
+    item = models.ForeignKey(Products, on_delete=models.CASCADE,null=True,blank=True)
     quantity = models.IntegerField(default=1)
     size = models.CharField(_("Item Size"), max_length=50,
                             null=True, blank=True, default="L")
@@ -30,21 +31,21 @@ class Cart(models.Model):
         return f"{self.quantity} Size:{self.size} of {self.item.name}"
 
     def get_total_item_price(self):
-        return self.quantity * self.item.max_retail_price
+        return ceil(self.quantity * self.item.max_retail_price)
 
     def get_total_discount_item_price(self):
-        return self.quantity * ((self.item.discount/100)*self.item.max_retail_price)
+        return ceil(self.quantity * ((self.item.discount/100)*self.item.max_retail_price))
 
     def get_amount_saved(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
+        return ceil(self.get_total_item_price() - self.get_total_discount_item_price())
     
     def amount_after_applying_discount(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
+        return ceil(self.get_total_item_price() - self.get_total_discount_item_price())
 
     def get_final_price(self):
         if self.item.discount:
-            return self.amount_after_applying_discount()
-        return self.get_total_item_price()
+            return ceil(self.amount_after_applying_discount())
+        return ceil(self.get_total_item_price())
     
     def get_product_name(self):
         return self.item.name
@@ -63,9 +64,11 @@ class DeliveryPartnerDetails(models.Model):
 
     def __str__(self) -> str:
         return f"Name: {self.name} Ph. No: {self.contact_no}"
+
+
 class Order(models.Model):
     user = models.ForeignKey(User,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,null=True,blank=True)
     ref_code = models.CharField(max_length=200, blank=True, null=True)
     tracking_id = models.CharField(max_length=200, blank=True, null=True)
     items = models.ManyToManyField(Cart)
@@ -106,6 +109,12 @@ class Order(models.Model):
         auto_now_add=True)
     
     refund_request_cancelled = models.BooleanField(default=False)
+    razorpay_order_id = models.CharField(_("Razorpay Order id"), max_length=500,null=True,blank=True)
+    razorpay_payment_id = models.CharField(_("Razorpay Payment id"), max_length=500,null=True,blank=True)
+    razorpay_payment_signature = models.CharField(_("Razorpay Payment Signature"), max_length=500,null=True,blank=True)
+
+    phonepe_id = models.CharField(_("PhonePe Payment Id"), max_length=100,null=True,blank=True)
+    phonepe_merchant_transaction_id = models.CharField(_("PhonePe Transaction Id"),max_length=36,null=True,blank=True)
 
 
     '''
@@ -128,13 +137,13 @@ class Order(models.Model):
             total += order_item.get_final_price()
         if self.coupon:
             total -= self.coupon.amount
-        return total
+        return ceil(total)
     
     def get_max_total(self):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_total_item_price()
-        return total
+        return ceil(total)
     
     def get_order_name(self):
         name = ''
@@ -168,16 +177,16 @@ class Order(models.Model):
 
         if amount > settings.ABOVE_AMOUNT:
             amount += settings.DELIVERY
-        return amount
+        return ceil(amount)
     
     def gst_amount(self):
         gst_amount = (float(self.amount_with_shipping()) * (settings.GST_STICHED/100))
-        return round(gst_amount,2)
+        return ceil(gst_amount)
 
     
     def total_amount_at_checkout(self):
         total_amount = float(self.amount_with_shipping()) + self.gst_amount()
-        return round(total_amount,2)
+        return ceil(total_amount)
     
 
 
@@ -191,6 +200,59 @@ class Payment(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class PhonePePaymentRequestDetail(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.SET_NULL, blank=True, null=True)
+    order_id = models.ForeignKey(Order, verbose_name=_("Order id"), on_delete=models.CASCADE,blank=True,null=True)
+    amount = models.CharField(_("amount"), max_length=50,null=True,blank=True)
+    success = models.BooleanField(_("Success"),default=False)
+    code = models.CharField(_("Code"), max_length=50, blank=True, null=True)
+    message = models.TextField(_("Message"))
+    merchant_transaction_id = models.CharField(_("Merchant Transaction Id"), max_length=200,null=True, blank=True)
+    transaction_id = models.CharField(_("Transaction Id"), max_length=200,null=True, blank=True)
+    redirect_url = models.TextField(_("URL"))
+    created_at = models.DateTimeField(_("created at"), auto_now=True, auto_now_add=False)
+
+    class Meta:
+        verbose_name = _("PhonePePaymentRequestDetail")
+        verbose_name_plural = _("PhonePePaymentRequestDetails")
+
+    def __str__(self):
+        return "Order Id: "
+
+    def get_absolute_url(self):
+        return reverse("PhonePePaymentDetail_detail", kwargs={"pk": self.pk})
+    
+    def get_order_sid(self):
+        return self.order_id.sid
+
+class PhonePePaymentCallbackDetail(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_("User"), on_delete=models.SET_NULL, blank=True, null=True)
+    order_id = models.ForeignKey(Order, verbose_name=_("Order id"), on_delete=models.CASCADE,blank=True,null=True)
+    amount = models.CharField(_("amount"), max_length=50,null=True,blank=True)
+    code = models.CharField(_("Code"), max_length=50, blank=True, null=True)
+
+    merchant_transaction_id = models.CharField(_("Transaction Id"), max_length=200,null=True, blank=True)
+    provider_reference_id = models.CharField(_("Provider Reference Id"), max_length=200,null=True,blank=True)
+    checksum = models.TextField(_("checksum"))
+
+
+    
+
+    class Meta:
+        verbose_name = _("PhonePePaymentCallbackDetail")
+        verbose_name_plural = _("PhonePePaymentCallbackDetails")
+
+    def __str__(self):
+        return "Order Id: "
+
+    def get_absolute_url(self):
+        return reverse("PhonePePaymentCallbackDetail_detail", kwargs={"pk": self.pk})
+    
+    def get_order_sid(self):
+        return self.order_id.sid
+
+
 
 
 class Coupon(models.Model):
@@ -201,7 +263,7 @@ class Coupon(models.Model):
         return self.code
 
 class UserBankAccount(models.Model):
-    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE,null=True,blank=True)
     bank_account_number = models.CharField(_("Bank Account No."), max_length=100)
     ifsc_code = models.CharField(_("IFSC Code"), max_length=50)
     account_name = models.CharField(_("Account Holder Name"), max_length=250,null=True,blank=True)
@@ -221,7 +283,7 @@ class UserBankAccount(models.Model):
 
 
 class Refund(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE,null=True,blank=True)
     order_sid = models.CharField(_("Order Reference Id"), max_length=50,default="")
     reason = models.TextField()
     accepted = models.BooleanField(default=False)
@@ -260,9 +322,9 @@ class PendingPayment(models.Model):
 
 
 class VendorOrderDetail(models.Model):
-    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
+    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE,null=True,blank=True)
     order_id = models.CharField(_("Order ID"), max_length=50)
-    order_item = models.ForeignKey(Products, verbose_name=_("Order Item"), on_delete=models.CASCADE)
+    order_item = models.ForeignKey(Products, verbose_name=_("Order Item"), on_delete=models.CASCADE,null=True,blank=True)
     order_item_size = models.CharField(_("Order Item Size"), max_length=50)
     order_item_qty = models.IntegerField(_("Order Item Qty"))
     order_amount = models.CharField(_("Order Amount"), max_length=50)
@@ -283,7 +345,7 @@ class VendorOrderDetail(models.Model):
 
 PAYMENT_STATUS = (('Pending', 'Pending'),('Approved', 'Approved'),('Cancelled', 'Cancelled'),('Transferred', 'Transferred'))
 class VendorTransactionDetail(models.Model):
-    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
+    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE,null=True,blank=True)
     order_id = models.CharField(_("Order ID"), max_length=50)
     order_receiving_date = models.DateTimeField(_("Order Received on"), auto_now=True, auto_now_add=False,null=True,blank=True)
     order_completed_date = models.DateTimeField(_("Order Completed on"), auto_now=False, auto_now_add=False,null=True, blank=True)

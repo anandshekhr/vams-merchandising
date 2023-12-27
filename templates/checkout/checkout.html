@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %} Checkout {% endblock title %}
+{% block title %}{{page_title}}{% endblock title %}
 {% block head %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 {% endblock head %}
@@ -413,8 +413,8 @@
                                     <div style=" padding: 16px 0px;">
                                        <span style="color: #282c3f; font-weight: 700; text-align: left;">Price: </span>
          
-                                       <span class="product-price"><span class="amount">₹{{order.item.list_price|floatformat:2}}</span></span>
-                                       <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{order.item.max_retail_price|floatformat:2}}</span>
+                                       <span class="product-price"><span class="amount">₹{{order.item.price_gst_included}}</span></span>
+                                       <span style=" opacity: .8; color: #94969f; text-decoration: line-through;" class="product-price" style="color: grey; text-decoration: line-through;">₹{{order.item.mrp_gst_included}}</span>
                                     </div>
                                     <div class="price_quantity">
                                        <span class="product-quantity text-center">
@@ -466,7 +466,7 @@
                                        {{order.item.name}} <strong class="product-quantity" id="checkout-product-qty-{{order.item.id}}"> × {{order.quantity}}</strong>
                                     </td>
                                     <td class="product-total" id="product-total-{{order.item.id}}">
-                                       <span class="amount">₹{{order.get_final_price|floatformat:2}}</span>
+                                       <span class="amount">₹{{order.get_final_price}}</span>
                                     </td>
                                  </tr>
                               </tbody>
@@ -474,7 +474,7 @@
                               <tfoot>
                                  <tr class="cart-subtotal" id="card-subtotal">
                                     <th>Cart Subtotal</th>
-                                    <td><span class="amount">₹{{orderItems.get_total|floatformat:2}}</span></td>
+                                    <td><span class="amount">₹{{orderItems.get_total}}</span></td>
                                  </tr>
                                  {% if shippingCharges > 0 %}
                                  <tr class="shipping" id="shipping-amount">
@@ -519,7 +519,7 @@
                                  </tr>
                                  <tr class="order-total" id="order-total">
                                     <th>Order Total</th>
-                                    <td><strong><span class="amount">₹{{totalAmount|floatformat:2}}</span></strong>
+                                    <td><strong><span class="amount">₹{{totalAmount}}</span></strong>
                                     </td>
                                  </tr>
                               </tfoot>
@@ -528,7 +528,9 @@
 
                         <div class="payment-method">
                            <div class="order-button-payment mt-20">
-                              <a type="button" href="{% url 'paymentcheckout' totalAmount %}" class="fill-btn place-order-btn" style="width: 80%;" onclick="checkout();">Place order</a>
+                              <a type="button" href="{% url 'payment-checkout-phonepe' totalAmount %}" class="fill-btn place-order-btn" style="width: 80%;" onclick="checkout();">Place order</a>
+                              <button id="rzp-button1">Pay with Razorpay</button>
+
                            </div>
                         </div>
                      </div>
@@ -566,6 +568,42 @@
              });
          }
      </script>
+     
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      <script>
+         var domain = window.location.origin;
+         var razorpay_order_id = "{{ razorpay_order_id }}";
+         console.log(razorpay_order_id);
+      var options = {
+         "key": "{{razorpay_key_id}}", 
+         "amount": {{totalAmount}}*100, 
+         "currency": "INR",
+         "name": "VAMS Mechatronica Pvt. Ltd.",
+         "description": "Test Transaction",
+         "image": "{% static 'assets/img/logo/My project-1.png' %}",
+         "order_id": "{{order.razorpay_order_id}}", 
+         "theme": {
+            "color": "#110000"
+         },
+         "handler": function (response){
+        window.location.href = domain+ `/cart/payment/razorpay/success?razorpay_order_id=${razorpay_order_id}&razorpay_payment_id=${response.razorpay_payment_id}`;
+         }
+      };   
+      var rzp1 = new Razorpay(options);
+      rzp1.on('payment.failed', function (response){
+         alert(response.error.code);
+         alert(response.error.description);
+         alert(response.error.source);
+         alert(response.error.step);
+         alert(response.error.reason);
+         alert(response.error.metadata.order_id);
+         alert(response.error.metadata.payment_id);
+      });
+      document.getElementById('rzp-button1').onclick = function(e){
+         rzp1.open();
+         e.preventDefault();
+      }
+      </script>
      
      <script>
          let isPopupOpen = false;

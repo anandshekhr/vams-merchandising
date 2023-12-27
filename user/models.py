@@ -28,8 +28,8 @@ TAGS = (('Home', 'Home'), ('Office',
                                      'Office'), ('Other', 'Other'),)
 
 class CustomUser(AbstractUser):
-    first_name = models.CharField(null=True, blank=True, max_length=100)
-    last_name = models.CharField(null=True, blank=True, max_length=100)
+    first_name = models.CharField(default="Central", max_length=100)
+    last_name = models.CharField(default="User", max_length=100)
     email = models.EmailField(null=True,unique=True)
     mobileno = models.CharField(verbose_name="Mobile Number",
                               null=False, max_length=10, default="", unique=True)
@@ -38,6 +38,7 @@ class CustomUser(AbstractUser):
         "%Y%m%d")).uploadImage, height_field=None, width_field=None, max_length=None, null=True, blank=True)
     timeline_image = models.ImageField(_("Cover Photo"), upload_to="user/profile/timelineImages/%Y/%m/%d",
                                        height_field=None, width_field=None, max_length=None, null=True, blank=True,default="")
+    is_seller = models.BooleanField(default=False)
     created_at = models.DateTimeField(_("User Created Date"), auto_now_add=True)
     modified_at = models.DateTimeField(_("User Modified Date"), auto_now=True)
     USERNAME_FIELD: str = 'mobileno'
@@ -114,7 +115,7 @@ class Country(models.Model):
     created_date = models.DateTimeField(_('created date'), auto_now_add=True)
 
     def __str__(self):
-        return self.country_name
+        return self.country_code
 
 
 class DeviceOtp(models.Model):

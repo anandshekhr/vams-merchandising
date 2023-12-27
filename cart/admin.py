@@ -70,3 +70,17 @@ class VendorTransactionDetailAdmin(admin.ModelAdmin):
 
 admin.site.register(Refund)
 admin.site.register(UserBankAccount)
+
+@admin.register(PhonePePaymentRequestDetail)
+class PhonePePaymentDetailAdmin(admin.ModelAdmin):
+    list_display = ('user','get_order_sid','amount','success','merchant_transaction_id','transaction_id')
+    search_fields = ('user','get_order_sid','amount','success','merchant_transaction_id','transaction_id')
+    ordering = ['-user','-amount','-success','-merchant_transaction_id','-transaction_id']
+
+@admin.register(PhonePePaymentCallbackDetail)
+class PhonePePaymentCallbackDetailAdmin(admin.ModelAdmin):
+    list_display = ('user','get_order_sid','amount','code','merchant_transaction_id','provider_reference_id')
+    search_fields = ('user','get_order_sid','amount','code','merchant_transaction_id','provider_reference_id')
+    
+
+    

@@ -56,7 +56,7 @@
                     <figure class="itemside mb-3">
                         <div class="aside"><img src="data: image/png; base64, {{order.item.binaryToStringImage1|safe}}" class="img-sm border" width="100px" height="100px" style="object-fit: scale-down;"></div>
                         <figcaption class="info align-self-center">
-                            <p class="title">{{order.item.name}} <br>Size: {{order.size}} <br>Qty: {{order.quantity}}</p> <span class="text-muted">₹{{order.get_final_price|floatformat:2}} </span>
+                            <p class="title">{{order.item.name}} <br>Size: {{order.size}} <br>Qty: {{order.quantity}}</p> <span class="text-muted">₹{{order.get_final_price}} </span>
                         </figcaption>
                     </figure>
                 </li>
