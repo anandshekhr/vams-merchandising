@@ -128,28 +128,28 @@ WSGI_APPLICATION = "vams_merchandise.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-# if DEBUG:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": "vamscentral-5",
-#             "USER": "postgres",
-#             "PASSWORD": "Shekhar123#",
-#             "HOST": "localhost",
-#             "PORT": "5432",
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": env("DATABASE_NAME"),
-#             "USER": env("DATABASE_USERNAME"),
-#             "PASSWORD": env("PASSWORD"),
-#             "HOST": env("DATABASE_URL"),
-#             "PORT": env("DATABASE_PORT"),
-#         }
-#     }
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "vamscentral-5",
+            "USER": "postgres",
+            "PASSWORD": "Shekhar123#",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DATABASE_NAME"),
+            "USER": env("DATABASE_USERNAME"),
+            "PASSWORD": env("PASSWORD"),
+            "HOST": env("DATABASE_URL"),
+            "PORT": env("DATABASE_PORT"),
+        }
+    }
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
