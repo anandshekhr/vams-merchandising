@@ -9,7 +9,7 @@ TAGS = (('LifeStyle', 'Lifestyle'), ('Food',
 # Create your models here.
 class Blogs(models.Model):
     title = models.CharField(_("Blogs Title"), max_length=500,default="",null=False)
-    author = models.ForeignKey(User, verbose_name=_("Author"), on_delete=models.CASCADE)
+    author = models.ForeignKey(User, verbose_name=_("Author"), on_delete=models.CASCADE,null=True,blank=True)
     content = QuillField(null=True,blank=True)
     tags = ModifiedArrayField(models.CharField(
         _("Blogs Tags"), max_length=50, choices=TAGS, null=True, blank=True), null=True)

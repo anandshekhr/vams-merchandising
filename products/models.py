@@ -53,7 +53,7 @@ class ModifiedArrayField(ArrayField):
 
 class VendorDetail(models.Model):
     owner = models.ForeignKey(User, verbose_name=_(
-        "Owner"), on_delete=models.CASCADE)
+        "Owner"), on_delete=models.CASCADE,null=True,blank=True)
     storeName = models.CharField(
         _("Store Name"), max_length=100, null=True, blank=True)
     email = models.EmailField(
@@ -74,7 +74,7 @@ class VendorDetail(models.Model):
         return reverse("VendorDetail_detail", kwargs={"pk": self.pk})
 
 class VendorBankAccountDetail(models.Model):
-    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE)
+    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE,null=True,blank=True)
     bank_name = models.CharField(_("Bank Name"), max_length=50)
     bank_account_number = models.CharField(_("Account No."), max_length=50)
     confirm_bank_account_number = models.CharField(_("Confirm Account No."), max_length=50)
@@ -116,7 +116,7 @@ class Categories(models.Model):  # ----Category Details----#
 class CategorySubCategories(models.Model):
 
     category = models.ForeignKey(Categories, verbose_name=_(
-        "Pro Category"), on_delete=models.CASCADE)
+        "Pro Category"), on_delete=models.CASCADE,null=True,blank=True)
     subcategory = models.CharField(_("SubCategory"), max_length=50)
     subcategory_code = models.CharField(_("Sub Category Code"), max_length=50,null=True,blank=True)
 
@@ -318,10 +318,10 @@ class ProductImages(models.Model):
 
 class ProductReviewAndRatings(models.Model):
     product = models.ForeignKey(Products, verbose_name=_(
-        "product rating"), on_delete=models.CASCADE)
+        "product rating"), on_delete=models.CASCADE,null=True,blank=True)
     RATINGS = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5),)
     author = models.ForeignKey(user, verbose_name=_(
-        "Author Id"), on_delete=models.CASCADE)
+        "Author Id"), on_delete=models.CASCADE,null=True,blank=True)
     review = models.CharField(_("Product Review"), max_length=1024, null=True,blank=True)
     ratings = models.IntegerField(
         _("Product Rating"), choices=RATINGS, null=True,blank=True)
