@@ -38,7 +38,8 @@ User = get_user_model()
 
 
 # Create your views here.
-
+def verify_otp(request):
+    return render(request,'user/verify-otp.html')
 
 def register(request):
     if request.method == "POST":
@@ -294,9 +295,11 @@ class VerifyOTP(APIView):
             phone_number = request.data.get("mobile")
             country_code = request.data.get("country_code")
             web = bool(request.data.get("web"))
+            # print(web)
             otp = request.data.get("otp")
 
             if not web:
+                print("No web")
                 return OTPManager.verify_otp(otp, country_code, phone_number, web)
 
             else:
