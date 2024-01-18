@@ -36,10 +36,11 @@
             align-items: center;
             justify-content: center;
             gap: 32px;
-            background: aliceblue;
             width: fit-content;
             padding: 48px;
             border-radius: 15px;
+            background: #ecf0f3;
+            box-shadow: 13px 13px 20px #cbced1, -13px -13px 20px #ffffff;
           }
           .loginImg{
             width: 100px;
@@ -137,10 +138,14 @@
           .btn:hover{
             color: white;
           }
+          .card-body {
+            flex: 1 1 auto;
+            padding: 0px;
+        }
     </style>
     <div class="form_center">
         <div class="login_form">
-            <div class="card-body p-5 text-center">
+            <div class="card-body text-center">
              <img class="loginImg" src="{% static 'assets/img/password.png' %}" alt="Logo">
              <h2 class="login-heading mb-10">Verify with OTP</h2>
              <p style="margin-top: 10px;font-size: 12px;">Sent via WHATSAPP to <span id="phone-number"></span></p>
