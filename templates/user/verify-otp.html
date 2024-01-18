@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block body %}
+<main>
+    <style>
+        body{
+            overflow-x:hidden;
+           }
+        .login-signup-container {
+            background-color: rgb(213 224 224);
+            margin-left: 30%;
+            margin-right: 30%;
+            padding-right: 2%;
+            padding-left: 2%;
+            margin-top: 5%;
+            margin-bottom: 5%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+        }
+
+        .login-heading {
+
+            font-weight: 500;
+            font-size: 24px;
+        }
+
+        .help-link {
+            color: brown;
+            font-style: italic;
+        }
+
+        .login_form{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            background: aliceblue;
+            width: fit-content;
+            padding: 48px;
+            border-radius: 15px;
+          }
+          .loginImg{
+            width: 100px;
+         }
+         .form-center{
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+         }
+         .login_btn{
+            background: #eb8c80;
+            color: white;
+            padding:18px 48px;
+            font-size: 20px;
+            font-weight:500;
+            border-radius: 15px;
+         }
+         .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 1.277;
+            margin-top: -20px;
+            margin-bottom: -20px;
+        }
+
+        .otp-field {
+            flex-direction: row;
+            column-gap: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .otp-field input {
+            height: 45px;
+            width: 42px;
+            border-radius: 6px;
+            outline: none;
+            font-size: 1.125rem;
+            text-align: center;
+            border: 1px solid #ddd;
+          }
+          .otp-field input:focus {
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+          }
+          .otp-field input::-webkit-inner-spin-button,
+          .otp-field input::-webkit-outer-spin-button {
+            display: none;
+          }
+          
+          .resend {
+            font-size: 12px;
+          }
+
+        @import url('https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css');
+
+        .form-control {
+            -webkit-transition: none;
+            transition: none;
+            width: 45px;
+            height: 40px;
+            text-align: center
+        }
+
+        .form-control:focus {
+            color: #3F4254;
+            background-color: #ffffff;
+            border-color: #884377;
+            outline: 0;
+        }
+
+        .form-control.form-control-solid {
+            background-color: #F3F6F9;
+            border-color: #F3F6F9;
+            color: #3F4254;
+            transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .form-control.form-control-solid:active,
+        .form-control.form-control-solid.active,
+        .form-control.form-control-solid:focus,
+        .form-control.form-control-solid.focus {
+            background-color: #EBEDF3;
+            border-color: #EBEDF3;
+            color: #3F4254;
+            transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .form_center{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+          }
+          .btn:hover{
+            color: white;
+          }
+    </style>
+    <div class="form_center">
+        <div class="login_form">
+            <div class="card-body p-5 text-center">
+             <img class="loginImg" src="{% static 'assets/img/password.png' %}" alt="Logo">
+             <h2 class="login-heading mb-10">Verify with OTP</h2>
+             <p style="margin-top: 10px;font-size: 12px;">Sent via WHATSAPP to <span id="phone-number"></span></p>
+    
+              <div id="otp" class="otp-field mb-4">
+                <input type="number" id="first" maxlength="1" />
+                <input type="number" id="second" maxlength="1" disabled />
+                <input type="texnumbert" id="third" maxlength="1" disabled />
+                <input type="number" id="fourth" maxlength="1"disabled />
+              </div>
+              <p style="margin-top: 10px;font-size: 14px;">Didn't receive OTP? <span class="help-link"><a href="#">Resend OTP</a></span></p>
+              <p style="margin-top: 10px;font-size: 14px;">By continuing, I agree to the <span class="help-link">Terms of
+                      Use</span> & <span class="help-link">Privacy Policy</span></p>
+              <button type="button" class="btn mb-3 login_btn" style="width: 100%;" onclick="verifyOTP()">Verify</button>
+              <p style="margin-top: 10px;font-size: 12px;">Having trouble logging in? <span class="help-link">Get help</span>
+              </p>
+            </div>
+        </div>
+    </div>    
+</main>
+<script>
+    const inputs = document.querySelectorAll(".otp-field > input");
+    const button = document.querySelector(".btn");
+ 
+    window.addEventListener("load", () => inputs[0].focus());
+    button.setAttribute("disabled", "disabled");
+ 
+    inputs[0].addEventListener("paste", function (event) {
+    event.preventDefault();
+ 
+    const pastedValue = (event.clipboardData || window.clipboardData).getData(
+       "text"
+    );
+    const otpLength = inputs.length;
+ 
+    for (let i = 0; i < otpLength; i++) {
+       if (i < pastedValue.length) {
+          inputs[i].value = pastedValue[i];
+          inputs[i].removeAttribute("disabled");
+          inputs[i].focus;
+       } else {
+          inputs[i].value = ""; // Clear any remaining inputs
+          inputs[i].focus;
+       }
+    }
+    });
+ 
+    inputs.forEach((input, index1) => {
+    input.addEventListener("keyup", (e) => {
+       const currentInput = input;
+       const nextInput = input.nextElementSibling;
+       const prevInput = input.previousElementSibling;
+ 
+       if (currentInput.value.length > 1) {
+          currentInput.value = "";
+          return;
+       }
+ 
+       if (
+          nextInput &&
+          nextInput.hasAttribute("disabled") &&
+          currentInput.value !== ""
+       ) {
+          nextInput.removeAttribute("disabled");
+          nextInput.focus();
+       }
+ 
+       if (e.key === "Backspace") {
+          inputs.forEach((input, index2) => {
+          if (index1 <= index2 && prevInput) {
+             input.setAttribute("disabled", true);
+             input.value = "";
+             prevInput.focus();
+          }
+          });
+       }
+ 
+       button.classList.remove("active");
+       button.setAttribute("disabled", "disabled");
+ 
+       const inputsNo = inputs.length;
+       if (!inputs[inputsNo - 1].disabled && inputs[inputsNo - 1].value !== "") {
+          button.classList.add("active");
+          button.removeAttribute("disabled");
+ 
+          return;
+       }
+   });
+ });
+ </script>
+<script>
+    function OTPInput() {
+        const inputs = document.querySelectorAll(".otp-field > input");
+        const button = document.querySelector(".btn");
+     
+        window.addEventListener("load", () => inputs[0].focus());
+        button.setAttribute("disabled", "disabled");
+     
+        inputs[0].addEventListener("paste", function (event) {
+        event.preventDefault();
+     
+        const pastedValue = (event.clipboardData || window.clipboardData).getData(
+           "text"
+        );
+        const otpLength = inputs.length;
+     
+        for (let i = 0; i < otpLength; i++) {
+           if (i < pastedValue.length) {
+              inputs[i].value = pastedValue[i];
+              inputs[i].removeAttribute("disabled");
+              inputs[i].focus;
+           } else {
+              inputs[i].value = ""; // Clear any remaining inputs
+              inputs[i].focus;
+           }
+        }
+        });
+     
+        inputs.forEach((input, index1) => {
+        input.addEventListener("keyup", (e) => {
+           const currentInput = input;
+           const nextInput = input.nextElementSibling;
+           const prevInput = input.previousElementSibling;
+     
+           if (currentInput.value.length > 1) {
+              currentInput.value = "";
+              return;
+           }
+     
+           if (
+              nextInput &&
+              nextInput.hasAttribute("disabled") &&
+              currentInput.value !== ""
+           ) {
+              nextInput.removeAttribute("disabled");
+              nextInput.focus();
+           }
+     
+           if (e.key === "Backspace") {
+              inputs.forEach((input, index2) => {
+              if (index1 <= index2 && prevInput) {
+                 input.setAttribute("disabled", true);
+                 input.value = "";
+                 prevInput.focus();
+              }
+              });
+           }
+     
+           button.classList.remove("active");
+           button.setAttribute("disabled", "disabled");
+     
+           const inputsNo = inputs.length;
+           if (!inputs[inputsNo - 1].disabled && inputs[inputsNo - 1].value !== "") {
+              button.classList.add("active");
+              button.removeAttribute("disabled");
+     
+              return;
+           }
+       });
+     });
+    }
+    OTPInput();
+    
+    document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve the username from sessionStorage
+            var storedUsername = sessionStorage.getItem('mobileno');
+
+            // Display the username on the page
+            var usernameDisplay = document.getElementById('phone-number');
+            usernameDisplay.textContent = storedUsername;
+        });
+    
+    function verifyOTP() {
+        // Get the values of the input fields
+        var firstDigit = document.getElementById('first').value;
+        var secondDigit = document.getElementById('second').value;
+        var thirdDigit = document.getElementById('third').value;
+        var fourthDigit = document.getElementById('fourth').value;
+
+        // Concatenate the values into a single string
+        var otp = firstDigit + secondDigit + thirdDigit + fourthDigit;
+
+        var domain = window.location.origin;
+        var storedmobileno = sessionStorage.getItem('mobileno');
+        $.ajax({
+            url: domain + '/user/accounts/register/verify/', // Replace with your API endpoint
+            method: 'POST', // or 'GET' depending on your API
+            contentType: 'application/json',
+            data: JSON.stringify({ mobile: storedmobileno, country_code: '+91',"otp": otp,web:true }),
+            success: function (data) {
+                // console.log(data);
+                // Redirect to a new page upon success
+                window.location.href = '{% url "home" %}'; // Replace with your desired page
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+            }
+        });
+    }
+
+    
+</script>
+{% endblock body %}

@@ -2,11 +2,46 @@
 {% load static %}
 {% block title %}Login{% endblock title %}
 {% block body %}
-<!-- Add your site or application content here -->
 <main>
-   <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <style>
+        .login-signup-container {
+            background-color: rgb(213 224 224);
+            margin-left: 30%;
+            margin-right: 30%;
+            padding-right: 2%;
+            padding-left: 2%;
+            margin-top: 5%;
+            margin-bottom: 5%;
+            padding-top: 2%;
+            padding-bottom: 2%;
+        }
 
-   <style>
+        .login-heading {
+
+            font-weight: 500;
+            font-size: 24px;
+        }
+        .help-link{
+            color: brown;
+            font-style: italic;
+        }
+        .partitioned {
+            padding-left: 15px;
+            letter-spacing: 42px;
+            border: 0;
+            background-image: linear-gradient(to left, black 70%, rgba(255, 255, 255, 0) 0%);
+            background-position: bottom;
+            background-size: 50px 1px;
+            background-repeat: repeat-x;
+            background-position-x: 35px;
+            width: 220px;
+            outline : none;
+        }
+    </style>
+    <style>
+      body{
+         overflow-x:hidden;
+        }
       .getVeribtn {
          border: 1.5px solid black;
          font-weight: 600;
@@ -17,7 +52,20 @@
          font-size: 16px;
          margin-top: 20px;
       }
-
+      .input-group-text {
+         display: flex;
+         align-items: center;
+         text-align: center;
+         white-space: nowrap;
+         background-color: #e9ecef;
+         font-weight: 500;
+         font-size: 1.2rem;
+         color: #495055;
+         padding: 15px 15px;
+         border-radius: 1rem 0rem 0rem 1rem;
+         border: 2px solid #D9D9D9;
+         outline: none;
+     }
       .signup-wrapper input {
          margin-top: 20px;
       }
@@ -25,129 +73,132 @@
       .sing-buttom {
          margin-top: 24px;
       }
+      div.input-block {
+         position: relative;
+       }
+       div.input-block input {
+         font-weight: 500;
+         font-size: 1.2rem;
+         color: #495055;
+         width: 350px;
+         padding: 15px 15px;
+         border-radius: 0rem 1rem 1rem 0rem;
+         border: 2px solid  #D9D9D9;
+         outline:none;
+       }
+       div.input-block span.placeholder {
+         position: absolute;
+         margin: 17px 0;
+         padding: 0 4px;
+         font-family: Roboto, sans-serif;
+         color: #6c757d;
+         display: flex;
+         align-items: center;
+         font-size: 16px;
+         top: 0px;
+         left: 79px;
+         transition: all 0.2s;
+         transform-origin: 0% 0%;
+         background: none;
+         pointer-events: none;
+       }
+       div.input-block input:valid + span.placeholder,
+       div.input-block input:focus + span.placeholder {
+         transform: scale(0.8) translateY(-38px);
+         background: #fff;
+       }
+       div.input-block input:focus{
+         color: #284B63;
+         border-color: #284B63;
+       }
+       div.input-block input:focus + span.placeholder {
+         color: #284B63;
+       }
+       .login_form{
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         gap: 32px;
+         background: aliceblue;
+         width: fit-content;
+         padding: 48px;
+         border-radius: 15px;
+       }
+       .loginImg{
+         width: 100px;
+      }
+      .form-center{
+         display: flex;
+         justify-content: center;
+         margin-bottom: 32px;
+      }
+      .login_btn{
+         background: #eb8c80;
+         color: white;
+         padding:18px 48px;
+         font-size: 20px;
+         font-weight:500;
+         border-radius: 15px;
+      }
+      .page-title {
+         font-size: 24px;
+         font-weight: 600;
+         line-height: 1.277;
+         margin-top: -20px;
+         margin-bottom: -20px;
+     }
+    
+    .form_center{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+    
    </style>
-
-   {% if messages %}
-   {% for message in messages %}
-   <div class="alert alert-{{ message.tags }} auto-dismiss">
-      {{ message }}
-   </div>
-   {% endfor %}
-   <script>
-      setTimeout(function() {
-         $('.auto-dismiss').fadeOut('slow');
-      }, 3000);
-   </script>
-   {% endif %}
-
-   <div class="breadcrumb-menu-edit">
-      <ol class="breadcrumb">
-         <li class="breadcrumb-item"><a href="{% url 'home' %}"><span><i class="fa fa-home"></i></span></a></li>
-         <li class="breadcrumb-item active"><span>Login</span></li>
-      </ol>
-   </div>
-   <!-- page title area end  -->
-
-   <!-- login area start  -->
-   <div class="page-title-wrapper text-center">
-      <h1 class="page-title mb-10">Login</h1>
-   </div>
-   <div class="login-area pt-120 pb-120">
-      <div class="container container-small">
-         <div class="row justify-content-center">
-            <div class="col-lg-8">
-               <div class="login-form-wrapper">
-                  <form method="post" action="{% url 'login' %}">{% csrf_token %}
-                     <div class="form-group">
-                        <div class="col-md-12">
-                           <div class="signup-wrapper">
-                              <input type="text" placeholder="Phone Number" name="phone_number" id="phone_number">
-                           </div>
-                        </div>
-                        <input type="hidden" name="next_url" id="next_url" value="{{next}}">
-                        <input type="hidden" name="choose-size" id="choose-size" value="{{choose_size}}">
-                        <input type="hidden" name="pro-qty" id="pro-qty" value="{{pro_qty}}">
-                     </div>
-                     <div class="login-action">
-                        <div class="form-group">
-                           <button class="getVeribtn" type="button" id="getOTPButton" onclick="getOTP()">Get OTP</button>
-                        </div>
-                        <div class="login-wrapper" id="otpInputWrapper" style="display: none;">
-                           <div class="col-md-12" id="otpInputWrapper">
-                              <div class="signup-wrapper">
-                                 <input type="text" placeholder="Enter OTP" name="otp" id="otp">
-                              </div>
-                           </div>
-                           <button class="getVeribtn" type="button" id="verifyOTPButton" onclick="verifyOTP()">Verify OTP</button>
-                        </div>
-                     </div>
-                     <div class="sing-buttom mb-20">
-                        <button class="sing-btn">Login now</button>
-                     </div>
-                  </form>
-                  <div class="registered wrapper">
-                     <div class="not-registered">
-                        <span>Not registered?</span><span><a href="{% url 'register' %}">Sign up</a></span>
-                     </div>
-                  </div>
-               </div>
-            </div>
+   <div class="form_center">
+      <div class="login_form">
+        <img class="loginImg" src="{% static 'assets/img/login.png' %}" alt="Logo">
+        <div class="page-title-wrapper text-center">
+           <h1 class="page-title mb-10">Login</h1>
+        </div>
+        <div class="input-block" style="display: flex;">
+           <span class="input-group-text" id="basic-addon1">+91</span>
+           <input type="text" name="login-mobileno" id="login-mobileno" maxlength="15" required>
+           <span class="placeholder">
+             Mobile Number
+           </span>
          </div>
-      </div>
+       <p style="margin-top: 10px;font-size: 14px;">By continuing, I agree to the <span class="help-link">Terms of Use</span> & <span class="help-link">Privacy Policy</span></p>
+  
+         <span type="button" class="login_btn" style="width: 100%; display: flex; justify-content: center;" onclick="loginSendOTP()" >Continue</span>
+         <p style="margin-top: 10px;font-size: 12px;">Having trouble logging in? <span class="help-link">Get help</span></p>
+  
+        </div>
+     <div>
    </div>
-   <!-- login area end  -->
 </main>
-
 <script>
-   function getOTP() {
-      const phone_number = document.getElementById("phone_number").value;
-      domain = window.location.origin;
+    function loginSendOTP(){
+        var mobileno = document.getElementById('login-mobileno').value;
+        var domain = window.location.origin;
+        $.ajax({
+            url: domain + '/user/accounts/register/get_otp/', // Replace with your API endpoint
+            method: 'POST', // or 'GET' depending on your API
+            contentType: 'application/json',
+            data: JSON.stringify({ mobile:mobileno,country_code:'+91',"fake_otp":true,"otp":"1234" }),
+            success: function (data) {
+                // Store the username in sessionStorage
+                sessionStorage.setItem('mobileno', mobileno);
 
-      $.ajax({
-         url: domain + "/user/accounts/register/get_otp/",
-         type: "POST",
-         data: { mobile: phone_number,
-         country_code: "+91",
-      fake_otp: true,
-   otp:"1234"},
-         success: function (data) {
-            if (data.Status === "Sent") {
-               console.log("OTP Sent");
-               document.getElementById("otpInputWrapper").style.display = "block";
-            } else {
-               console.log("Failed to send OTP");
+                // Redirect to a new page upon success
+                window.location.href = '{% url "verify_otp_page" %}'; // Replace with your desired page
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
             }
-         },
-         error: function () {
-            console.log("AJAX error");
-         }
-      });
-   }
-
-   function verifyOTP() {
-      const otp = document.getElementById("otp").value;
-      const phone_number = document.getElementById("phone_number").value;
-      domain = window.location.origin;
-      $.ajax({
-         url: domain + "/user/accounts/register/verify/",  
-         type: "POST",
-         data: { mobile: phone_number, otp: otp,country_code:"+91" },
-         success: function (data) {
-            console.log(data);
-            if (data) {
-               console.log("OTP Verified");
-               // Store token in cookie here
-               
-               window.location.href = "{% url 'home' %}";
-
-            } else {
-               console.log("OTP Verification failed");
-            }
-         },
-         error: function () {
-            console.log("AJAX error");
-         }
-      });
-   }
+        });
+    }
 </script>
-{% endblock %}
+{% endblock body %}
