@@ -38,17 +38,146 @@
             outline : none;
         }
     </style>
-    <div class="login-signup-container">
-        <h2 class="login-heading">Login <span style="font-weight: 100;">or</span> Signup</h2>
-        <div class="input-group mb-3 my-5">
-            <span class="input-group-text" id="basic-addon1">+91</span>
-            <input type="text" class="form-control" placeholder="Mobile Number" aria-label="Mobile Number"
-                aria-describedby="basic-addon1" id="login-mobileno">
+    <style>
+      body{
+         overflow-x:hidden;
+        }
+      .getVeribtn {
+         border: 1.5px solid black;
+         font-weight: 600;
+         width: max-content;
+         padding: 10px;
+         border-radius: 10px;
+         font-family: 'Lato';
+         font-size: 16px;
+         margin-top: 20px;
+      }
+      .input-group-text {
+         display: flex;
+         align-items: center;
+         text-align: center;
+         white-space: nowrap;
+         background-color: #e9ecef;
+         font-weight: 500;
+         font-size: 1.2rem;
+         color: #495055;
+         padding: 15px 15px;
+         border-radius: 1rem 0rem 0rem 1rem;
+         border: 2px solid #D9D9D9;
+         outline: none;
+     }
+      .signup-wrapper input {
+         margin-top: 20px;
+      }
+
+      .sing-buttom {
+         margin-top: 24px;
+      }
+      div.input-block {
+         position: relative;
+       }
+       div.input-block input {
+         font-weight: 500;
+         font-size: 1.2rem;
+         color: #495055;
+         width: 350px;
+         padding: 15px 15px;
+         border-radius: 0rem 1rem 1rem 0rem;
+         border: 2px solid  #D9D9D9;
+         outline:none;
+       }
+       div.input-block span.placeholder {
+         position: absolute;
+         margin: 17px 0;
+         padding: 0 4px;
+         font-family: Roboto, sans-serif;
+         color: #6c757d;
+         display: flex;
+         align-items: center;
+         font-size: 16px;
+         top: 0px;
+         left: 79px;
+         transition: all 0.2s;
+         transform-origin: 0% 0%;
+         background: none;
+         pointer-events: none;
+       }
+       div.input-block input:valid + span.placeholder,
+       div.input-block input:focus + span.placeholder {
+         transform: scale(0.8) translateY(-38px);
+         background: #fff;
+       }
+       div.input-block input:focus{
+         color: #284B63;
+         border-color: #284B63;
+       }
+       div.input-block input:focus + span.placeholder {
+         color: #284B63;
+       }
+       .login_form{
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         gap: 32px;
+         background: aliceblue;
+         width: fit-content;
+         padding: 48px;
+         border-radius: 15px;
+       }
+       .loginImg{
+         width: 100px;
+      }
+      .form-center{
+         display: flex;
+         justify-content: center;
+         margin-bottom: 32px;
+      }
+      .login_btn{
+         background: #eb8c80;
+         color: white;
+         padding:18px 48px;
+         font-size: 20px;
+         font-weight:500;
+         border-radius: 15px;
+      }
+      .page-title {
+         font-size: 24px;
+         font-weight: 600;
+         line-height: 1.277;
+         margin-top: -20px;
+         margin-bottom: -20px;
+     }
+    
+    .form_center{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+    
+   </style>
+   <div class="form_center">
+      <div class="login_form">
+        <img class="loginImg" src="{% static 'assets/img/login.png' %}" alt="Logo">
+        <div class="page-title-wrapper text-center">
+           <h1 class="page-title mb-10">Login</h1>
         </div>
-        <p style="margin-top: 10px;font-size: 14px;">By continuing, I agree to the <span class="help-link">Terms of Use</span> & <span class="help-link">Privacy Policy</span></p>
-        <a type="button" class="btn btn-dark" style="width: 100%;" onclick="loginSendOTP()" >Continue</a>
-        <p style="margin-top: 10px;font-size: 12px;">Having trouble logging in? <span class="help-link">Get help</span></p>
-    </div>
+        <div class="input-block" style="display: flex;">
+           <span class="input-group-text" id="basic-addon1">+91</span>
+           <input type="text" name="login-mobileno" id="login-mobileno" maxlength="15" required>
+           <span class="placeholder">
+             Mobile Number
+           </span>
+         </div>
+       <p style="margin-top: 10px;font-size: 14px;">By continuing, I agree to the <span class="help-link">Terms of Use</span> & <span class="help-link">Privacy Policy</span></p>
+  
+         <span type="button" class="login_btn" style="width: 100%; display: flex; justify-content: center;" onclick="loginSendOTP()" >Continue</span>
+         <p style="margin-top: 10px;font-size: 12px;">Having trouble logging in? <span class="help-link">Get help</span></p>
+  
+        </div>
+     <div>
+   </div>
 </main>
 <script>
     function loginSendOTP(){
