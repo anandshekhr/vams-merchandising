@@ -22,12 +22,16 @@ env.read_env(os.path.join(BASE_DIR, ".env"))
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+try:
+    SECRET_KEY = os.getenv("SECRET_KEY")
+except KeyError as e:
+    raise RuntimeError("Could not find a SECRET_KEY in environment") from e
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DEBUG")
+DEBUG = os.getenv('DEBUG')
+DOCKER = True  # True if you want to use docker
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = ["*"]
 
 admin_volt = "admin_volt.apps.AdminVoltConfig"
 
@@ -127,38 +131,40 @@ WSGI_APPLICATION = "vams_merchandise.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentral-5",
-            "USER": "postgres",
-            "PASSWORD": "Shekhar123#",
-            "HOST": "localhost",
-            "PORT": "5432",
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": env("DATABASE_NAME"),
-            "USER": env("DATABASE_USERNAME"),
-            "PASSWORD": env("PASSWORD"),
-            "HOST": env("DATABASE_URL"),
-            "PORT": env("DATABASE_PORT"),
-        }
-    }
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.environ.get("POSTGRES_NAME"),
-#         "USER": os.environ.get("POSTGRES_USER"),
-#         "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-#         "HOST": "db",
-#         "PORT": 5432,
+# if DEBUG:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": "vamscentral-5",
+#             "USER": "postgres",
+#             "PASSWORD": "Shekhar123#",
+#             "HOST": "localhost",
+#             "PORT": "5432",
+#         }
 #     }
-# }
+# elif DOCKER and DEBUG:
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("POSTGRES_DB",'postgres'),
+        "USER": os.environ.get("POSTGRES_USER",'postgres'),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD",'postgres'),
+        "HOST": "db",
+        "PORT": 5432,
+    }
+}
+
+# else:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql",
+#             "NAME": env("DATABASE_NAME"),
+#             "USER": env("DATABASE_USERNAME"),
+#             "PASSWORD": env("PASSWORD"),
+#             "HOST": env("DATABASE_URL"),
+#             "PORT": env("DATABASE_PORT"),
+#         }
+#     }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -253,7 +259,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # CELERY_BACKENDS
-CELERY_BROKER_URL = "redis://localhost:6379"
+
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
@@ -262,7 +268,7 @@ CELERY_TIMEZONE = "Asia/Kolkata"
 CELERY_RESULT_BACKEND = "django-db"
 
 # celery beat
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseSchedulers"
+# CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseSchedulers"
 
 # Email server for reset password
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

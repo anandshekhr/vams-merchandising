@@ -1,18 +1,24 @@
 services:
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   ports:
+  #     - "5672:5672"
+      # - "15672:15672"
+
   db:
     image: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
+    restart: always
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - ./.env
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - .:/opt/vams/central/code
     ports:
       - "8000:8000"
     environment:
@@ -22,4 +28,18 @@ services:
     depends_on:
       - db
   
-  
+  # # Redis Service
+  # redis:
+  #     image: "redis:alpine"
+    
+  # celeryworker:
+  #   container_name: celeryworker
+  #   build: .
+  #   volumes:
+  #     - .:/opt/vams/central/code
+  #   environment:
+  #     - BROKER_URL=pyamqp://guest:guest@rabbitmq:5672//
+  #   command: celery -A vams_merchandise.celery worker --pool=prefork -l info
+  #   depends_on:
+  #     - rabbitmq
+  #     - redis

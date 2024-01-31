@@ -92,9 +92,6 @@ def send_welcome_email(maildata):
 
         send_mail(subject_admin,"",sender_admin,to_admin,fail_silently=False, auth_user=None, auth_password=None,connection=None, html_message=body_admin)
 
-
-
-
         return True
     except:
         return False
