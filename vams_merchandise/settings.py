@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'drf_yasg',
     "whitenoise.runserver_nostatic",
     "django.contrib.sites",
     "django_rest_passwordreset",

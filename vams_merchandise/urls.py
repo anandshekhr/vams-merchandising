@@ -23,6 +23,22 @@ from .utils import HashIdConverter, FloatConverter
 
 register_converter(HashIdConverter, "hashid")
 register_converter(FloatConverter, "float")
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+...
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="VAMS Central API",
+      default_version='v1',
+      description="Online Shopping For Men, Women, and Kids Fashion & Lifestyle.",
+      terms_of_service="https://www.vamscentral.com/about/terms-of-service",
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 
 admin.site.site_header = env.str("ADMIN_SITE_HEADER")
@@ -55,6 +71,10 @@ urlpatterns = (
             "account/password/reset/",
             include("django_rest_passwordreset.urls", namespace="password_reset"),
         ),
+
+        # swagger
+        path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+        path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
