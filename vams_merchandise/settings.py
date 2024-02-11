@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     "wishlist.apps.WishlistConfig",
     "bankdetails.apps.BankdetailsConfig",
     "phoneverification.apps.PhoneverificationConfig",
-    "seller.apps.SellerConfig",
     "delivery.apps.DeliveryConfig",
     "emailapp.apps.EmailappConfig",
     # "invoice.apps.InvoiceConfig",

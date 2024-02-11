@@ -55,7 +55,6 @@ urlpatterns = (
         path("delivery/", include("delivery.urls")),
         path("user/", include("user.urls")),
         path("cart/", include("cart.urls")),
-        path("seller/", include("seller.urls")),
         path("stores/", include("stores.urls")),
         # path("invoice/", include("invoice.urls")),
         path("phone/", include("phoneverification.urls")),
