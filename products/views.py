@@ -107,6 +107,8 @@ def productDetailsPageView(request, subcategory, slug):
     # filter product for images, reviews and ratings
     product = Products.objects.get(slug=slug)
 
+    images = ProductImages.objects.get(product=product)
+
     rating = ProductReviewAndRatings.objects.filter(product=product).aggregate(
         Avg("ratings")
     )
@@ -125,6 +127,7 @@ def productDetailsPageView(request, subcategory, slug):
     context = {
         "total_stars": range(5),
         "product": product,
+        "images":images,
         "rating": int(rating["ratings__avg"] or 0),
         "ratingr": [
             *range(

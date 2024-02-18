@@ -2,45 +2,90 @@ from django.contrib import admin
 from .models import *
 
 
+class ProductImagesForm(forms.ModelForm):
+    image_1 = forms.FileField(required=False)
+    image_2 = forms.FileField(required=False)
+    image_3 = forms.FileField(required=False)
+    image_4 = forms.FileField(required=False)
+    image_5 = forms.FileField(required=False)
+    image_6 = forms.FileField(required=False)
+    image_7 = forms.FileField(required=False)
+    image_8 = forms.FileField(required=False)
+
+    def save(self, commit=True):
+        
+        if self.cleaned_data.get('image_1') is not None \
+                and hasattr(self.cleaned_data['image_1'], 'file'):
+            data = self.cleaned_data['image_1'].file.read()
+            self.instance.image_1 = data
+        
+        if self.cleaned_data.get('image_2') is not None \
+                and hasattr(self.cleaned_data['image_2'], 'file'):
+            data = self.cleaned_data['image_2'].file.read()
+            self.instance.image_2 = data
+        
+        if self.cleaned_data.get('image_3') is not None \
+                and hasattr(self.cleaned_data['image_3'], 'file'):
+            data = self.cleaned_data['image_3'].file.read()
+            self.instance.image_3 = data
+        
+        if self.cleaned_data.get('image_4') is not None \
+                and hasattr(self.cleaned_data['image_4'], 'file'):
+            data = self.cleaned_data['image_4'].file.read()
+            self.instance.image_4 = data
+        
+        if self.cleaned_data.get('image_5') is not None \
+                and hasattr(self.cleaned_data['image_5'], 'file'):
+            data = self.cleaned_data['image_5'].file.read()
+            self.instance.image_5 = data
+        
+        if self.cleaned_data.get('image_6') is not None \
+                and hasattr(self.cleaned_data['image_6'], 'file'):
+            data = self.cleaned_data['image_6'].file.read()
+            self.instance.image_6 = data
+        
+        if self.cleaned_data.get('image_7') is not None \
+                and hasattr(self.cleaned_data['image_7'], 'file'):
+            data = self.cleaned_data['image_7'].file.read()
+            self.instance.image_7 = data
+        
+        if self.cleaned_data.get('image_8') is not None \
+                and hasattr(self.cleaned_data['image_8'], 'file'):
+            data = self.cleaned_data['image_8'].file.read()
+            self.instance.image_8 = data
+
+        return self.instance
+
+    def save_m2m(self):
+        # FIXME: this function is required by ModelAdmin, otherwise save process will fail
+        pass
+
+@admin.register(ProductImages)
+class ProductImagesAdmin(admin.ModelAdmin):
+    form = ProductImagesForm
+    list_display = ('product','scheme_image_tag_image_1','scheme_image_tag_image_2','scheme_image_tag_image_3','scheme_image_tag_image_4','scheme_image_tag_image_5','scheme_image_tag_image_6','scheme_image_tag_image_7','scheme_image_tag_image_8')
+    
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    pass
+    
 
 # Register your models here.
 class ProductItemForm(forms.ModelForm):
-    image1 = forms.FileField(required=False)
-    image2 = forms.FileField(required=False)
-    image3 = forms.FileField(required=False)
-
-    category = forms.ModelMultipleChoiceField(
-        queryset=Categories.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
-    )
-    subcategory = forms.ModelMultipleChoiceField(
-        queryset=CategorySubCategories.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
-    )
-
-    available_sizes = forms.ModelMultipleChoiceField(
-        queryset=ProductSize.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
-    )
-    tags =forms.ModelMultipleChoiceField(
-        queryset=ProductTag.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'size': 10}),
-    )
+    thumbnail = forms.FileField(required=False)
+    meta_image = forms.FileField(required=False)
     
     def save(self, commit=True):
         
-        if self.cleaned_data.get('image1') is not None \
-                and hasattr(self.cleaned_data['image1'], 'file'):
-            data = self.cleaned_data['image1'].file.read()
-            self.instance.image1 = data
+        if self.cleaned_data.get('thumbnail') is not None \
+                and hasattr(self.cleaned_data['thumbnail'], 'file'):
+            data = self.cleaned_data['thumbnail'].file.read()
+            self.instance.thumbnail = data
         
-        if self.cleaned_data.get('image2') is not None and hasattr(self.cleaned_data['image2'], 'file'):
-            data = self.cleaned_data['image2'].file.read()
-            self.instance.image2 = data
-        
-        if self.cleaned_data.get('image3') is not None and hasattr(self.cleaned_data['image3'], 'file'):
-            data = self.cleaned_data['image3'].file.read()
-            self.instance.image3 = data
+        if self.cleaned_data.get('meta_image') is not None \
+                and hasattr(self.cleaned_data['meta_image'], 'file'):
+            data = self.cleaned_data['meta_image'].file.read()
+            self.instance.meta_image = data
 
         return self.instance
 
@@ -93,11 +138,6 @@ class ProductTagAdmin(admin.ModelAdmin):
     search_fields: list = ('subCategoryName','name','code')
     ordering: list = ['-name','-code']
 
-    
-
-
-    
-
 class ProductsAdmin(admin.ModelAdmin):
     form = ProductItemForm
     
@@ -109,19 +149,18 @@ class ProductsAdmin(admin.ModelAdmin):
         form.base_fields['name'].widget.attrs['placeholder'] = "Enter product name"
         form.base_fields['desc'].widget.attrs['placeholder'] = "Enter product description here"
         form.base_fields['unit'].widget.attrs['placeholder'] = "Enter unit as e.g. 'Pack of 1'"
-        form.base_fields['brand'].widget.attrs['placeholder'] = "Enter product brand here"
 
         return form
 
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
+    # def get_queryset(self, request):
+    #     qs = super().get_queryset(request)
 
-        # Filter products based on the logged-in user
-        if not request.user.is_superuser:
-            vendor = VendorDetail.objects.filter(owner=request.user)
-            qs = qs.filter(vendor__in=vendor)
+    #     # Filter products based on the logged-in user
+    #     if not request.user.is_superuser:
+    #         vendor = seller.objects.filter(owner=request.user)
+    #         qs = qs.filter(vendor__in=vendor)
 
-        return qs
+    #     return qs
 
     def save_model(self, request, obj, form, change):
         # Call the parent class's save_model method to save the object
@@ -155,11 +194,11 @@ class ProductsAdmin(admin.ModelAdmin):
         # Save the object
         obj.save()
 
-    list_display: list = ('scheme_image_tag','name', 'unit', 'sizes','stock','max_retail_price','discount','list_price',
-                          'vendor','created_at')
-    ordering: list = ['-modified_at','-vendor','-name','-max_retail_price','-created_at']
+    list_display: list = ('scheme_image_tag','name', 'unit', 'sizes','stock','max_retail_price','discount','selling_price',
+                          'seller','created_at')
+    ordering: list = ['-modified_at','-seller','-name','-max_retail_price','-created_at']
     search_fields: list = ('name', 'material_feature',
-                           'max_retail_price', 'category','vendor')
+                           'max_retail_price', 'category','seller')
 
 
 admin.site.register(Products, ProductsAdmin)
@@ -171,7 +210,7 @@ class CategoriesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Categories, CategoriesAdmin)
-admin.site.register(ProductImages)
+admin.site.register(CategorySubSubCategories)
 
 class ProductRARAdmin(admin.ModelAdmin):
     list_display: list = ('author', 'ratings', 'review','is_approved')
@@ -226,40 +265,7 @@ class BannersAdmin(admin.ModelAdmin):
 
 admin.site.register(Banners, BannersAdmin)
 
-class VendorDetailAdmin(admin.ModelAdmin):
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
 
-        # Filter products based on the logged-in user
-        if not request.user.is_superuser:
-            qs = qs.filter(owner=request.user)
-
-        return qs
-    list_display: list = ('storeName', 'owner', 'email',
-                          'phone_number', 'address')
-    ordering: list = ['-storeName', '-email', '-owner','-phone_number']
-    search_fields: list = ('storeName', 'owner', 'email',
-                           'phone_number', 'address')
-
-admin.site.register(VendorDetail, VendorDetailAdmin)
-
-@admin.register(VendorBankAccountDetail)
-class VendorBankAccountDetailAdmin(admin.ModelAdmin):
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-
-        # Filter products based on the logged-in user
-        if not request.user.is_superuser:
-            vendor = VendorDetail.objects.filter(owner=request.user)
-            qs = qs.filter(vendor__in=vendor)
-
-        return qs
-    list_display: list = ('vendor', 'bank_name', 'bank_account_number',
-                          'ifsc_code')
-    ordering: list = ['-vendor', '-bank_name', '-bank_account_number',
-                          '-ifsc_code']
-    search_fields: list = ('vendor', 'bank_name', 'bank_account_number',
-                          'ifsc_code')
 
     
 

@@ -226,7 +226,7 @@
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
-                                                <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringThumbnail|safe}}" alt="img">
                                              </li>
                                              {% if product.image2 %}
                                              <li class="cl-ash">
@@ -272,7 +272,7 @@
                                  <div class="swiper-slide">
                                     <div class="single-product single-product-st2">
                                        <div class="product-image pos-rel">
-                                          <a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}" class=""><img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}"
+                                          <a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}" class=""><img src="data: image/png; base64, {{product.binaryToStringThumbnail|safe}}"
                                                 alt="img" width="265px" height="390px"></a>
                                           <div class="product-action-bottom">
                                              <a href="{% url 'productdetail' subcategory=product.subcategory.all.first.subcategory_code slug=product.slug %}" class="quick-view-btn"><i class="fal fa-eye"></i></a>
@@ -293,7 +293,7 @@
                                           </div>
                                        </div>
                                        <div class="product-desc">
-                                          <div class="product-name" style="color:grey;">{{product.brand}}</div>
+                                          <div class="product-name" style="color:grey;">{{product.brand.new}}</div>
                                           <div class="product-name"><a href="shop-details.html">{{product.name}}</a>
                                           </div>
                                           <div class="product-price">
@@ -302,7 +302,7 @@
                                           </div>
                                           <ul class="product-color-nav">
                                              <li class="cl-brown active">
-                                                <img src="data: image/png; base64, {{product.binaryToStringImage1|safe}}" alt="img">
+                                                <img src="data: image/png; base64, {{product.binaryToStringThumbnail|safe}}" alt="img">
                                              </li>
                                              {% if product.image2 %}
                                              <li class="cl-ash">

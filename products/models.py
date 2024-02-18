@@ -12,14 +12,13 @@ from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
 from base64 import b64encode
 from django.utils.text import slugify
+
+from user.models import CustomUser
 User = get_user_model()
 from math import ceil
+import random
 
-import os
-# from dotenv import load_dotenv
-# load_dotenv()
-
-user = get_user_model()
+# Create your models here.
 
 CATEGORIES = (('new-arrival', 'New Arrival'), ('best-seller', 'Best Seller'), ('trending', 'Trend Products'),
               ('Featured Products', 'Featured Products'), ('kids-collection', 'Kids Collection'),('hot-collection','Hot Collection'),('men-collection', 'Men Collection'),('women-collection', 'Women Collection'),('alto-collection','Alto Collection'))
@@ -35,9 +34,6 @@ def user_directory_path(instance, filename):
     return 'user_{0}/{1}'.format(instance.user.id, filename)
 
 # MultiArrayChoiceFields
-
-
-
 class ModifiedArrayField(ArrayField):
     def formfield(self, **kwargs):
         defaults = {
@@ -48,49 +44,6 @@ class ModifiedArrayField(ArrayField):
         }
         return super(ArrayField, self).formfield(**defaults)
 
-# Create your models here.
-
-
-class VendorDetail(models.Model):
-    owner = models.ForeignKey(User, verbose_name=_(
-        "Owner"), on_delete=models.CASCADE,null=True,blank=True)
-    storeName = models.CharField(
-        _("Store Name"), max_length=100, null=True, blank=True)
-    email = models.EmailField(
-        _("Store Email ID"), max_length=254, null=True, blank=True)
-    phone_number = models.CharField(
-        _("Store Phone No."), max_length=100, null=True, blank=True)
-    address = models.TextField(
-        _("Store Address"), max_length=1000, null=True, blank=True)
-
-    class Meta:
-        verbose_name = _("VendorDetail")
-        verbose_name_plural = _("VendorDetails")
-
-    def __str__(self):
-        return "Owner:{} Store: {}".format(self.owner,self.storeName)
-
-    def get_absolute_url(self):
-        return reverse("VendorDetail_detail", kwargs={"pk": self.pk})
-
-class VendorBankAccountDetail(models.Model):
-    vendor = models.ForeignKey(VendorDetail, verbose_name=_("Vendor"), on_delete=models.CASCADE,null=True,blank=True)
-    bank_name = models.CharField(_("Bank Name"), max_length=50)
-    bank_account_number = models.CharField(_("Account No."), max_length=50)
-    confirm_bank_account_number = models.CharField(_("Confirm Account No."), max_length=50)
-    ifsc_code = models.CharField(_("IFSC Code"), max_length=50)
-    upi_id = models.CharField(_("UPI Id"), max_length=50,null=True,blank=True)
-
-    class Meta:
-        verbose_name = _("VendorBankAccountDetail")
-        verbose_name_plural = _("VendorBankAccountDetails")
-
-    def __str__(self):
-        return "Owner: {} Acc. No.{}".format(self.vendor,self.confirm_bank_account_number)
-
-    def get_absolute_url(self):
-        return reverse("VendorBankAccountDetail_detail", kwargs={"pk": self.pk})
-
 class Categories(models.Model):  # ----Category Details----#
 
     category_id = models.AutoField(primary_key=True)
@@ -100,7 +53,6 @@ class Categories(models.Model):  # ----Category Details----#
     desc = models.TextField(null=True, default=None,
                             blank=True, max_length=1024)
     
-
     def __str__(self):
         return self.category_name
     
@@ -119,6 +71,8 @@ class CategorySubCategories(models.Model):
         "Pro Category"), on_delete=models.CASCADE,null=True,blank=True)
     subcategory = models.CharField(_("SubCategory"), max_length=50)
     subcategory_code = models.CharField(_("Sub Category Code"), max_length=50,null=True,blank=True)
+    desc = models.TextField(null=True, default=None,
+                            blank=True, max_length=1024)
 
     def __str__(self) -> str:
         return "Category: {} Sub-Category: {}".format(self.category, self.subcategory)
@@ -133,6 +87,69 @@ class CategorySubCategories(models.Model):
     class Meta:
         db_table = "SubCategories"
         verbose_name_plural = 'SubCategories'
+
+
+class CategorySubSubCategories(models.Model):
+
+    subcategory = models.ForeignKey(CategorySubCategories, verbose_name=_(
+        "Pro Category"), on_delete=models.CASCADE,null=True,blank=True)
+    subsubcategory = models.CharField(_("SubCategory"), max_length=50)
+    subsubcategory_code = models.CharField(_("Sub Category Code"), max_length=50,null=True,blank=True)
+    desc = models.TextField(null=True, default=None,
+                            blank=True, max_length=1024)
+
+    def __str__(self) -> str:
+        return "Category: {} Sub-Category: {}".format(self.subcategory, self.subsubcategory)
+    
+    def category_name(self):
+        return self.subcategory.subcategory
+    
+    def save(self, *args, **kwargs):
+        self.subsubcategory_code = slugify(self.subsubcategory)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        db_table = "SubSubCategories"
+        verbose_name_plural = 'SubSubCategories'
+
+class Brand(models.Model):
+    name = models.CharField(_("Brand"), max_length=50)
+    catergory = models.ForeignKey(Categories, verbose_name=_("category"), on_delete=models.CASCADE)
+    image = models.BinaryField(_("brand_logo"), blank=True, null=True,editable=True)
+    
+    class Meta:
+        verbose_name = _("Brand")
+        verbose_name_plural = _("Brands")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("Brand_detail", kwargs={"pk": self.pk})
+
+class ProductTag(models.Model):
+    name = models.CharField(_("Name"), max_length=50,null=True, blank=True)
+    code = models.CharField(_("Code"), max_length=50, null=True, blank=True)
+    category = models.ManyToManyField(Categories, verbose_name=_("category"))
+    sub_category = models.ManyToManyField(CategorySubCategories, verbose_name=_("_subcategory"))
+    sub_sub_category = models.ManyToManyField(CategorySubSubCategories, verbose_name=_("sub_sub_category"))
+
+    class Meta:
+        verbose_name = _("ProductTag")
+        verbose_name_plural = _("ProductTags")
+
+    def __str__(self):
+        return self.name
+    
+    def subCategoryName(self):
+        return ",".join([category.category_name for category in self.category.all()])
+    
+    def save(self, *args, **kwargs):
+        self.code = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("ProductTag_detail", kwargs={"pk": self.pk})
 
 class ProductSize(models.Model):
     subcategory = models.ManyToManyField(CategorySubCategories, verbose_name=_("Sub Category"),blank=True)
@@ -156,60 +173,77 @@ class ProductSize(models.Model):
     def get_absolute_url(self):
         return reverse("ProductSize_detail", kwargs={"pk": self.pk})
 
-class ProductTag(models.Model):
-    subcategory = models.ManyToManyField(CategorySubCategories, verbose_name=_("Sub Category"),blank=True)
-    name = models.CharField(_("Name"), max_length=50,null=True, blank=True)
-    code = models.CharField(_("Code"), max_length=50, null=True, blank=True)
 
-    class Meta:
-        verbose_name = _("ProductTag")
-        verbose_name_plural = _("ProductTags")
+class Banners(models.Model):
+    BannerPosition = (("homepage", "HOME PAGE"), ('categoriespage', 'CATEGORIES PAGE'), ('productpage', 'PRODUCT PAGE'), ('top', 'TOP'), ('middle', 'MIDDLE'), ('bottom','BOTTOM'), ('right', 'RIGHT'), ('left', 'LEFT'), ('newarrival', 'NEW ARRIVAL'), ('men', 'MEN'), ('kids', 'KIDS'), ('women', 'WOMEN'), ('cosmetics', 'COSMETICS'), ('browse-more', 'Browse More'))
+    position = ModifiedArrayField(models.CharField(
+        _("Banner Position"), max_length=255, choices=BannerPosition, null=True, blank=True), blank=True, null=True)
+    banner_name = models.CharField(
+        _("Banner Name"), max_length=50, null=True, blank=True)
+    banner_product_category = models.ForeignKey(Categories, verbose_name=_("Category"), blank=True,on_delete=models.CASCADE,default="")
+    banner_images = models.BinaryField(_("Banner Image"), blank=True, null=True,editable=True)
+    banner_status = models.BooleanField(_("Banner Status"),default=False)
+    products_available = models.IntegerField(
+        _("Products Available"), blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return "Banner Name: {}, Banner Status: {}".format(self.banner_name, self.banner_status)
+
+    class Meta:
+        db_table = "Banners"
+        verbose_name_plural = 'Banners'
+
+    def binaryToStringImage1(self):
+        return b64encode(self.banner_images).decode('utf-8')
     
-    def subCategoryName(self):
-        return ",".join([category.subcategory for category in self.subcategory.all()])
-    
-    def save(self, *args, **kwargs):
-        self.code = slugify(self.name)
-        super().save(*args, **kwargs)
+    def scheme_image_tag(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
+            b64encode(self.banner_images).decode('utf8')
+        ))
 
-    def get_absolute_url(self):
-        return reverse("ProductTag_detail", kwargs={"pk": self.pk})
-
-
-
-
+    scheme_image_tag.short_description = 'Image'
+    scheme_image_tag.allow_tags = True
 
 class Products(models.Model):
     id = models.AutoField(primary_key=True)
+    sku = models.CharField(_("SKU"), max_length=50,unique=True,default=''.join(random.choice('0123456789') for _ in range(6)))
+    
     name = models.CharField(max_length=150)
-    slug = models.SlugField(_("Slug Field"),unique=True,null=True,blank=True,max_length=250)
     longname = models.CharField(
         max_length=1000, default="", null=True, blank=True)
+    slug = models.SlugField(_("Slug Field"),unique=True,null=True,blank=True,max_length=250)
     desc = QuillField(null=True, blank=True)
+
+    # Categories related
     category = models.ManyToManyField(Categories, verbose_name=_("Category"), blank=True)
-    
     subcategory = models.ManyToManyField(CategorySubCategories, verbose_name=_("Sub Category"),blank=True)
-    image1 = models.BinaryField(_("Product Image 1"), blank=True, null=True,editable=True)
-    image2 = models.BinaryField(_("Product Image 2"), blank=True, null=True,editable=True)
-    image3 = models.BinaryField(_("Product Image 3"), blank=True, null=True,editable=True)
-    unit = models.CharField(max_length=50, blank=True)
-    brand = models.CharField(_("Brand"), max_length=50, null=False,default="")
-    available_sizes = models.ManyToManyField(ProductSize, verbose_name=_("Sizes"),blank=True)
-    tags = models.ManyToManyField(ProductTag, verbose_name=_("Tags"),blank=True)
-    vendor = models.ForeignKey(VendorDetail,
+    subsubcategory = models.ManyToManyField(CategorySubSubCategories, verbose_name=_("Sub Sub Category"),blank=True)
+    
+    # image thumbnail
+    thumbnail = models.BinaryField(_("Thumbnail"), blank=True, null=True,editable=True)
+    
+    unit = models.CharField(max_length=50, blank=True,choices=(('kgs', 'kgs'),('pc', 'pc'),('cm', 'cm'),('gms', 'gms'),('kgs', 'kgs'),('gb', 'gb'),('ltrs', 'ltrs')))
+    brand = models.ForeignKey(Brand, verbose_name=_("Brand"), on_delete=models.CASCADE, blank=True,null=True)
+    available_sizes = models.ManyToManyField(ProductSize, verbose_name=_("Sizes"))
+    tags = models.ManyToManyField(ProductTag, verbose_name=_("Tags"))
+    
+    # price related
+    max_retail_price = models.DecimalField(_("MRP (in Rs.)"), max_digits=8, decimal_places=2, null=True)
+    discount_type = models.CharField(_("Discount Type"), max_length=50,choices=(('percentage', 'percentage'),('flat','flat')),default=('percentage','percentage'))
+    discount = models.DecimalField(_("Discount"), max_digits=5, decimal_places=2, null=True, blank=True)
+    
+    # seller 
+    seller = models.ForeignKey(CustomUser,
                                related_name="Vendor", on_delete=models.CASCADE, max_length=50, null=True, blank=True)
-    max_retail_price = models.DecimalField(
-        _("MRP (in Rs.)"), max_digits=8, decimal_places=2, null=True)
-    discount = models.DecimalField(
-        _("Discount (in %)"), max_digits=5, decimal_places=2, null=True, blank=True)
-    stock = models.IntegerField(
-        _("Stock"), default=0)
-    average_rating = models.DecimalField(
-        max_digits=2, decimal_places=1, null=True, blank=True)
+    
+    # meta related fields
+    meta_title = models.CharField(_("Meta Title"), max_length=300)
+    meta_description = models.TextField(_("Meta Description"))
+    meta_image = models.BinaryField(_("Meta Image"), blank=True, null=True, editable=True)
+
     display_home = models.BooleanField(_("Display at home"), default=True)
+    average_rating = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True)
+    stock = models.IntegerField(_("Stock"), default=1)
     status = models.BooleanField(_("Product Status"), default=True)
     created_at = models.DateTimeField(_("Created Date"), auto_now_add=True)
     modified_at = models.DateTimeField(_("Modified Date"), auto_now=True)
@@ -230,18 +264,31 @@ class Products(models.Model):
     def sizes(self):
         sizes = [size for size in self.available_sizes.all()]
         return sizes
+    
+    # def brand_name(self):
+    #     return self.brand.name
 
     def get_attrib_id(self):
         return self.id
 
-    def list_price(self):
-        listprice = self.max_retail_price - \
-            ((self.discount/100)*self.max_retail_price)
+    def selling_price(self):
+        """Price at which products are sold
+
+        Returns:
+            decimal: price with 2 decimal point
+        """
+        if self.discount_type == "percentage":
+            listprice = self.max_retail_price - \
+                ((self.discount/100)*self.max_retail_price)
+        
+        elif self.discount_type == "flat":
+            listprice = self.max_retail_price - self.discount
+
         return round(listprice,2)
     
     def price_gst_included(self):
-        gst_amount = (float(self.list_price()) * (settings.GST_STICHED/100))
-        total = ceil(gst_amount) + self.list_price()
+        gst_amount = (float(self.selling_price()) * (settings.GST_STICHED/100))
+        total = ceil(gst_amount) + self.selling_price()
         return round(total)
     
     def mrp_gst_included(self):
@@ -269,58 +316,29 @@ class Products(models.Model):
     def pr_images(self):
         images = []
         for img in self.more_images.all():
-            print(img)
             images.append(img)
         return images
     
     def scheme_image_tag(self):
         return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image1).decode('utf8')
+            b64encode(self.thumbnail).decode('utf8')
         ))
 
     scheme_image_tag.short_description = 'Image'
     scheme_image_tag.allow_tags = True
 
-    def binaryToStringImage1(self):
-        return b64encode(self.image1).decode('utf-8')
-    
-    def binaryToStringImage2(self):
-        return b64encode(self.image2).decode('utf-8')
-    
-    def binaryToStringImage3(self):
-        return b64encode(self.image3).decode('utf-8')
+    def binaryToStringThumbnail(self):
+        return b64encode(self.thumbnail).decode('utf-8')
 
     class Meta:
         db_table = "Products"
         verbose_name_plural = 'Products'
 
-
-class ProductImages(models.Model):
-    product = models.ForeignKey(
-        "products", related_name="prodImages", on_delete=models.CASCADE, null=False, blank=False, default="")
-
-    images = models.ImageField(_("Product_Image"), upload_to="product/media/photos/%Y/%m/%d",
-                               height_field=None, width_field=None, max_length=None)
-
-    image_thumbnail = models.ImageField(
-        _("Product Image Thumbnail"), upload_to="product/media/photos/%Y/%m/%d/thumbnails", height_field=None, width_field=None, max_length=None, blank=True, null=True)
-
-    image_thumbnail_color = models.CharField(
-        _("Product Thumbnail Color"), max_length=50, null=True, blank=True)
-
-    def __str__(self):
-        return "Image URL: {}".format(self.images)
-
-    class Meta:
-        db_table = "ProductImages"
-        verbose_name_plural = 'ProductImages'
-
-
 class ProductReviewAndRatings(models.Model):
     product = models.ForeignKey(Products, verbose_name=_(
         "product rating"), on_delete=models.CASCADE,null=True,blank=True)
     RATINGS = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5),)
-    author = models.ForeignKey(user, verbose_name=_(
+    author = models.ForeignKey(User, verbose_name=_(
         "Author Id"), on_delete=models.CASCADE,null=True,blank=True)
     review = models.CharField(_("Product Review"), max_length=1024, null=True,blank=True)
     ratings = models.IntegerField(
@@ -341,39 +359,86 @@ class ProductReviewAndRatings(models.Model):
 
 
 
+class ProductImages(models.Model):
+    product = models.ForeignKey("Products", related_name="prodImages", on_delete=models.CASCADE, null=False, blank=False, default="")
 
-class Banners(models.Model):
-    ChoiceStatus = (('Activate', 'ACTIVATE'), ('Deactivate', 'DEACTIVATE'),)
-    BannerPosition = (("homepage", "HOME PAGE"), ('categoriespage', 'CATEGORIES PAGE'), ('productpage', 'PRODUCT PAGE'), ('top', 'TOP'), ('middle', 'MIDDLE'), ('bottom',
-                                                                                                                                                                'BOTTOM'), ('right', 'RIGHT'), ('left', 'LEFT'), ('newarrival', 'NEW ARRIVAL'), ('men', 'MEN'), ('kids', 'KIDS'), ('women', 'WOMEN'), ('cosmetics', 'COSMETICS'), ('browse-more', 'Browse More'))
-    position = ModifiedArrayField(models.CharField(
-        _("Banner Position"), max_length=255, choices=BannerPosition, null=True, blank=True), blank=True, null=True)
-    banner_name = models.CharField(
-        _("Banner Name"), max_length=50, null=True, blank=True)
-    banner_product_category = models.ManyToManyField(Categories, verbose_name=_("Category"), blank=True)
-    banner_desc = QuillField(null=True, blank=True)
-    # banner_images = models.ImageField(
-        # _("Banner Image"), upload_to="banners/media/images/%Y/%m/%d", height_field=None, width_field=None, max_length=None)
-    banner_images = models.BinaryField(_("Banner Image"), blank=True, null=True,editable=True)
-    banner_status = models.CharField(
-        max_length=20, choices=ChoiceStatus, null=False, default=None)
-    products_available = models.IntegerField(
-        _("Products Available"), blank=True, null=True)
+    image_1 = models.BinaryField(_("Image_1"), blank=True, null=True,editable=True)
+    image_2 = models.BinaryField(_("Image_2"), blank=True, null=True,editable=True)
+    image_3 = models.BinaryField(_("Image_3"), blank=True, null=True,editable=True)
+    image_4 = models.BinaryField(_("Image_4"), blank=True, null=True,editable=True)
+    image_5 = models.BinaryField(_("Image_5"), blank=True, null=True,editable=True)
+    image_6 = models.BinaryField(_("Image_6"), blank=True, null=True,editable=True)
+    image_7 = models.BinaryField(_("Image_7"), blank=True, null=True,editable=True)
+    image_8 = models.BinaryField(_("Image_8"), blank=True, null=True,editable=True)
+
 
     def __str__(self):
-        return "Banner Name: {}, Banner Status: {}".format(self.banner_name, self.banner_status)
-
-    class Meta:
-        db_table = "Banners"
-        verbose_name_plural = 'Banners'
-
-    def binaryToStringImage1(self):
-        return b64encode(self.banner_images).decode('utf-8')
+        return "Product: {}".format(self.product)
     
-    def scheme_image_tag(self):
+    def binaryToStringimage1(self):
+        return b64encode(self.image_1).decode('utf-8')
+    
+    def scheme_image_tag_image_1(self):
         return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.banner_images).decode('utf8')
+            b64encode(self.image_1).decode('utf8')
         ))
 
-    scheme_image_tag.short_description = 'Image'
-    scheme_image_tag.allow_tags = True
+    def binaryToStringimage2(self):
+        return b64encode(self.image_2).decode('utf-8')
+    
+    def scheme_image_tag_image_2(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
+            b64encode(self.image_2).decode('utf8')
+        ))
+    
+    def binaryToStringimage3(self):
+        return b64encode(self.image_3).decode('utf-8')
+    
+    def scheme_image_tag_image_3(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
+            b64encode(self.image_3).decode('utf8')
+        ))
+    
+    def binaryToStringimage4(self):
+        return b64encode(self.image_4).decode('utf-8')
+    
+    def scheme_image_tag_image_4(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
+            b64encode(self.image_4).decode('utf8')
+        ))
+    
+    def binaryToStringimage5(self):
+        return b64encode(self.image_5).decode('utf-8')
+    
+    def scheme_image_tag_image_5(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
+            b64encode(self.image_5).decode('utf8')
+        ))
+    
+    def binaryToStringimage6(self):
+        return b64encode(self.image_6).decode('utf-8')
+    
+    def scheme_image_tag_image_6(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
+            b64encode(self.image_6).decode('utf8')
+        ))
+    
+    def binaryToStringimage7(self):
+        return b64encode(self.image_7).decode('utf-8')
+    
+    def scheme_image_tag_image_7(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
+            b64encode(self.image_7).decode('utf8')
+        ))
+    
+    def binaryToStringimage8(self):
+        return b64encode(self.image_8).decode('utf-8')
+    
+    def scheme_image_tag_image_8(self):
+        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
+            b64encode(self.image_8).decode('utf8')
+        ))
+
+    class Meta:
+        db_table = "ProductImages"
+        verbose_name_plural = 'ProductImages'
