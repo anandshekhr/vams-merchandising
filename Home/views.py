@@ -21,7 +21,7 @@ def get_meta_data(path_name, domain):
 def home(request):
     banners = Banners.objects.all()
     products_hc = Products.objects.filter(
-        category__in=Categories.objects.filter(category_code="hot-collection"),
+        category__in=Categories.objects.filter(category_code="clothing-and-apparel"),
         display_home=True,
     )
     len_hc = len(products_hc)
