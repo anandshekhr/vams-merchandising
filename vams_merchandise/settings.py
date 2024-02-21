@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "phoneverification.apps.PhoneverificationConfig",
     "delivery.apps.DeliveryConfig",
     "emailapp.apps.EmailappConfig",
+    "sellerorders.apps.SellerordersConfig",
     # "invoice.apps.InvoiceConfig",
     "rest_framework",
     # "qr_code",
