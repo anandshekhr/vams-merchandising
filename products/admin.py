@@ -3,57 +3,17 @@ from .models import *
 
 
 class ProductImagesForm(forms.ModelForm):
-    image_1 = forms.FileField(required=False)
-    image_2 = forms.FileField(required=False)
-    image_3 = forms.FileField(required=False)
-    image_4 = forms.FileField(required=False)
-    image_5 = forms.FileField(required=False)
-    image_6 = forms.FileField(required=False)
-    image_7 = forms.FileField(required=False)
-    image_8 = forms.FileField(required=False)
+    image = forms.FileField(required=False)
+    
 
     def save(self, commit=True):
         
-        if self.cleaned_data.get('image_1') is not None \
-                and hasattr(self.cleaned_data['image_1'], 'file'):
-            data = self.cleaned_data['image_1'].file.read()
-            self.instance.image_1 = data
+        if self.cleaned_data.get('image') is not None \
+                and hasattr(self.cleaned_data['image'], 'file'):
+            data = self.cleaned_data['image'].file.read()
+            self.instance.image = data
         
-        if self.cleaned_data.get('image_2') is not None \
-                and hasattr(self.cleaned_data['image_2'], 'file'):
-            data = self.cleaned_data['image_2'].file.read()
-            self.instance.image_2 = data
         
-        if self.cleaned_data.get('image_3') is not None \
-                and hasattr(self.cleaned_data['image_3'], 'file'):
-            data = self.cleaned_data['image_3'].file.read()
-            self.instance.image_3 = data
-        
-        if self.cleaned_data.get('image_4') is not None \
-                and hasattr(self.cleaned_data['image_4'], 'file'):
-            data = self.cleaned_data['image_4'].file.read()
-            self.instance.image_4 = data
-        
-        if self.cleaned_data.get('image_5') is not None \
-                and hasattr(self.cleaned_data['image_5'], 'file'):
-            data = self.cleaned_data['image_5'].file.read()
-            self.instance.image_5 = data
-        
-        if self.cleaned_data.get('image_6') is not None \
-                and hasattr(self.cleaned_data['image_6'], 'file'):
-            data = self.cleaned_data['image_6'].file.read()
-            self.instance.image_6 = data
-        
-        if self.cleaned_data.get('image_7') is not None \
-                and hasattr(self.cleaned_data['image_7'], 'file'):
-            data = self.cleaned_data['image_7'].file.read()
-            self.instance.image_7 = data
-        
-        if self.cleaned_data.get('image_8') is not None \
-                and hasattr(self.cleaned_data['image_8'], 'file'):
-            data = self.cleaned_data['image_8'].file.read()
-            self.instance.image_8 = data
-
         return self.instance
 
     def save_m2m(self):
@@ -63,7 +23,7 @@ class ProductImagesForm(forms.ModelForm):
 @admin.register(ProductImages)
 class ProductImagesAdmin(admin.ModelAdmin):
     form = ProductImagesForm
-    list_display = ('product','scheme_image_tag_image_1','scheme_image_tag_image_2','scheme_image_tag_image_3','scheme_image_tag_image_4','scheme_image_tag_image_5','scheme_image_tag_image_6','scheme_image_tag_image_7','scheme_image_tag_image_8')
+    list_display = ('product','scheme_image_tag_image_1')
     
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):

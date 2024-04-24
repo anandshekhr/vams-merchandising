@@ -114,7 +114,9 @@ class CategorySubSubCategories(models.Model):
 
 class Brand(models.Model):
     name = models.CharField(_("Brand"), max_length=50)
-    catergory = models.ForeignKey(Categories, verbose_name=_("category"), on_delete=models.CASCADE)
+    catergory = models.ForeignKey(Categories, verbose_name=_("category_id"), on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(CategorySubCategories, verbose_name=_("subcategory_id"), on_delete=models.CASCADE,null=True,blank=True)
+    subsubcategory = models.ForeignKey(CategorySubSubCategories, verbose_name=_("subsubcategory_id"), on_delete=models.CASCADE,null=True,blank=True)
     image = models.BinaryField(_("brand_logo"), blank=True, null=True,editable=True)
     
     class Meta:
@@ -278,11 +280,11 @@ class Products(models.Model):
             decimal: price with 2 decimal point
         """
         if self.discount_type == "percentage":
-            listprice = self.max_retail_price - \
-                ((self.discount/100)*self.max_retail_price)
+            listprice = float(self.max_retail_price) - \
+                float((self.discount/100)*self.max_retail_price)
         
         elif self.discount_type == "flat":
-            listprice = self.max_retail_price - self.discount
+            listprice = int(self.max_retail_price) - int(self.discount)
 
         return round(listprice,2)
     
@@ -327,8 +329,8 @@ class Products(models.Model):
     scheme_image_tag.short_description = 'Image'
     scheme_image_tag.allow_tags = True
 
-    def binaryToStringThumbnail(self):
-        return b64encode(self.thumbnail).decode('utf-8')
+    # def binaryToStringThumbnail(self):
+    #     return b64encode(self.thumbnail).decode('utf-8')
 
     class Meta:
         db_table = "Products"
@@ -361,83 +363,22 @@ class ProductReviewAndRatings(models.Model):
 
 class ProductImages(models.Model):
     product = models.ForeignKey("Products", related_name="prodImages", on_delete=models.CASCADE, null=False, blank=False, default="")
-
-    image_1 = models.BinaryField(_("Image_1"), blank=True, null=True,editable=True)
-    image_2 = models.BinaryField(_("Image_2"), blank=True, null=True,editable=True)
-    image_3 = models.BinaryField(_("Image_3"), blank=True, null=True,editable=True)
-    image_4 = models.BinaryField(_("Image_4"), blank=True, null=True,editable=True)
-    image_5 = models.BinaryField(_("Image_5"), blank=True, null=True,editable=True)
-    image_6 = models.BinaryField(_("Image_6"), blank=True, null=True,editable=True)
-    image_7 = models.BinaryField(_("Image_7"), blank=True, null=True,editable=True)
-    image_8 = models.BinaryField(_("Image_8"), blank=True, null=True,editable=True)
+    image = models.BinaryField(_("Image_1"), blank=True, null=True,editable=True)
+    
 
 
     def __str__(self):
         return "Product: {}".format(self.product)
     
     def binaryToStringimage1(self):
-        return b64encode(self.image_1).decode('utf-8')
+        return b64encode(self.image).decode('utf-8')
     
     def scheme_image_tag_image_1(self):
         return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image_1).decode('utf8')
+            b64encode(self.image).decode('utf8')
         ))
 
-    def binaryToStringimage2(self):
-        return b64encode(self.image_2).decode('utf-8')
     
-    def scheme_image_tag_image_2(self):
-        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image_2).decode('utf8')
-        ))
-    
-    def binaryToStringimage3(self):
-        return b64encode(self.image_3).decode('utf-8')
-    
-    def scheme_image_tag_image_3(self):
-        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image_3).decode('utf8')
-        ))
-    
-    def binaryToStringimage4(self):
-        return b64encode(self.image_4).decode('utf-8')
-    
-    def scheme_image_tag_image_4(self):
-        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image_4).decode('utf8')
-        ))
-    
-    def binaryToStringimage5(self):
-        return b64encode(self.image_5).decode('utf-8')
-    
-    def scheme_image_tag_image_5(self):
-        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image_5).decode('utf8')
-        ))
-    
-    def binaryToStringimage6(self):
-        return b64encode(self.image_6).decode('utf-8')
-    
-    def scheme_image_tag_image_6(self):
-        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image_6).decode('utf8')
-        ))
-    
-    def binaryToStringimage7(self):
-        return b64encode(self.image_7).decode('utf-8')
-    
-    def scheme_image_tag_image_7(self):
-        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image_7).decode('utf8')
-        ))
-    
-    def binaryToStringimage8(self):
-        return b64encode(self.image_8).decode('utf-8')
-    
-    def scheme_image_tag_image_8(self):
-        return mark_safe('<img src = "data: image/png; base64, {}" width="100px" height="100px" style="object-fit: scale-down;">'.format(
-            b64encode(self.image_8).decode('utf8')
-        ))
 
     class Meta:
         db_table = "ProductImages"

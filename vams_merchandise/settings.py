@@ -27,7 +27,8 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+# ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = ["*"]
 
 admin_volt = "admin_volt.apps.AdminVoltConfig"
 
@@ -85,6 +86,7 @@ INSTALLED_APPS = [
     "django_filters",
     "django_celery_results",
     "django_celery_beat",
+    "middlewares",
 ]
 
 
@@ -97,6 +99,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "middlewares.middleware.RequestDataMiddleware"
 ]
 
 ROOT_URLCONF = "vams_merchandise.urls"
@@ -132,7 +135,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "vamscentral-seller",
+            "NAME": "test-vams",
             "USER": "postgres",
             "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
