@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "django.contrib.gis",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'drf_yasg',
@@ -315,3 +316,7 @@ PHONEPE_USER_ID = env("PHONEPE_USER_ID")
 PDFKIT_CONFIG = {
     "enable_local_file_access": True,
 }
+
+GDAL_LIBRARY_PATH = '/opt/homebrew/opt/gdal/lib/libgdal.dylib'
+GEOS_LIBRARY_PATH = '/opt/homebrew/opt/geos/lib/libgeos_c.dylib'
+GEOIP_PATH = os.path.join(BASE_DIR,'geoip/')
