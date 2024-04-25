@@ -60,6 +60,7 @@ urlpatterns = (
         path("phone/", include("phoneverification.urls")),
         path("products/", include("products.urls")),
         path("wishlist/", include("wishlist.urls")),
+        path("analytics/", include("middlewares.urls")),
         path("accounts/registration/", include("dj_rest_auth.registration.urls")),
         path(
             "rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/",

@@ -5,6 +5,8 @@ from .models import RequestDataLog  # Import your model for storing request data
 from ua_parser import user_agent_parser
 from django.contrib.gis.geoip2 import GeoIP2
 from django.conf import settings
+import logging
+logger = logging.getLogger('middleware')
 
 class RequestDataMiddleware(MiddlewareMixin):
     def get_client_ip(self, request):
@@ -52,8 +54,8 @@ class RequestDataMiddleware(MiddlewareMixin):
                 origin_country = geoip.country_code(ip_address)
             
             except Exception as e:
-                print(f"Error in geolocation: {e}")
                 origin_country = 'IN'
+                logger.warning(f"Error in geolocation: {e}, default country: {origin_country}")
 
         # Save the request data to your database
         RequestDataLog.objects.create(
@@ -66,3 +68,4 @@ class RequestDataMiddleware(MiddlewareMixin):
             client_ip=ip_address,
             country=origin_country
         )
+        logger.info('log saved to database.')
