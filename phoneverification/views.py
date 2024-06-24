@@ -13,7 +13,7 @@ from user.models import *
 from stores.models import *
 from datetime import datetime,timezone
 from django.http import JsonResponse
-from django.utils.timezone import utc
+# from django.utils.timezone import utc
 from .utils import OTPManager
 from random import randint
 from django.http import Http404

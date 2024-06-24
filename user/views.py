@@ -17,7 +17,7 @@ from rest_framework.decorators import api_view, permission_classes
 from .models import *
 from datetime import datetime, timezone
 from django.http import JsonResponse
-from django.utils.timezone import utc
+# from django.utils.timezone import utc
 from .utils import OTPManager
 from random import randint
 from cart.models import *

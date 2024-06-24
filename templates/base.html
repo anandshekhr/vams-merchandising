@@ -12,17 +12,78 @@
 
 <head>
    <!-- Google tag (gtag.js) -->
-   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVTJVHLQP8"></script>
+   {% comment %} <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZVTJVHLQP8"></script> {% endcomment %}
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
    
 
+   
+   {% comment %}
    <script>
-   window.dataLayer = window.dataLayer || [];
-   function gtag(){dataLayer.push(arguments);}
-   gtag('js', new Date());
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-   gtag('config', 'G-ZVTJVHLQP8');
+      gtag('config', 'G-ZVTJVHLQP8'); 
+
    </script>
+   {% endcomment %}
+   <script>
+    function isMobile() {
+        return /iphone|mobile|androidtouch/i.test(navigator.userAgent);
+    }
+   function isNewUser() {
+         var userStatus = localStorage.getItem('user_status');
+         if (!userStatus) {
+               localStorage.setItem('user_status', 'returning');
+               return true;
+         }
+         return false;
+      }
+
+    function logRequestData(ip_address) {
+         var xhr = new XMLHttpRequest();
+         var path = window.location.pathname;
+         var origin = window.location.origin;
+         var user_agent_string = navigator.userAgent;
+         var is_mobile = isMobile();
+         var ip_address = ip_address;
+
+        xhr.open("POST", "http://127.0.0.1:8000/analytics/log/request/", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("Authorization", "Token 49ab6080edebc1114366ac7636d9e3a45ddaa81f");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log('Request data logged successfully');
+            }
+        };
+
+        var payload = {
+                path: path,
+                user_agent_string: user_agent_string,
+                is_mobile: is_mobile,
+                origin: origin,
+                ip_address: ip_address,
+                is_new_user: isNewUser(),
+            };
+
+         xhr.send(JSON.stringify(payload));
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+            // Fetch IP address using a third-party service
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    logRequestData(data.ip);
+                })
+                .catch(error => {
+                    console.error('Error fetching IP address:', error);
+                    logRequestData(null);  // Handle the case where IP fetching fails
+                });
+        });
+</script>
+
    <meta charset="utf-8">
    <meta http-equiv="x-ua-compatible" content="ie=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
