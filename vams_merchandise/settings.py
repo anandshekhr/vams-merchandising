@@ -44,7 +44,7 @@ CORS_ALLOWED_ORIGINS = [
 
 # Application definition
 INSTALLED_APPS = [
-    # admin_volt,  # Make sure 'admin_volt' is a string or variable
+    admin_volt,  # Make sure 'admin_volt' is a string or variable
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -69,19 +69,12 @@ INSTALLED_APPS = [
     "delivery.apps.DeliveryConfig",
     "emailapp.apps.EmailappConfig",
     "sellerorders.apps.SellerordersConfig",
-    # "invoice.apps.InvoiceConfig",
     "rest_framework",
-    # "qr_code",
     "corsheaders",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "allauth",
     "allauth.utils",
-    # "allauth.account",
-    # "allauth.socialaccount",
-    # "allauth.socialaccount.providers.apple",
-    # "allauth.socialaccount.providers.facebook",
-    # "allauth.socialaccount.providers.google",
     "dj_rest_auth.registration",
     "django_quill",
     "django_filters",
@@ -136,7 +129,7 @@ if DEBUG:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": "test-vams",
+            "NAME": "vams-merch",
             "USER": "postgres",
             "PASSWORD": "Shekhar123#",
             "HOST": "localhost",
@@ -154,16 +147,7 @@ else:
             "PORT": env("DATABASE_PORT"),
         }
     }
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.environ.get("POSTGRES_NAME"),
-#         "USER": os.environ.get("POSTGRES_USER"),
-#         "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-#         "HOST": "db",
-#         "PORT": 5432,
-#     }
-# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -273,11 +257,11 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseSchedulers"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp-mail.outlook.com"
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "vamscentral@hotmail.com"
-EMAIL_HOST_PASSWORD = "1$Onemanarmy$2023"
+EMAIL_HOST_USER = "<email>@hotmail.com"
+EMAIL_HOST_PASSWORD = "<password>"
 EMAIL_USE_TLS = True
 
-DEFAULT_FROM_EMAIL = "www.vamscentral.com <vamscentral@hotmail.com>"
+DEFAULT_FROM_EMAIL = "www.vamscentral.com <email>@hotmail.com>"
 
 ADMIN_EMAIL = "shekharanand7773@gmail.com"
 
